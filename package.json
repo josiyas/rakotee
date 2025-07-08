@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "express-mongo-sanitize": "^2.2.0",
+    "mongodb": "^6.17.0"
+  }
+}

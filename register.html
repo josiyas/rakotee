@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RAKOTEE | Register</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <header class="main-header">
+    <nav class="nav-container">
+      <div class="logo"><a href="index.html">RAKOTEE</a></div>
+    </nav>
+  </header>
+
+  <main class="container auth-container">
+    <h2>Create an Account</h2>
+    <p id="registerError" style="color:red; display:none;"></p>
+    <form id="registerForm">
+      <label for="username">Username</label><br/>
+      <input type="text" id="username" name="username" required /><br/>
+
+      <label for="email">Email</label><br/>
+      <input type="email" id="email" name="email" required /><br/>
+
+      <label for="password">Password</label><br/>
+      <input type="password" id="password" name="password" required minlength="6" /><br/>
+
+      <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="login.html">Log in here</a></p>
+  </main>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const errorElem = document.getElementById('registerError');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = form.username.value.trim();
+      const email = form.email.value.trim();
+      const password = form.password.value;
+
+      errorElem.style.display = 'none';
+      errorElem.textContent = '';
+
+      if (!username || !email || !password) {
+        errorElem.textContent = 'Fill all fields';
+        errorElem.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password }),
+        });
+
+        let data = {};
+        try {
+          data = await res.json();
+        } catch (jsonErr) {
+          data = { message: 'Invalid server response' };
+        }
+
+        if (res.ok) {
+          alert(data.message || 'Registration successful!');
+          window.location.href = 'login.html'; // redirect after signup
+        } else {
+          errorElem.textContent = `Error ${res.status}: ${data.message || res.statusText || 'Failed to register'}`;
+          errorElem.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        errorElem.textContent = 'Network error: ' + (error.message || 'Something went wrong');
+        errorElem.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

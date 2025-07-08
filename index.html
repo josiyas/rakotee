@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RAKOTEE – Your go-to for streetwear, footwear, and accessories. KEEP MOVIN'. Shop the latest sneakers, phones, and more. Secure checkout and fast delivery." />
+  <meta name="keywords" content="streetwear, sneakers, footwear, accessories, phones, sale, rakotee, online store, shop" />
+  <title>RAKOTEE | KEEP MOVIN</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<header class="main-header">
+  <nav class="nav-container" aria-label="Main Navigation">
+    <div class="logo">
+      <a href="index.html" aria-label="RAKOTEE Home">RAKOTEE</a>
+    </div>
+    <div class="nav-icons">
+      <button class="icon-btn" id="searchToggle" aria-label="Search" tabindex="0"><i class="fas fa-search"></i></button>
+      <div class="account-dropdown" id="accountDropdown" aria-haspopup="true" aria-expanded="false">
+        <!-- Account menu will be rendered by JS -->
+      </div>
+      <button class="icon-btn cart-icon" id="cartIconBtn" aria-label="Cart" tabindex="0">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cartCount" class="cart-count" aria-live="polite">0</span>
+      </button>
+      <button class="icon-btn menu-toggle" aria-label="Menu" tabindex="0">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <div class="search-bar" id="searchBar" role="search">
+    <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products" />
+  </div>
+</header>
+
+<!-- Shop Now Banner -->
+<section class="shop-now-banner">
+  <div class="shop-now-content">
+    <h1>KEEP MOVIN'</h1>
+    <a href="products.html" class="shop-now-btn">Shop Now</a>
+  </div>
+</section>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile Menu">
+  <a href="index.html">Home</a>
+  <a href="#newdrops">New Drops</a>
+  <a href="#footwear">Footwear</a>
+  <a href="#phones">Phones</a>
+  <a href="#sale">Sale</a>
+  <a href="#contactus">Contact Us</a>
+  <a href="about.html">About Us</a>
+  <a href="faq.html">FAQ</a>
+  <a href="returns.html">Returns</a>
+</div>
+<div class="mobile-overlay" id="mobileOverlay" tabindex="-1"></div>
+
+<!-- Main Product Sections -->
+<main class="container">
+
+  <section class="product-section footwear-section" id="footwear">
+    <h2>Footwear</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="products/white jordan3.jpg" alt="White Jordan 3 Sneaker - classic white and grey colorway" loading="lazy" />
+      </div>
+      <div class="product-card">
+        <img src="products/blue dunk2.jpg" alt="Blue Dunk 2 Sneaker - vibrant blue and white" loading="lazy" />
+      </div>
+      <div class="product-card">
+        <img src="products/grey (3).webp" alt="Grey Sneaker - modern grey design" loading="lazy" />
+      </div>
+    </div>
+    <a href="products.html?category=footwear" class="btn view-all">View All Footwear</a>
+  </section>
+
+  <!-- Phones -->
+  <section class="product-section phones-section" id="phones">
+    <h2>Phones</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="products/12 pro2.png" alt="iPhone 12 Pro 2 - silver" loading="lazy" />
+      </div>
+      <div class="product-card">
+        <img src="products/114.jpg" alt="iPhone 11 Pro - black" loading="lazy" />
+      </div>
+      <div class="product-card">
+        <img src="products/121.png" alt="iPhone 12 Pro Max - gold" loading="lazy" />
+      </div>
+    </div>
+    <a href="products.html?category=phones" class="btn view-all">View All Phones</a>
+  </section>
+
+  <!-- Sale -->
+  <section class="product-section sale-section" id="sale">
+    <h2>Sale Section</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="images/newdrop1.jpg" alt="New Drop Sneaker - red and white" loading="lazy" />
+      </div>
+      <div class="product-card">
+        <img src="products/airforcew2.jpeg" alt="Air Force White Sneaker - on sale" loading="lazy" />
+      </div>
+      <div class="product-card">
+        <img src="products/black air2.jpg" alt="Black Air Sneaker - discounted" loading="lazy" />
+      </div>
+    </div>
+    <a href="products.html?category=sale" class="btn view-all">View All Sale Items</a>
+  </section>
+
+</main>
+<!-- Fullscreen Modal -->
+<div id="productModal" class="modal fullscreen-modal" role="dialog" aria-modal="true" aria-labelledby="modalName" tabindex="-1">
+  <div class="modal-content">
+    <span class="close-modal" id="closeModalBtn" tabindex="0" aria-label="Close Modal">&times;</span>
+    <div class="modal-body">
+      <div class="modal-left">
+        <img id="modalImage" src="" alt="Main Product Image" />
+        <div id="modalThumbnails" class="thumbnails"></div>
+      </div>
+      <div class="modal-right">
+        <h3 id="modalName"></h3>
+        <p class="price">R <span id="modalPrice"></span></p>
+        <p id="modalDescription" class="product-description"></p>
+        <label for="sizeSelect">Size:</label>
+        <select id="sizeSelect"></select>
+        <label for="colorSelect">Color:</label>
+        <select id="colorSelect"></select>
+        <label for="quantityInput">Quantity:</label>
+        <input type="number" id="quantityInput" min="1" value="1" />
+        <div class="product-highlights">
+          <h4>Product Details</h4>
+          <ul>
+            <li>Durable rubber sole for long-lasting wear</li>
+            <li>Breathable mesh upper keeps feet cool</li>
+            <li>Cushioned insole for all-day comfort</li>
+            <li>True to size – fits as expected</li>
+            <li>Available in multiple colorways</li>
+          </ul>
+          <div class="modal-highlights">
+            <h4>Product Highlights</h4>
+            <ul id="modal-highlights-list"></ul>
+          </div>
+        </div>
+        <button id="addToCartBtn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Section -->
+<section class="contact-section" id="contactus">
+  <div class="container">
+    <h2>Contact Us</h2>
+    <ul class="contact-list">
+      <li><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:rakoteeholdings@gmail.com">rakoteeholdings@gmail.com</a></li>
+      <li><i class="fas fa-phone"></i> <strong>Phone:</strong> <a href="tel:0663963261">0663963261</a></li>
+      <li><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> <a href="https://wa.me/27663963261" target="_blank" rel="noopener">0663963261</a></li>
+      <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> SOSHANGUVE BLOCK VV EXT 6</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-column">
+      <h4>Info</h4>
+      <ul>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="returns.html">Returns</a></li>
+        <li><a href="terms.html">Terms & Conditions</a></li>
+        <li><a href="security.html">Security</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>RAKOTEE</h4>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Mailing List</h4>
+      <form id="mailingListForm" autocomplete="off">
+        <input type="email" id="mailingListEmail" placeholder="Enter your email" required aria-label="Email address" />
+        <button type="submit">Join</button>
+        <span id="mailingListFeedback" style="display:none;color:green;font-size:0.9em;"></span>
+      </form>
+    </div>
+  </div>
+  <div class="footer-payments">
+    <img src="images/visa.png" alt="Visa payment option" />
+    <img src="images/paypal.png" alt="PayPal payment option" />
+    <img src="images/zapper.png" alt="Zapper payment option" />
+  </div>
+  <div class="footer-socials">
+    <a href="https://instagram.com/rakotee" aria-label="Instagram" target="_blank" rel="noopener"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+    <a href="https://facebook.com/rakotee" aria-label="Facebook" target="_blank" rel="noopener"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+    <a href="https://twitter.com/rakotee" aria-label="Twitter" target="_blank" rel="noopener"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>
+  </div>
+  <p class="footer-note">&copy; 2025 RAKOTEE. All rights reserved. KEEP MOVIN.</p>
+</footer>
+
+<!-- Scripts -->
+<script src="main.js"></script>
+<script src="cart.js"></script>
+<!-- Cart Sidebar -->
+<div id="cartSidebar" class="cart-sidebar" role="complementary" aria-label="Shopping Cart Sidebar" tabindex="-1">
+  <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart" tabindex="0">&times;</button>
+  <h2>Your Cart</h2>
+  <div id="cartItems"></div>
+  <div id="cart-summary">
+    <p><strong>Total:</strong> R <span id="cartTotal">0.00</span></p>
+    <button id="checkout-btn">Checkout</button>
+  </div>
+</div>
+<div class="cart-overlay" id="cartOverlay" tabindex="-1"></div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout | RAKOTEE</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Checkout</h1>
+  <div id="checkout-summary"></div>
+  <form id="checkout-form">
+    <input type="text" placeholder="Full Name" required>
+    <input type="email" placeholder="Email" required>
+    <input type="text" placeholder="Shipping Address" required>
+    <button type="submit">Place Order</button>
+  </form>
+  <script>
+    // Optionally, display cart summary here using localStorage
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    document.getElementById('checkout-summary').innerHTML =
+      cart.length
+        ? cart.map(item => `<div>${item.name} x${item.quantity} - R${(item.price * item.quantity).toFixed(2)}</div>`).join('')
+        : '<p>Your cart is empty.</p>';
+    document.getElementById('checkout-form').onsubmit = function(e) {
+      e.preventDefault();
+      alert('Order placed! Thank you for shopping with us.');
+      localStorage.removeItem('cart');
+      window.location.href = 'index.html';
+    };
+  </script>
+</body>
+</html>

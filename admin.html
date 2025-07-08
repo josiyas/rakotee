@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rakotee Admin</title>
+  <link rel="stylesheet" href="admin-style.css" />
+</head>
+<body>
+  <div class="admin-container">
+    <!-- LOGIN SCREEN -->
+    <div id="loginSection" class="card">
+      <h2>Admin Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email" required />
+      <input type="password" id="loginPassword" placeholder="Password" required />
+      <button id="loginBtn">Login</button>
+      <p id="loginError"></p>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="adminDashboard" class="hidden">
+      <div class="top-bar">
+        <h2>Rakotee Admin Panel</h2>
+        <button id="logoutBtn">Logout</button>
+      </div>
+
+      <!-- Upload Form -->
+      <form id="productForm" class="card">
+        <h3>Upload New Product</h3>
+        <input type="text" id="name" placeholder="Product Name" required />
+        <input type="number" id="price" placeholder="Product Price" required />
+        <input type="file" id="imageFile" accept="image/*" required />
+        <button type="submit">Upload</button>
+        <p id="uploadStatus"></p>
+      </form>
+
+      <!-- Product List -->
+      <div id="productList" class="product-list card">
+        <h3>Existing Products</h3>
+        <div id="productsContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Admin Script -->
+  <script type="module">
+    import { auth, db, storage } from './firebase.js';
+    import {
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+    import {
+      collection,
+      getDocs,
+      addDoc,
+      deleteDoc,
+      updateDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+    import {
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js";
+
+    const loginSection = document.getElementById("loginSection");
+    const adminDashboard = document.getElementById("adminDashboard");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const loginError = document.getElementById("loginError");
+
+    loginBtn.onclick = async () => {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        loginError.textContent = "Login failed: " + err.message;
+      }
+    };
+
+    logoutBtn.onclick = () => {
+      signOut(auth);
+    };
+
+    onAuthStateChanged(auth, user => {
+      if (user && user.email === "admin@rakotee.com") {
+        loginSection.style.display = "none";
+        adminDashboard.classList.remove("hidden");
+        loadProducts();
+      } else {
+        loginSection.style.display = "block";
+        adminDashboard.classList.add("hidden");
+      }
+    });
+
+    // Upload product
+    const form = document.getElementById("productForm");
+    const status = document.getElementById("uploadStatus");
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const price = parseFloat(document.getElementById("price").value);
+      const file = document.getElementById("imageFile").files[0];
+
+      try {
+        const storageRef = ref(storage, `products/${file.name}`);
+        await uploadBytes(storageRef, file);
+        const imageUrl = await getDownloadURL(storageRef);
+
+        await addDoc(collection(db, "products"), { name, price, image: imageUrl });
+        status.textContent = "✅ Product uploaded!";
+        form.reset();
+        loadProducts();
+      } catch (err) {
+        console.error(err);
+        status.textContent = "❌ Failed to upload product.";
+      }
+    };
+
+    // Load and show products
+    async function loadProducts() {
+      const container = document.getElementById("productsContainer");
+      container.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "products"));
+
+      querySnapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const productCard = document.createElement("div");
+        productCard.className = "product-card";
+        productCard.innerHTML = `
+          <img src="${data.image}" alt="${data.name}" />
+          <h4 contenteditable="true">${data.name}</h4>
+          <p contenteditable="true">R ${data.price}</p>
+          <button data-id="${docSnap.id}" class="updateBtn">Save</button>
+          <button data-id="${docSnap.id}" class="deleteBtn">Delete</button>
+        `;
+        container.appendChild(productCard);
+      });
+
+      // Edit & delete
+      container.querySelectorAll(".deleteBtn").forEach(btn => {
+        btn.onclick = async () => {
+          await deleteDoc(doc(db, "products", btn.dataset.id));
+          loadProducts();
+        };
+      });
+
+      container.querySelectorAll(".updateBtn").forEach(btn => {
+        btn.onclick = async () => {
+          const card = btn.parentElement;
+          const newName = card.querySelector("h4").textContent.trim();
+          const newPrice = parseFloat(card.querySelector("p").textContent.replace(/[^\d.]/g, ''));
+          await updateDoc(doc(db, "products", btn.dataset.id), {
+            name: newName,
+            price: newPrice
+          });
+          loadProducts();
+        };
+      });
+    }
+  </script>
+</body>
+</html>

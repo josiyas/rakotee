@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RAKOTEE Products</title>
+  <meta name="description" content="Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more. Fast shipping and great prices!" />
+  <meta name="keywords" content="sneakers, shoes, Nike, Adidas, buy online, South Africa, RAKOTEE, fashion, apparel" />
+  <meta name="author" content="RAKOTEE Store" />
+  <link rel="canonical" href="https://rakotee.com/products.html" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="RAKOTEE Products" />
+  <meta property="og:description" content="Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more." />
+  <meta property="og:image" content="https://rakotee.com/rakotee.png.png" />
+  <meta property="og:url" content="https://rakotee.com/products.html" />
+  <meta property="og:type" content="website" />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RAKOTEE Products" />
+  <meta name="twitter:description" content="Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more." />
+  <meta name="twitter:image" content="https://rakotee.com/rakotee.png.png" />
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Store",
+    "name": "RAKOTEE Store",
+    "url": "https://rakotee.com/products.html",
+    "logo": "https://rakotee.com/rakotee.png.png",
+    "description": "Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "ZA"
+    }
+  }
+  </script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation" aria-label="Main Navigation">
+    <img src="rakotee.png.png" alt="RAKOTEE Store Logo" class="products-logo-nav"/>
+    <a href="index.html" class="btn nav-btn">Home</a>
+    <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open Cart">
+      🛒 <span id="cartCount" class="cart-count">0</span>
+    </button>
+  </nav>
+
+  <!-- Products Section -->
+  <section class="products" aria-labelledby="products-heading">
+    <h2 id="products-heading">Our Products</h2>
+
+    <!-- Search and Sort Toolbar -->
+    <div class="products-toolbar">
+      <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products">
+      <select id="colorFilter" aria-label="Filter by color">
+        <option value="">All Colors</option>
+        <option value="White">White</option>
+        <option value="BLACK">Black</option>
+        <option value="Red">Red</option>
+        <option value="Blue">Blue</option>
+        <option value="iPhone">iPhones</option>
+        <!-- Add more colors as needed -->
+      </select>
+      <select id="sizeFilter" aria-label="Filter by size">
+        <option value="">All Sizes</option>
+        <option value="2UK">2UK</option>
+        <option value="3UK">3UK</option>
+        <option value="4UK">4UK</option>
+        <option value="5UK">5UK</option>
+        <option value="6UK">6UK</option>
+        <option value="7UK">7UK</option>
+        <option value="8UK">8UK</option>
+        <option value="9UK">9UK</option>
+        <option value="10UK">10UK</option>
+        <option value="11UK">11UK</option>
+        <option value="12UK">12UK</option>
+        <!-- Add more sizes as needed -->
+      </select>
+      <select id="sortSelect" aria-label="Sort products">
+        <option value="default">Sort By</option>
+        <option value="name">Name</option>
+        <option value="price">Price</option>
+      </select>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="loadingSpinner" style="display:none;text-align:center;margin:2rem 0;">
+      <div class="spinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #333; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin:auto;"></div>
+      <p>Loading products...</p>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+  </section>
+
+  <!-- Cart Sidebar -->
+<div id="cartSidebar" class="cart-sidebar">
+  <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart">&times;</button>
+  <h2>Your Cart</h2>
+  <div id="cartItems"></div>
+  <div id="cart-summary">
+    <p><strong>Total:</strong> R <span id="cartTotal">0.00</span></p>
+    <button id="checkout-btn">Checkout</button>
+  </div>
+</div>
+<div class="cart-overlay" id="cartOverlay"></div>
+  <script src="products.js" defer></script>
+  <script src="cart.js"></script>
+  <script src="lazyload.js" defer></script>
+
+
+ <!-- Fullscreen Modal -->
+<div id="productModal" class="modal fullscreen-modal">
+  <div class="modal-content">
+    <span class="close-modal" id="closeModalBtn">&times;</span>
+    <div class="modal-body">
+      <div class="modal-left">
+        <img id="modalImage" src="" alt="Product main image" />
+        <div id="modalThumbnails" class="thumbnails"></div>
+      </div>
+      <div class="modal-right">
+        <h3 id="modalName"></h3>
+        <p class="price">R <span id="modalPrice"></span></p>
+        <p id="modalDescription" class="product-description"></p>
+
+        <label for="sizeSelect">Size:</label>
+        <select id="sizeSelect"></select>
+
+        <label for="colorSelect">Color:</label>
+        <select id="colorSelect"></select>
+
+        <label for="quantityInput">Quantity:</label>
+        <input type="number" id="quantityInput" min="1" value="1" />
+        <div class="product-highlights">
+          <h4>Product Details</h4>
+          <ul>
+            <li>Durable rubber sole for long-lasting wear</li>
+            <li>Breathable mesh upper keeps feet cool</li>
+            <li>Cushioned insole for all-day comfort</li>
+            <li>True to size – fits as expected</li>
+            <li>Available in multiple colorways</li>
+          </ul>
+          <div class="modal-highlights">
+            <h4>Product Highlights</h4>
+            <ul id="modal-highlights-list"></ul>
+          </div>
+        </div>
+        <button id="addToCartBtn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+  document.querySelectorAll('.cart-count').forEach(el => {
+    el.innerText = count;
+  });
+}
+updateCartCount();
+
+// Cart Sidebar Open/Close Logic
+const cartIconBtn = document.getElementById('cartIconBtn');
+const cartSidebar = document.getElementById('cartSidebar');
+const closeCartBtn = document.getElementById('closeCartBtn');
+
+// Open cart sidebar
+cartIconBtn.addEventListener('click', () => {
+  renderCartSidebar();
+  cartSidebar.classList.add('open');
+  cartSidebar.style.display = 'block';
+});
+
+// Close cart sidebar
+closeCartBtn.addEventListener('click', () => {
+  cartSidebar.classList.remove('open');
+  cartSidebar.style.display = 'none';
+});
+
+// Optional: Hide sidebar on click outside (mobile UX)
+window.addEventListener('click', function(e) {
+  if (
+    cartSidebar.classList.contains('open') &&
+    !cartSidebar.contains(e.target) &&
+    e.target !== cartIconBtn
+  ) {
+    cartSidebar.classList.remove('open');
+    cartSidebar.style.display = 'none';
+  }
+});
+
+// Render cart sidebar with live products
+function renderCartSidebar() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartItemsDiv = document.getElementById('cartItems');
+  const cartTotalSpan = document.getElementById('cartTotal');
+  if (!cartItemsDiv || !cartTotalSpan) return;
+
+  if (cart.length === 0) {
+    cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+    cartTotalSpan.textContent = '0.00';
+    return;
+  }
+
+  let total = 0;
+  cartItemsDiv.innerHTML = '';
+  cart.forEach(item => {
+    total += (item.price * item.quantity);
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'cart-item';
+    itemDiv.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <img src="${item.image || 'https://placehold.co/50x50'}" alt="${item.name}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;">
+        <div>
+          <strong>${item.name}</strong><br>
+          <span>Size: ${item.size || '-'}</span><br>
+          <span>Color: ${item.color || '-'}</span><br>
+          <span>Qty: ${item.quantity}</span><br>
+          <span>R${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+      </div>
+    `;
+    cartItemsDiv.appendChild(itemDiv);
+  });
+  cartTotalSpan.textContent = total.toFixed(2);
+}
+
+// Call this after any cart update
+function updateCartCountAndSidebar() {
+  updateCartCount();
+  renderCartSidebar();
+}
+
+// Patch your addToCartBtn logic to call updateCartCountAndSidebar()
+// Example (adjust as needed for your codebase):
+// document.getElementById('addToCartBtn').onclick = function() { ...; updateCartCountAndSidebar(); }
+
+// Also, render cart sidebar on page load:
+renderCartSidebar();
+</script>
+
+  <!-- Inline Styling (temporary – move to style.css for production) -->
+  <style>
+   .product-card {
+      background: #565558; /* Match the page background */
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease;
+      text-align: center;
+    }
+    .product-card:hover {
+      transform: scale(1.02);
+    }
+    @media (max-width: 768px) {
+      .cart-sidebar.open {
+        width: 100vw;
+      }
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+
+<!-- Footer -->
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-column">
+      <h4>Info</h4>
+      <ul>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="returns.html">Returns</a></li>
+        <li><a href="terms.html">Terms & Conditions</a></li>
+        <li><a href="security.html">Security</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>RAKOTEE</h4>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>Mailing List</h4>
+      <form onsubmit="alert('Thank you for subscribing!'); return false;">
+        <input type="email" placeholder="Enter your email" required />
+        <button type="submit">Join</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer-payments">
+    <img src="images/visa.png" alt="Visa" />
+    <img src="images/paypal.png" alt="PayPal" />
+    <img src="images/zapper.png" alt="Zapper" />
+  </div>
+
+  <div class="footer-socials">
+    <a href="#" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>
+  </div>
+
+  <p class="footer-note">&copy; 2025 RAKOTEE. All rights reserved. KEEP MOVIN.</p>
+</footer>
+
+<script src="products.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Account | RAKOTEE</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --main-bg: #0d1321;
+      --main-fg: #fff;
+      --accent: #23283b;
+      --accent2: #181d2a;
+      --primary: #1e90ff;
+      --danger: #e74c3c;
+      --success: #1a7f37;
+      --border: #23283b;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    body {
+      background: var(--main-bg);
+      color: var(--main-fg);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .main-header, .nav-container {
+      background: var(--main-bg);
+      color: var(--main-fg);
+    }
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+    }
+    .logo a {
+      color: var(--main-fg);
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .nav-icons button, .nav-icons .cart-icon {
+      background: none;
+      border: none;
+      color: var(--main-fg);
+      font-size: 1.2rem;
+      margin-left: 1rem;
+      cursor: pointer;
+    }
+    .profile-pic-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #0d1321;
+      margin-bottom: 1rem;
+    }
+    .danger-btn {
+      background: #e74c3c;
+      color: #0d1321;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .account-main {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .account-sidebar {
+      min-width: 220px;
+      background: var(--accent2);
+      border-radius: 1rem;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: flex-start;
+      box-shadow: var(--shadow);
+      height: fit-content;
+    }
+    .account-sidebar button, .account-sidebar .danger-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      padding: 0.7rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      background: var(--accent);
+      color: var(--main-fg);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .account-sidebar button:hover, .account-sidebar .danger-btn:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+    .account-sidebar .danger-btn {
+      background: var(--danger);
+      color: #fff;
+    }
+    .account-content {
+      flex: 1;
+      background: var(--main-fg);
+      color: var(--main-bg);
+      border-radius: 1rem;
+      padding: 2rem;
+      min-width: 300px;
+      box-shadow: var(--shadow);
+    }
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    .profile-pic-large {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--main-bg);
+      background: #f3f3f3;
+    }
+    .profile-info h2 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2rem;
+      color: var(--main-bg);
+    }
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    .alert-success { background: #e6ffed; color: var(--success); }
+    .alert-error { background: #ffeaea; color: var(--danger); }
+    table#orderHistoryTable {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--main-fg);
+      color: var(--main-bg);
+      margin-bottom: 1rem;
+    }
+    table#orderHistoryTable th, table#orderHistoryTable td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.7rem;
+      text-align: left;
+    }
+    table#orderHistoryTable th {
+      background: #f3f3f3;
+      color: var(--main-bg);
+    }
+    table#orderHistoryTable tr:nth-child(even) {
+      background: #f8f8f8;
+    }
+    @media (max-width: 900px) {
+      .account-main { flex-direction: column; }
+      .account-sidebar { flex-direction: row; gap: 1rem; justify-content: center; }
+    }
+    @media (max-width: 600px) {
+      .account-content { padding: 1rem; }
+      .profile-section { flex-direction: column; gap: 1rem; }
+      .profile-pic-large { width: 80px; height: 80px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="main-header">
+    <nav class="nav-container">
+      <div class="logo">
+        <a href="index.html">RAKOTEE</a>
+      </div>
+      <div class="nav-icons">
+        <div class="account-dropdown" id="accountDropdown">
+          <!-- Account menu will be rendered by JS -->
+        </div>
+        <button class="icon-btn cart-icon" id="cartIconBtn" aria-label="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cartCount" class="cart-count">0</span>
+        </button>
+        <button class="icon-btn menu-toggle" aria-label="Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container account-container">
+    <div class="account-main">
+      <aside class="account-sidebar">
+        <button id="editProfileBtn"><i class="fas fa-user-edit"></i> Edit Profile</button>
+        <button id="changePasswordBtn"><i class="fas fa-key"></i> Change Password</button>
+        <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        <button id="deleteAccountBtn" class="danger-btn"><i class="fas fa-trash"></i> Delete Account</button>
+      </aside>
+      <section class="account-content">
+        <div class="profile-section">
+          <img id="profilePic" class="profile-pic-large" src="https://placehold.co/120x120?text=User" alt="Profile Picture" />
+          <div class="profile-info">
+            <h2 id="greeting">Welcome, <span id="accountUsername"></span>!</h2>
+            <p><strong>Email:</strong> <span id="accountEmail"></span></p>
+            <p><strong>Account Created:</strong> <span id="accountCreated"></span></p>
+            <p><strong>Last Login:</strong> <span id="lastLogin"></span></p>
+            <p><strong>Email Verified:</strong> <span id="emailVerified"></span> <button id="verifyEmailBtn" style="display:none; margin-left:1rem;">Verify Email</button></p>
+          </div>
+        </div>
+        <div id="alertBox" class="alert" style="display:none;"></div>
+        <h3>Order History</h3>
+        <table id="orderHistoryTable" style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr style="background:#f3f3f3;">
+              <th>Order ID</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Total</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="orderHistoryBody">
+            <tr><td colspan="5" style="text-align:center;">No orders yet.</td></tr>
+          </tbody>
+        </table>
+        <div id="orderPagination" style="margin-top:1rem; display:flex; gap:1rem;">
+          <button id="prevOrdersBtn">Previous</button>
+          <span id="orderPageInfo"></span>
+          <button id="nextOrdersBtn">Next</button>
+        </div>
+        <h3>Shipping Address</h3>
+        <div style="margin-bottom:1rem;"><span id="shippingAddress">Not set</span> <button id="editShippingBtn" style="margin-left:1rem;"><i class="fas fa-edit"></i> Edit</button></div>
+      </section>
+    </div>
+
+  <!-- Edit Profile Modal -->
+  <div id="editProfileModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;z-index:1000;">
+    <div style="background:#fff; color:#181d2a; padding:2rem; border-radius:1rem; max-width:400px; margin:auto;">
+      <h3>Edit Profile</h3>
+      <form id="editProfileForm">
+        <label for="editProfilePic">Profile Picture:</label><br/>
+        <input type="file" id="editProfilePic" accept="image/*" /><br/><br/>
+        <img id="editProfilePicPreview" class="profile-pic-large" src="https://placehold.co/120x120?text=User" alt="Preview" /><br/>
+        <label for="editUsername">Username:</label>
+        <input type="text" id="editUsername" name="editUsername" required /><br/><br/>
+        <label for="editEmail">Email:</label>
+        <input type="email" id="editEmail" name="editEmail" required /><br/><br/>
+        <button type="submit">Save</button>
+        <button type="button" id="closeEditProfile">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="changePasswordModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;z-index:1000;">
+    <div style="background:#fff; color:#181d2a; padding:2rem; border-radius:1rem; max-width:400px; margin:auto;">
+      <h3>Change Password</h3>
+      <form id="changePasswordForm">
+        <label for="currentPassword">Current Password:</label>
+        <input type="password" id="currentPassword" required /><br/><br/>
+        <label for="newPassword">New Password:</label>
+        <input type="password" id="newPassword" required minlength="6" /><br/><br/>
+        <button type="submit">Change Password</button>
+        <button type="button" id="closeChangePassword">Cancel</button>
+      </form>
+      <p id="changePasswordMsg" style="color:red; display:none;"></p>
+    </div>
+  </div>
+
+  <!-- Delete Account Modal -->
+  <div id="deleteAccountModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;z-index:1000;">
+    <div style="background:#fff; color:#181d2a; padding:2rem; border-radius:1rem; max-width:400px; margin:auto;">
+      <h3>Delete Account</h3>
+      <p>Are you sure you want to delete your account? This cannot be undone.</p>
+      <button id="confirmDeleteAccount" class="danger-btn">Yes, Delete</button>
+      <button id="cancelDeleteAccount">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Cart Sidebar -->
+  <div id="cartSidebar" class="cart-sidebar">
+    <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart">&times;</button>
+    <h2>Your Cart</h2>
+    <div id="cartItems"></div>
+    <div id="cart-summary">
+      <p><strong>Total:</strong> R <span id="cartTotal">0.00</span></p>
+      <button id="checkout-btn">Checkout</button>
+    </div>
+  </div>
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <script src="cart.js"></script>
+  <script>
+    // Redirect to login if not logged in
+    if (localStorage.getItem('rakotee_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  
+    // Step 1: Get token from localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+    let currentOrderPage = 1;
+    const ordersPerPage = 5;
+    let allOrders = [];
+
+    // Step 2: Fetch user info from backend
+    async function fetchUserProfile() {
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/account', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) throw new Error('Session expired');
+        const user = await res.json();
+
+        // Step 3: Update the UI with user info
+        document.getElementById('accountUsername').textContent = user.username || '';
+        document.getElementById('accountEmail').textContent = user.email || '';
+        document.getElementById('accountCreated').textContent = user.createdAt ? new Date(user.createdAt).toLocaleString() : 'Unknown';
+        document.getElementById('lastLogin').textContent = user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Unknown';
+        document.getElementById('shippingAddress').textContent = user.shippingAddress || 'Not set';
+        document.getElementById('emailVerified').textContent = user.emailVerified ? 'Yes' : 'No';
+        const verifyEmailBtn = document.getElementById('verifyEmailBtn');
+        if (!user.emailVerified) {
+          verifyEmailBtn.style.display = 'inline-block';
+        } else {
+          verifyEmailBtn.style.display = 'none';
+        }
+        if (user.profilePic) document.getElementById('profilePic').src = user.profilePic;
+
+        // Step 4: Cache for instant UX (optional)
+        localStorage.setItem('user_profile', JSON.stringify(user));
+
+        // Render paginated order history
+        allOrders = user.orderHistory || [];
+        currentOrderPage = 1;
+        renderOrderHistory();
+      } catch (err) {
+        // fallback to cache or force re-login
+        const cached = localStorage.getItem('user_profile');
+        if (cached) {
+          const user = JSON.parse(cached);
+          document.getElementById('accountUsername').textContent = user.username || '';
+          document.getElementById('accountEmail').textContent = user.email || '';
+          document.getElementById('accountCreated').textContent = user.createdAt ? new Date(user.createdAt).toLocaleString() : 'Unknown';
+          document.getElementById('lastLogin').textContent = user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Unknown';
+          document.getElementById('shippingAddress').textContent = user.shippingAddress || 'Not set';
+          if (user.profilePic) document.getElementById('profilePic').src = user.profilePic;
+          allOrders = user.orderHistory || [];
+          currentOrderPage = 1;
+          renderOrderHistory();
+        } else {
+          window.location.href = 'login.html';
+        }
+      }
+    }
+    fetchUserProfile();
+
+    // Render paginated order history
+    function renderOrderHistory() {
+      const orderHistoryBody = document.getElementById('orderHistoryBody');
+      orderHistoryBody.innerHTML = '';
+      const start = (currentOrderPage - 1) * ordersPerPage;
+      const end = start + ordersPerPage;
+      const pageOrders = allOrders.slice(start, end);
+
+      if (pageOrders.length === 0) {
+        orderHistoryBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No orders yet.</td></tr>';
+      } else {
+        pageOrders.forEach(order => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${order.id}</td>
+            <td>${new Date(order.date).toLocaleString()}</td>
+            <td>${order.status}</td>
+            <td>R${order.total.toFixed(2)}</td>
+            <td><button class="details-btn" onclick="showOrderDetails(${order.id})">View Details</button></td>
+          `;
+          orderHistoryBody.appendChild(row);
+        });
+      }
+
+      // Update pagination info
+      const pageInfo = document.getElementById('orderPageInfo');
+      const totalPages = Math.ceil(allOrders.length / ordersPerPage) || 1;
+      pageInfo.textContent = `Page ${currentOrderPage} of ${totalPages}`;
+
+      // Enable/disable buttons
+      document.getElementById('prevOrdersBtn').disabled = currentOrderPage === 1;
+      document.getElementById('nextOrdersBtn').disabled = currentOrderPage === totalPages;
+    }
+
+    // Pagination button event listeners
+    document.getElementById('prevOrdersBtn').onclick = function() {
+      if (currentOrderPage > 1) {
+        currentOrderPage--;
+        renderOrderHistory();
+      }
+    };
+    document.getElementById('nextOrdersBtn').onclick = function() {
+      const totalPages = Math.ceil(allOrders.length / ordersPerPage) || 1;
+      if (currentOrderPage < totalPages) {
+        currentOrderPage++;
+        renderOrderHistory();
+      }
+    };
+
+    // Edit Profile Modal Logic
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const editProfileModal = document.getElementById('editProfileModal');
+    const closeEditProfile = document.getElementById('closeEditProfile');
+    const editProfileForm = document.getElementById('editProfileForm');
+    const editProfilePic = document.getElementById('editProfilePic');
+    const editProfilePicPreview = document.getElementById('editProfilePicPreview');
+
+    editProfileBtn.onclick = () => {
+      const user = JSON.parse(localStorage.getItem('user_profile') || '{}');
+      document.getElementById('editUsername').value = user.username || '';
+      document.getElementById('editEmail').value = user.email || '';
+      editProfilePicPreview.src = user.profilePic || 'https://placehold.co/120x120?text=User';
+      editProfileModal.style.display = 'flex';
+    };
+    closeEditProfile.onclick = () => {
+      editProfileModal.style.display = 'none';
+    };
+    editProfilePic.onchange = function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          editProfilePicPreview.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    // Save profile changes to backend
+    document.getElementById('editProfileForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('editUsername').value.trim();
+      const email = document.getElementById('editEmail').value.trim();
+      const profilePicInput = document.getElementById('editProfilePic');
+      let profilePic = undefined;
+      if (profilePicInput.files[0]) {
+        // Convert image to base64 for demo (in production, use file upload API)
+        const reader = new FileReader();
+        reader.onload = async function(evt) {
+          profilePic = evt.target.result;
+          await updateProfile(username, email, profilePic);
+        };
+        reader.readAsDataURL(profilePicInput.files[0]);
+        return;
+      }
+      await updateProfile(username, email, undefined);
+    };
+    async function updateProfile(username, email, profilePic) {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('http://localhost:5000/api/auth/account', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ username, email, profilePic })
+        });
+        if (!res.ok) throw new Error('Failed to update profile');
+        showAlert('Profile updated!');
+        document.getElementById('editProfileModal').style.display = 'none';
+        fetchUserProfile();
+      } catch (err) {
+        showAlert('Could not update profile', 'error');
+      }
+    }
+
+    // Change Password Modal Logic
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    const changePasswordModal = document.getElementById('changePasswordModal');
+    const closeChangePassword = document.getElementById('closeChangePassword');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    const changePasswordMsg = document.getElementById('changePasswordMsg');
+
+    changePasswordBtn.onclick = () => {
+      changePasswordModal.style.display = 'flex';
+      changePasswordMsg.style.display = 'none';
+      changePasswordForm.reset();
+    };
+    closeChangePassword.onclick = () => {
+      changePasswordModal.style.display = 'none';
+    };
+
+    // Change password
+    document.getElementById('changePasswordForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('http://localhost:5000/api/auth/account/password', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ currentPassword, newPassword })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Failed to update password');
+        showAlert('Password updated!');
+        document.getElementById('changePasswordModal').style.display = 'none';
+      } catch (err) {
+        showAlert(err.message || 'Could not update password', 'error');
+      }
+    };
+
+    // Delete Account Modal Logic
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    const deleteAccountModal = document.getElementById('deleteAccountModal');
+    const confirmDeleteAccount = document.getElementById('confirmDeleteAccount');
+    const cancelDeleteAccount = document.getElementById('cancelDeleteAccount');
+
+    deleteAccountBtn.onclick = () => {
+      deleteAccountModal.style.display = 'flex';
+    };
+    cancelDeleteAccount.onclick = () => {
+      deleteAccountModal.style.display = 'none';
+    };
+    confirmDeleteAccount.onclick = async () => {
+      // Delete account (calls backend)
+      document.getElementById('deleteAccountModal').style.display = 'none';
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('http://localhost:5000/api/auth/account', {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) throw new Error('Failed to delete account');
+        showAlert('Account deleted!');
+        setTimeout(() => { window.location.href = 'register.html'; }, 2000);
+      } catch (err) {
+        showAlert('Could not delete account', 'error');
+      }
+    };
+
+    // Logout button
+    document.getElementById('logoutBtn').onclick = function() {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    };
+    const verifyEmailBtn = document.getElementById('verifyEmailBtn');
+    verifyEmailBtn.onclick = async function() {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert('You are not logged in. Please log in again.');
+          return;
+        }
+        const res = await fetch('http://localhost:5000/api/auth/account/send-verification', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById('emailVerified').textContent = 'Yes';
+          verifyEmailBtn.style.display = 'none';
+          alert('Verification email sent!');
+        } else {
+          alert(data.message || 'Verification failed.');
+        }
+      } catch (err) {
+        alert('Server error: ' + (err.message || err));
+      }
+    };
+
+    function showOrderDetails(orderId) {
+      const order = allOrders.find(o => o.id === orderId);
+      if (!order) return;
+      const modal = document.getElementById('orderDetailsModal');
+      const content = document.getElementById('orderDetailsContent');
+      content.innerHTML = `
+        <p><strong>Order ID:</strong> ${order.id}</p>
+        <p><strong>Date:</strong> ${new Date(order.date).toLocaleString()}</p>
+        <p><strong>Status:</strong> ${order.status}</p>
+        <p><strong>Total:</strong> R${order.total.toFixed(2)}</p>
+        <!-- Add more fields as needed -->
+      `;
+      modal.style.display = 'flex';
+    }
+
+    document.getElementById('closeOrderDetails').onclick = function() {
+      document.getElementById('orderDetailsModal').style.display = 'none';
+    };
+
+    // Account page interactivity for modals, profile, and order table
+    // Show Edit Profile Modal
+    document.getElementById('editProfileBtn').onclick = function() {
+      document.getElementById('editProfileModal').style.display = 'flex';
+    };
+    document.getElementById('closeEditProfile').onclick = function() {
+      document.getElementById('editProfileModal').style.display = 'none';
+    };
+    // Show Change Password Modal
+    document.getElementById('changePasswordBtn').onclick = function() {
+      document.getElementById('changePasswordModal').style.display = 'flex';
+    };
+    document.getElementById('closeChangePassword').onclick = function() {
+      document.getElementById('changePasswordModal').style.display = 'none';
+    };
+    // Show Delete Account Modal
+    document.getElementById('deleteAccountBtn').onclick = function() {
+      document.getElementById('deleteAccountModal').style.display = 'flex';
+    };
+    document.getElementById('cancelDeleteAccount').onclick = function() {
+      document.getElementById('deleteAccountModal').style.display = 'none';
+    };
+    // Edit Shipping Address (simple prompt for demo)
+    document.getElementById('editShippingBtn').onclick = function() {
+      const current = document.getElementById('shippingAddress').textContent;
+      const updated = prompt('Enter new shipping address:', current);
+      if (updated && updated !== current) {
+        document.getElementById('shippingAddress').textContent = updated;
+        showAlert('Shipping address updated!');
+      }
+    };
+    // Show alert
+    function showAlert(message, type = 'success') {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.textContent = message;
+      alertBox.className = 'alert ' + (type === 'error' ? 'alert-error' : 'alert-success');
+      alertBox.style.display = 'block';
+      setTimeout(() => { alertBox.style.display = 'none'; }, 4000);
+    }
+
+    // Profile picture upload preview
+    document.getElementById('editProfilePic').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          document.getElementById('editProfilePicPreview').src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Modal interactivity for sidebar actions
+    document.getElementById('editProfileBtn').onclick = function() {
+      document.getElementById('editProfileModal').style.display = 'flex';
+    };
+    document.getElementById('closeEditProfile').onclick = function() {
+      document.getElementById('editProfileModal').style.display = 'none';
+    };
+    document.getElementById('changePasswordBtn').onclick = function() {
+      document.getElementById('changePasswordModal').style.display = 'flex';
+    };
+    document.getElementById('closeChangePassword').onclick = function() {
+      document.getElementById('changePasswordModal').style.display = 'none';
+    };
+    document.getElementById('deleteAccountBtn').onclick = function() {
+      document.getElementById('deleteAccountModal').style.display = 'flex';
+    };
+    document.getElementById('cancelDeleteAccount').onclick = function() {
+      document.getElementById('deleteAccountModal').style.display = 'none';
+    };
+    document.getElementById('editShippingBtn').onclick = function() {
+      const current = document.getElementById('shippingAddress').textContent;
+      const updated = prompt('Enter new shipping address:', current);
+      if (updated && updated !== current) {
+        document.getElementById('shippingAddress').textContent = updated;
+        showAlert('Shipping address updated!');
+      }
+    };
+
+    // Attach sidebar button actions for best UX
+  </script>
+<!-- ...rest of your HTML... -->
+  
+<!-- Order Details Modal -->
+<div id="orderDetailsModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
+  <div style="background:#0d1321; padding:2rem; border-radius:1rem; max-width:400px; margin:auto; color:#fff;">
+    <h3>Order Details</h3>
+    <div id="orderDetailsContent"></div>
+    <button id="closeOrderDetails">Close</button>
+  </div>
+</div>
+</body>
+</html>

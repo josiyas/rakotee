@@ -1,0 +1,5 @@
+You can safely delete the following files if you do not use them:
+- .vscode/firebase-config.js (empty, not needed for MongoDB)
+- connect.js (if not used in your main backend)
+
+Keep your project clean by removing unused or unnecessary files regularly.
