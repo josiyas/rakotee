@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log*
+.env
+.env.*
+.git
+.vscode
+.DS_Store
+dist
+build
+logs
+*.log
+images/
+products/
+README.md

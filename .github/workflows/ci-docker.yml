@@ -1,0 +1,46 @@
+name: CI - Docker build & smoke test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-smoke:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: --health-cmd "mongosh --eval 'db.adminCommand({ ping: 1 })'" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU (for multi-arch)
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image (final/distroless)
+        run: |
+          docker build --target final -t rakotee-backend:ci ./rakotee-backend
+
+      - name: Start container
+        run: |
+          docker run -d --name rakotee-ci -e MONGO_URI="mongodb://mongodb:27017/rakotee_test" -e JWT_SECRET="test-secret" -e PORT=5000 -p 5000:5000 rakotee-backend:ci
+
+      - name: Wait and run smoke test
+        run: |
+          chmod +x ./rakotee-backend/ci/smoke-test.sh
+          ./rakotee-backend/ci/smoke-test.sh http://localhost:5000 60
+
+      - name: Teardown
+        if: always()
+        run: |
+          docker logs rakotee-ci || true
+          docker rm -f rakotee-ci || true
