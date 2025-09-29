@@ -2,7 +2,7 @@ const products = [
   {
   id: 1,
   name: "Nike Air Force 1 Low(White)",
-  price: 1300.00,
+  price: 1200.00,
   images: [
     "products/airforcew1.webp",
     "products/airforcew2.jpeg",
@@ -25,7 +25,7 @@ const products = [
   {
     id: 2,
     name: "ADIDAS-CAMPUS(Black)",
-    price: 1900.00,
+    price: 1700.00,
     images: [
       "products/adidasblaq cam1.jpg",
       "products/adidasblaq cam2.jpg",
@@ -47,7 +47,7 @@ const products = [
   {
   id: 3,
   name: "ADIDAS-CAMPUS(Blue)",
-  price: 1300.00,
+  price: 1700.00,
   images: [
     "products/adidasblue cam1.jpg",
     "products/adidasblue cam2.jpg",
@@ -67,7 +67,7 @@ const products = [
   {
     id: 4,
     name: "ADIDAS-CAMPUS(Grey)",
-    price: 1900.00,
+    price: 1700.00,
     images: [
       "products/adidasgrey cam1.jpg",
       "products/adidasgrey cam2.jpg",
@@ -86,7 +86,7 @@ const products = [
   },{
   id: 5,
   name: "ADIDAS-CAMPUS(Red)",
-  price: 1300.00,
+  price: 1700.00,
   images: [
     "products/adidasred cam1.jpg",
     "products/adidasred cam2.jpg",
@@ -105,7 +105,7 @@ const products = [
   {
     id: 6,
     name: "AIRFORCE-1 ROPE-LACE(Black)",
-    price: 1900.00,
+    price: 1400.00,
     images: [
       "products/airRblaq cam1.jpg",
       "products/airRblaq cam2.jpg",
@@ -125,7 +125,7 @@ const products = [
   },{
   id: 7,
   name: "AIRFORCE-1 ROPE-LACE(Pink)",
-  price: 1300.00,
+  price: 1400.00,
   images: [
     "products/airRpink cam1.jpg",
     "products/airRpink cam2.jpg",
@@ -145,7 +145,7 @@ const products = [
   {
     id: 8,
     name: "AIRFORCE-1 ROPE-LACE(White)",
-    price: 1900.00,
+    price: 1400.00,
     images: [
     "products/airRwhite cam1.jpg",
     "products/airRwhite cam2.jpg",
@@ -164,7 +164,7 @@ const products = [
   },{
   id: 9,
   name: "Nike Air Force 1 Low(Black)",
-  price: 1300.00,
+  price: 1200.00,
   images: [
     "products/black air1.jpg",
     "products/black air2.jpg",
@@ -184,7 +184,7 @@ const products = [
   {
     id: 10,
     name: "Jordan-4 RETRO(Black)",
-    price: 1900.00,
+    price: 2000.00,
     images: [
       "products/black jordan1.jpg",
       "products/black jordan2.jpg",
@@ -204,7 +204,7 @@ const products = [
   },{
   id: 11,
   name: "Jordan-4 RETRO(Black & RED)",
-  price: 1300.00,
+  price: 2000.00,
   images: [
     "products/blaqnwhi jordan1.jpg",
     "products/blaqnwhi jordan2.jpg",
@@ -224,7 +224,7 @@ const products = [
   {
     id: 12,
     name: "Dunk-low(Black)",
-    price: 1900.00,
+    price: 1200.00,
     images: [
       "products/blq dunk1.jpg",
       "products/blq dunk1.jpg",
@@ -243,7 +243,7 @@ const products = [
   },{
   id: 13,
   name: "Dunk-Low(blue)",
-  price: 1300.00,
+  price: 1200.00,
   images: [
     "products/blue dunk1.jpg",
     "products/blue dunk3.jpg",
@@ -263,7 +263,7 @@ const products = [
   {
     id: 14,
     name: "Jordan-4 RETRO(Blue & White)",
-    price: 1900.00,
+    price: 2000.00,
     images: [
       "products/bluenwhi jordan1.jpg",
       "products/bluenwhi jordan3.jpg",
@@ -281,7 +281,7 @@ const products = [
   },{
   id: 15,
   name: "Dunk-Low(grey)",
-  price: 1300.00,
+  price: 1200.00,
   images: [
     "products/dunklowg1.webp",
     "products/dunklowg2.webp",
@@ -301,7 +301,7 @@ const products = [
   {
     id: 16,
     name: "Jordan-4 RETRO(Grey)",
-    price: 1900.00,
+    price: 2000.00,
     images: [
       "products/grey.webp",
       "products/grey (2).webp",
@@ -320,7 +320,7 @@ const products = [
   },{
   id: 17,
   name: "Jordan-4 RETRO(white)",
-  price: 1300.00,
+  price: 2000.00,
   images: [
     "products/jordan4 white.webp",
     "products/jordan4 white (2).webp",
@@ -340,7 +340,7 @@ const products = [
   {
     id: 18,
     name: "Dunk-Low(Orange)",
-    price: 1900.00,
+    price: 2000.00,
     images: [
       "products/orange dunk1.jpg",
       "products/orange dunk2.jpg",
@@ -358,8 +358,8 @@ const products = [
   ]
   },{
   id: 19,
-  name: "Puna-Campus(Black)",
-  price: 1300.00,
+  name: "Puma-Campus(Black)",
+  price: 1700.00,
   images: [
     "products/pumablaq cam1.jpg",
     "products/pumablaq cam2.jpg",
@@ -379,7 +379,7 @@ const products = [
   {
     id: 20,
     name: "Puma-Campus(blue)",
-    price: 1900.00,
+    price: 1700.00,
     images: [
       "products/pumablue cam1.jpg",
       "products/pumablue cam2.jpg",
@@ -398,7 +398,7 @@ const products = [
   },{
   id: 21,
   name: "Puma-Campus(Green)",
-  price: 1300.00,
+  price: 1700.00,
   images: [
     "products/pumagreen cam1.jpg",
     "products/pumagreen cam2.jpg",
@@ -417,7 +417,7 @@ const products = [
   {
     id: 22,
     name: "Puma-Campus(Red)",
-    price: 1900.00,
+    price: 1700.00,
     images: [
       "products/pumared cam1.jpg",
       "products/pumared cam2.jpg",
@@ -436,7 +436,7 @@ const products = [
   },{
   id: 23,
   name: "Dunk-Low(Purple)",
-  price: 1300.00,
+  price: 1200.00,
   images: [
     "products/purple dunk1.jpg",
     "products/purple dunk2.jpg",
@@ -456,7 +456,7 @@ const products = [
   {
     id: 24,
     name: "Jordan-4 RETRO(white n Red)",
-    price: 1900.00,
+    price: 2000.00,
     images: [
       "products/redw.webp",
       "products/redw (2).webp",
@@ -475,7 +475,7 @@ const products = [
   },{
   id: 25,
   name: "NIke Shox TL",
-  price: 1300.00,
+  price: 2900.00,
   images: [
     "products/shoxtl blaq1.jpg",
     "products/shoxtl blaq2.jpg",
@@ -496,7 +496,7 @@ const products = [
   {
     id: 26,
     name: "Vans-Campus(Black)",
-    price: 1900.00,
+    price: 1800.00,
     images: [
       "products/vansblaq cam1.jpg",
       "products/vansblaq cam2.jpg",
@@ -515,7 +515,7 @@ const products = [
   },{
   id: 27,
   name: "Nike-Shox TL(white)",
-  price: 1300.00,
+  price: 2900.00,
   images: [
     "products/shoxtl white1.jpg",
     "products/shoxtl white2.jpg",
@@ -536,7 +536,7 @@ const products = [
   {
     id: 28,
     name: "Jordan-4 RETRO(white)",
-    price: 1900.00,
+    price: 2000.00,
     images: [
       "products/white jordan1.jpg",
       "products/white jordan2.jpg",
@@ -554,7 +554,7 @@ const products = [
   },{
   id: 29,
   name: "Iphone XR(White)",
-  price: 1300.00,
+  price: 4500.00,
   images: [
     "products/Xr1.jpg",
     "products/Xr2.jpg",
@@ -575,7 +575,7 @@ const products = [
   {
     id: 30,
     name: "Iphone 11 Pro",
-    price: 1900.00,
+    price: 7000.00,
     images: [
       "products/11 pro1.png",
       "products/11 pro2.png",
@@ -596,7 +596,7 @@ const products = [
   },{
   id: 31,
   name: "Iphone-12 PRO Max",
-  price: 1300.00,
+  price: 10000.00,
   images: [
     "products/12 pro max1.png",
     "products/12 pro max2.png",
@@ -617,7 +617,7 @@ const products = [
   {
     id: 32,
     name: "Iphone-12 pro",
-    price: 1900.00,
+    price: 9500.00,
     images: [
       "products/12 pro1.png",
       "products/12 pro2.png",
@@ -638,7 +638,7 @@ const products = [
   },{
   id: 33,
   name: "Iphone-13 pro",
-  price: 1300.00,
+  price: 13000.00,
   images: [
     "products/13 pro1.png",
     "products/13 pro2.png",
@@ -659,7 +659,7 @@ const products = [
   {
     id: 34,
     name: "Iphone-11",
-    price: 1900.00,
+    price: 5500.00,
     images: [
       "products/111.jpg",
       "products/112.jpg",
@@ -679,7 +679,7 @@ const products = [
   },{
   id: 35,
   name: "Iphone-12",
-  price: 1300.00,
+  price: 8000.00,
   images: [
     "products/121.png",
     "products/122.png",
@@ -699,7 +699,7 @@ const products = [
   {
     id: 36,
     name: "Iphone-13",
-    price: 1900.00,
+    price: 13000.00,
     images: [
       "products/131.png",
       "products/132.png",
@@ -716,7 +716,46 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 1,
+  id: 37,
+  name: "Nike Air Force 1 Low",
+  price: 1200.00,
+  images: [
+    "products/airforcew1.webp",
+    "products/airforcew2.jpeg",
+    "products/airforcew3.jpeg",
+    "products/airforcew4.jpeg"
+  ],
+  sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
+  colors: ["White"],
+  description: "A cozy and stylish hoodie made from premium materials, perfect for every season.",
+  highlights: [
+    "Premium leather upper",
+    "Air-cushioned sole for comfort",
+    "Classic Nike silhouette",
+    "Durable and long-lasting"
+  ]
+  },
+  {
+    id: 38,
+    name: "Streetwear Tee",
+    price: 1900.00,
+    images: [
+      "products/bluew.webp",
+      "products/bluew (2).webp",
+      "products/bluew (3).webp",
+      "products/bluew (4).webp"
+    ],
+    sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
+    colors: ["White n blue"],
+    description: "",
+    highlights: [
+    "Premium leather upper",
+    "Air-cushioned sole for comfort",
+    "Classic Nike silhouette",
+    "Durable and long-lasting"
+  ]
+  },{
+  id: 39,
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
@@ -736,7 +775,7 @@ const products = [
   ]
   },
   {
-    id: 2,
+    id: 40,
     name: "Streetwear Tee",
     price: 1900.00,
     images: [
@@ -754,8 +793,9 @@ const products = [
     "Classic Nike silhouette",
     "Durable and long-lasting"
   ]
-  },{
-  id: 1,
+  },
+  {
+  id: 41,
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
@@ -775,7 +815,7 @@ const products = [
   ]
   },
   {
-    id: 2,
+    id: 42,
     name: "Streetwear Tee",
     price: 1900.00,
     images: [
@@ -794,46 +834,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 1,
-  name: "Nike Air Force 1 Low",
-  price: 1300.00,
-  images: [
-    "products/airforcew1.webp",
-    "products/airforcew2.jpeg",
-    "products/airforcew3.jpeg",
-    "products/airforcew4.jpeg"
-  ],
-  sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
-  colors: ["White"],
-  description: "A cozy and stylish hoodie made from premium materials, perfect for every season.",
-  highlights: [
-    "Premium leather upper",
-    "Air-cushioned sole for comfort",
-    "Classic Nike silhouette",
-    "Durable and long-lasting"
-  ]
-  },
-  {
-    id: 2,
-    name: "Streetwear Tee",
-    price: 1900.00,
-    images: [
-      "products/bluew.webp",
-      "products/bluew (2).webp",
-      "products/bluew (3).webp",
-      "products/bluew (4).webp"
-    ],
-    sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
-    colors: ["White n blue"],
-    description: "",
-    highlights: [
-    "Premium leather upper",
-    "Air-cushioned sole for comfort",
-    "Classic Nike silhouette",
-    "Durable and long-lasting"
-  ]
-  },{
-  id: 1,
+  id: 43,
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
@@ -852,7 +853,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 2,
+  id: 44,
   name: "Streetwear Tee",
   price: 1900.00,
   images: [
@@ -871,7 +872,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 1,
+  id: 45,
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
@@ -890,7 +891,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 2,
+  id: 46,
   name: "Streetwear Tee",
   price: 1900.00,
   images: [
@@ -909,7 +910,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 1,
+  id: 47,
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
@@ -928,7 +929,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 2,
+  id: 48,
   name: "Streetwear Tee",
   price: 1900.00,
   images: [
@@ -947,7 +948,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 1,
+  id: 49,
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
@@ -966,7 +967,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 2,
+  id: 50,
   name: "Streetwear Tee",
   price: 1900.00,
   images: [
@@ -985,7 +986,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 1,
+  id: 51,
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
@@ -1004,7 +1005,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 2,
+  id: 52,
   name: "Streetwear Tee",
   price: 1900.00,
   images: [
@@ -1023,7 +1024,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 1,
+  id: 53,
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
@@ -1042,7 +1043,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 2,
+  id: 54,
   name: "Streetwear Tee",
   price: 1900.00,
   images: [
@@ -1061,7 +1062,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 1,
+  id: 55,
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
@@ -1080,7 +1081,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 2,
+  id: 56,
   name: "Streetwear Tee",
   price: 1900.00,
   images: [
@@ -1099,7 +1100,7 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 1,
+  id: 57,
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
@@ -1330,6 +1331,39 @@ document.addEventListener('click', e => {
   }
 });
 
+
+// Helper: Get query string parameter
+function getQueryParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+
+// Category mapping (add more as needed)
+function getCategoryProducts(category) {
+  if (!category) return products;
+  const cat = category.toLowerCase();
+  // Footwear: match by keywords in name
+  if (cat === 'footwear') {
+    return products.filter(p =>
+      /nike|adidas|jordan|dunk|puma|vans|shox/i.test(p.name)
+    );
+  }
+  // Phones: match by keywords in name
+  if (cat === 'phones' || cat === 'phone') {
+    return products.filter(p =>
+      /iphone|samsung|huawei|xr|pro|max/i.test(p.name)
+    );
+  }
+  // Sale: match by 'sale' in name (case-insensitive)
+  if (cat === 'sale') {
+    return products.filter(p => /sale/i.test(p.name));
+  }
+  // Add more categories as needed
+  return products;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-  displayProducts(products);
+  const category = getQueryParam('category');
+  const filtered = getCategoryProducts(category);
+  displayProducts(filtered);
 });

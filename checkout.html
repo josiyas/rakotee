@@ -4,29 +4,247 @@
   <meta charset="UTF-8">
   <title>Checkout | RAKOTEE</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #181d2a;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .checkout-container {
+      background: #23283b;
+      border-radius: 1rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      padding: 2rem 2.5rem;
+      margin-top: 2rem;
+      max-width: 420px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .rakotee-logo {
+      width: 120px;
+      margin: 2rem auto 1rem auto;
+      display: block;
+    }
+    h1, h2, h3 {
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    input, button {
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      margin-bottom: 1rem;
+      padding: 0.7rem 1rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    input {
+      background: #181d2a;
+      color: #fff;
+      border: 1px solid #23283b;
+    }
+    input:focus {
+      outline: 2px solid #1e90ff;
+    }
+    .payment-btn {
+      width: 100%;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .payment-btn.payfast { background: #ff9900; color: #fff; }
+    .payment-btn.payfast:hover { background: #e68a00; }
+    .payment-btn.yoco { background: #1a7f37; color: #fff; }
+    .payment-btn.yoco:hover { background: #145c27; }
+    .payment-btn.peach { background: #23283b; color: #fff; border: 1px solid #fff; }
+    .payment-btn.peach:hover { background: #181d2a; }
+    .payment-btn.paypal { background: #0070ba; color: #fff; }
+    .payment-btn.paypal:hover { background: #005c99; }
+    #checkout-summary {
+      background: #181d2a;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+      color: #fff;
+      font-size: 1rem;
+    }
+    #order-success {
+      color: #1a7f37;
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: center;
+    }
+    #form-error {
+      color: #e74c3c;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      .checkout-container {
+        padding: 1rem;
+        max-width: 98vw;
+      }
+      .rakotee-logo {
+        width: 80px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Checkout</h1>
-  <div id="checkout-summary"></div>
-  <form id="checkout-form">
-    <input type="text" placeholder="Full Name" required>
-    <input type="email" placeholder="Email" required>
-    <input type="text" placeholder="Shipping Address" required>
-    <button type="submit">Place Order</button>
-  </form>
+  <img src="rakotee.png.png" alt="Rakotee Logo" class="rakotee-logo" />
+  <div class="checkout-container">
+    <h1>Checkout</h1>
+    <div id="checkout-summary"></div>
+    <form id="checkout-form">
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="text" id="address" placeholder="Shipping Address" required>
+      <div id="form-error" style="color:red;margin-top:10px;"></div>
+    </form>
+    <div id="order-success" style="display:none;color:green;margin-top:20px;font-weight:bold;"></div>
+    <h2>Choose Payment Method</h2>
+    <div id="payment-options" style="margin-bottom:2rem;width:100%;">
+      <form id="payfastForm" action="https://www.payfast.co.za/eng/process" method="post" target="_blank" style="display:block;margin-bottom:1rem;">
+        <input type="hidden" name="merchant_id" value="10000100" />
+        <input type="hidden" name="merchant_key" value="46f0cd694581a" />
+        <input type="hidden" name="amount" id="payfast-amount" value="" />
+        <input type="hidden" name="item_name" value="Rakotee Order" />
+        <input type="hidden" name="return_url" id="payfast-return" value="http://localhost:5000/api/order/payfast-success" />
+        <button type="submit" class="payment-btn payfast">PayFast</button>
+      </form>
+      <button id="yocoPayBtn" class="payment-btn yoco">Yoco</button>
+      <button id="peachPayBtn" class="payment-btn peach">Peach Payments</button>
+      <form id="paypalForm" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="display:block;margin-bottom:1rem;">
+        <input type="hidden" name="cmd" value="_xclick" />
+        <input type="hidden" name="business" value="your-paypal-email@example.com" />
+        <input type="hidden" name="item_name" value="Rakotee Order" />
+        <input type="hidden" name="amount" id="paypal-amount" value="" />
+        <input type="hidden" name="currency_code" value="ZAR" />
+        <input type="hidden" name="return" id="paypal-return" value="http://localhost:5000/api/order/paypal-success" />
+        <button type="submit" class="payment-btn paypal">PayPal</button>
+      </form>
+    </div>
+  </div>
   <script>
-    // Optionally, display cart summary here using localStorage
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     document.getElementById('checkout-summary').innerHTML =
       cart.length
-        ? cart.map(item => `<div>${item.name} x${item.quantity} - R${(item.price * item.quantity).toFixed(2)}</div>`).join('')
+        ? `<h2>Order Summary</h2>${cart.map(item => `<div>${item.name} x${item.quantity} - R${(item.price * item.quantity).toFixed(2)}</div>`).join('')}<hr><div><strong>Total: R${total.toFixed(2)}</strong></div>`
         : '<p>Your cart is empty.</p>';
-    document.getElementById('checkout-form').onsubmit = function(e) {
+
+    document.getElementById('checkout-form').onsubmit = async function(e) {
       e.preventDefault();
-      alert('Order placed! Thank you for shopping with us.');
-      localStorage.removeItem('cart');
-      window.location.href = 'index.html';
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const errorDiv = document.getElementById('form-error');
+      errorDiv.textContent = '';
+      // Simple validation
+      if (!name || !email || !address) {
+        errorDiv.textContent = 'Please fill in all fields.';
+        return;
+      }
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        errorDiv.textContent = 'Please enter a valid email address.';
+        return;
+      }
+      if (address.length < 5) {
+        errorDiv.textContent = 'Please enter a valid shipping address.';
+        return;
+      }
+      if (!cart.length) {
+        errorDiv.textContent = 'Your cart is empty.';
+        return;
+      }
+      // Send order to backend
+      try {
+        const response = await fetch('http://localhost:5000/api/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, address, cart })
+        });
+        if (!response.ok) throw new Error('Order failed.');
+        document.getElementById('order-success').textContent = 'Order placed! Thank you for shopping with us.';
+        document.getElementById('order-success').style.display = 'block';
+        localStorage.removeItem('cart');
+        setTimeout(() => { window.location.href = 'index.html'; }, 2500);
+      } catch (err) {
+        errorDiv.textContent = 'Could not place order. Please try again.';
+      }
     };
+    // Set payment amounts dynamically
+    document.getElementById('payfast-amount').value = total.toFixed(2);
+    document.getElementById('paypal-amount').value = total.toFixed(2);
+    // Set return URLs for payment providers
+    document.getElementById('payfast-return').value = window.location.origin + '/checkout.html?payfast=success';
+    document.getElementById('paypal-return').value = window.location.origin + '/checkout.html?paypal=success';
+    // Yoco and Peach Payments demo
+    document.getElementById('yocoPayBtn').onclick = function() {
+      // Simulate payment success
+      placeOrderAfterPayment('Yoco');
+    };
+    document.getElementById('peachPayBtn').onclick = function() {
+      // Simulate payment success
+      placeOrderAfterPayment('Peach Payments');
+    };
+    // Place order only after payment
+    function placeOrderAfterPayment(method) {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const errorDiv = document.getElementById('form-error');
+      errorDiv.textContent = '';
+      if (!name || !email || !address) {
+        errorDiv.textContent = 'Please fill in all fields.';
+        return;
+      }
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        errorDiv.textContent = 'Please enter a valid email address.';
+        return;
+      }
+      if (address.length < 5) {
+        errorDiv.textContent = 'Please enter a valid shipping address.';
+        return;
+      }
+      if (!cart.length) {
+        errorDiv.textContent = 'Your cart is empty.';
+        return;
+      }
+      fetch('http://localhost:5000/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, address, cart, paymentMethod: method })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('order-success').textContent = 'Order placed after payment! Thank you.';
+        document.getElementById('order-success').style.display = 'block';
+        localStorage.removeItem('cart');
+        setTimeout(() => { window.location.href = 'index.html'; }, 2500);
+      })
+      .catch(() => {
+        errorDiv.textContent = 'Could not place order. Please try again.';
+      });
+    }
+    // Check for payment provider return (PayFast/PayPal)
+    if (window.location.search.includes('payfast=success')) {
+      placeOrderAfterPayment('PayFast');
+    }
+    if (window.location.search.includes('paypal=success')) {
+      placeOrderAfterPayment('PayPal');
+    }
   </script>
 </body>
 </html>

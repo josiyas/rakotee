@@ -60,10 +60,30 @@ app.use(morgan(process.env.LOG_LEVEL || 'dev'));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/order', require('./routes/orders'));
+
+const adminRouter = require('./routes/admin');
+app.use('/api/admin', adminRouter);
+
+// Health check
+app.get('/health', (req, res) => {
+  const mongoReady = mongoose.connection.readyState === 1;
+  res.json({ status: 'ok', mongo: mongoReady ? 'connected' : 'disconnected' });
+});
+
+// Debug endpoints (one-off admin tests like sending an SMTP test email)
+app.use('/api/debug', require('./routes/debug'));
+
+// Protect admin order routes
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  ssl: true,
+  serverApi: '1',
+})
+  .then(() => console.log('MongoDB connected securely'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
 const PORT = process.env.PORT || 5000;

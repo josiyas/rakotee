@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: rakotee-backend
+    env: node
+    plan: free
+    branch: main
+    buildCommand: cd rakotee-backend && npm ci
+    startCommand: cd rakotee-backend && npm start
+    instanceType: starter
+    disk: 512

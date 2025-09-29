@@ -24,6 +24,28 @@
         <button id="logoutBtn">Logout</button>
       </div>
 
+      <!-- Order List -->
+      <div id="orderList" class="card">
+        <h3>Orders</h3>
+        <table id="ordersTable" style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Amount</th>
+              <th>Paid</th>
+              <th>Delivered</th>
+              <th>Payment Method</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody">
+            <tr><td colspan="8" style="text-align:center;">No orders yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
       <!-- Upload Form -->
       <form id="productForm" class="card">
         <h3>Upload New Product</h3>
@@ -44,25 +66,6 @@
 
   <!-- Firebase Admin Script -->
   <script type="module">
-    import { auth, db, storage } from './firebase.js';
-    import {
-      signInWithEmailAndPassword,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-    import {
-      collection,
-      getDocs,
-      addDoc,
-      deleteDoc,
-      updateDoc,
-      doc
-    } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-    import {
-      ref,
-      uploadBytes,
-      getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js";
 
     const loginSection = document.getElementById("loginSection");
     const adminDashboard = document.getElementById("adminDashboard");
@@ -70,30 +73,36 @@
     const logoutBtn = document.getElementById("logoutBtn");
     const loginError = document.getElementById("loginError");
 
+    // Admin login with MongoDB
     loginBtn.onclick = async () => {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
       try {
-        await signInWithEmailAndPassword(auth, email, password);
+        const res = await fetch('http://localhost:5000/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.token) {
+          localStorage.setItem('rakotee_admin_token', data.token);
+          loginSection.style.display = "none";
+          adminDashboard.classList.remove("hidden");
+          loadProducts();
+          loadOrders();
+        } else {
+          loginError.textContent = data.error || 'Login failed.';
+        }
       } catch (err) {
         loginError.textContent = "Login failed: " + err.message;
       }
     };
 
     logoutBtn.onclick = () => {
-      signOut(auth);
+      localStorage.removeItem('rakotee_admin_token');
+      loginSection.style.display = "block";
+      adminDashboard.classList.add("hidden");
     };
-
-    onAuthStateChanged(auth, user => {
-      if (user && user.email === "admin@rakotee.com") {
-        loginSection.style.display = "none";
-        adminDashboard.classList.remove("hidden");
-        loadProducts();
-      } else {
-        loginSection.style.display = "block";
-        adminDashboard.classList.add("hidden");
-      }
-    });
 
     // Upload product
     const form = document.getElementById("productForm");
@@ -106,14 +115,25 @@
       const file = document.getElementById("imageFile").files[0];
 
       try {
-        const storageRef = ref(storage, `products/${file.name}`);
-        await uploadBytes(storageRef, file);
-        const imageUrl = await getDownloadURL(storageRef);
-
-        await addDoc(collection(db, "products"), { name, price, image: imageUrl });
-        status.textContent = "✅ Product uploaded!";
-        form.reset();
-        loadProducts();
+        // Upload image to backend
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('price', price);
+        formData.append('image', file);
+        const token = localStorage.getItem('rakotee_admin_token');
+        const res = await fetch('http://localhost:5000/api/admin/products', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token },
+          body: formData
+        });
+        const data = await res.json();
+        if (res.ok) {
+          status.textContent = "✅ Product uploaded!";
+          form.reset();
+          loadProducts();
+        } else {
+          status.textContent = data.error || "❌ Failed to upload product.";
+        }
       } catch (err) {
         console.error(err);
         status.textContent = "❌ Failed to upload product.";
@@ -124,18 +144,25 @@
     async function loadProducts() {
       const container = document.getElementById("productsContainer");
       container.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "products"));
-
-      querySnapshot.forEach(docSnap => {
-        const data = docSnap.data();
+      const token = localStorage.getItem('rakotee_admin_token');
+  const res = await fetch('http://localhost:5000/api/admin/products', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+      const products = data.products || [];
+      if (!products.length) {
+        container.innerHTML = '<p>No products found.</p>';
+        return;
+      }
+      products.forEach(product => {
         const productCard = document.createElement("div");
         productCard.className = "product-card";
         productCard.innerHTML = `
-          <img src="${data.image}" alt="${data.name}" />
-          <h4 contenteditable="true">${data.name}</h4>
-          <p contenteditable="true">R ${data.price}</p>
-          <button data-id="${docSnap.id}" class="updateBtn">Save</button>
-          <button data-id="${docSnap.id}" class="deleteBtn">Delete</button>
+          <img src="${product.image}" alt="${product.name}" />
+          <h4 contenteditable="true">${product.name}</h4>
+          <p contenteditable="true">R ${product.price}</p>
+          <button data-id="${product._id}" class="updateBtn">Save</button>
+          <button data-id="${product._id}" class="deleteBtn">Delete</button>
         `;
         container.appendChild(productCard);
       });
@@ -143,7 +170,11 @@
       // Edit & delete
       container.querySelectorAll(".deleteBtn").forEach(btn => {
         btn.onclick = async () => {
-          await deleteDoc(doc(db, "products", btn.dataset.id));
+          const token = localStorage.getItem('rakotee_admin_token');
+          await fetch(`http://localhost:5000/api/admin/products/${btn.dataset.id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
           loadProducts();
         };
       });
@@ -153,13 +184,57 @@
           const card = btn.parentElement;
           const newName = card.querySelector("h4").textContent.trim();
           const newPrice = parseFloat(card.querySelector("p").textContent.replace(/[^\d.]/g, ''));
-          await updateDoc(doc(db, "products", btn.dataset.id), {
-            name: newName,
-            price: newPrice
+          const token = localStorage.getItem('rakotee_admin_token');
+          await fetch(`http://localhost:5000/api/admin/products/${btn.dataset.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ name: newName, price: newPrice })
           });
           loadProducts();
         };
       });
+    }
+
+    // Load and show orders
+    async function loadOrders() {
+      const token = localStorage.getItem('rakotee_admin_token');
+      const res = await fetch('http://localhost:5000/api/order/all', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const orders = await res.json();
+      const tbody = document.getElementById("ordersBody");
+      tbody.innerHTML = '';
+      if (!orders.length) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No orders yet.</td></tr>';
+        return;
+      }
+      orders.forEach(order => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${order._id}</td>
+          <td>${order.name}</td>
+          <td>${order.email}</td>
+          <td>R${order.cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}</td>
+          <td class="${order.paid ? 'paid' : 'unpaid'}">${order.paid ? 'Paid' : 'Unpaid'}</td>
+          <td class="${order.delivered ? 'delivered' : 'not-delivered'}">${order.delivered ? 'Delivered' : 'Not Delivered'}</td>
+          <td>${order.paymentMethod || '-'}</td>
+          <td>
+            <button onclick="markDelivered('${order._id}')" ${order.delivered ? 'disabled' : ''}>Mark Delivered</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+    window.markDelivered = async function(orderId) {
+      const token = localStorage.getItem('rakotee_admin_token');
+      await fetch(`http://localhost:5000/api/order/deliver/${orderId}`, {
+        method: 'PUT',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      loadOrders();
     }
   </script>
 </body>

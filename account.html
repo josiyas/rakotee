@@ -331,15 +331,22 @@
         } else {
           verifyEmailBtn.style.display = 'none';
         }
-        if (user.profilePic) document.getElementById('profilePic').src = user.profilePic;
-
-        // Step 4: Cache for instant UX (optional)
-        localStorage.setItem('user_profile', JSON.stringify(user));
-
-        // Render paginated order history
-        allOrders = user.orderHistory || [];
-        currentOrderPage = 1;
-        renderOrderHistory();
+        // Show initials if no profilePic
+        let picSrc = 'https://placehold.co/120x120?text=User';
+        if (user.profilePic) {
+          if (user.profilePic.startsWith('data:image')) {
+            picSrc = user.profilePic;
+          } else if (user.profilePic.startsWith('/')) {
+            picSrc = user.profilePic;
+          } else {
+            picSrc = 'data:image/png;base64,' + user.profilePic;
+          }
+        } else if (user.email) {
+          // Generate initials from email
+          const initials = user.email.split('@')[0].split(/[._]/).map(s => s[0]).join('').toUpperCase().slice(0,2);
+          picSrc = `https://placehold.co/120x120?text=${initials}`;
+        }
+        document.getElementById('profilePic').src = picSrc;
       } catch (err) {
         // fallback to cache or force re-login
         const cached = localStorage.getItem('user_profile');

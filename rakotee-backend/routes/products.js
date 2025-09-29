@@ -1,6 +1,8 @@
-// Example for routes/auth.js
+// Example for routes/products.js
 const express = require('express');
 const router = express.Router();
+const productController = require('../controllers/productController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Security middleware
 const helmet = require('helmet');
@@ -15,9 +17,13 @@ router.use(rateLimit({
   max: 100 // limit each IP to 100 requests per windowMs
 }));
 
-// Dummy route
-router.get('/', (req, res) => {
-  res.send('Auth route working');
-});
+// Public routes
+router.get('/', productController.getAllProducts);
+router.get('/:id', productController.getProductById);
+
+// Admin routes (require authentication)
+router.post('/', authMiddleware, productController.createProduct);
+router.put('/:id', authMiddleware, productController.updateProduct);
+router.delete('/:id', authMiddleware, productController.deleteProduct);
 
 module.exports = router;

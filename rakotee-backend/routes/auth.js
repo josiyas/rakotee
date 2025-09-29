@@ -29,4 +29,14 @@ router.post('/forgot-password', authController.forgotPassword);
 // Reset password
 router.post('/reset-password', authController.resetPassword);
 
+// Inspect users (for debugging)
+router.get('/inspect-users', authController.inspectUsers);
+
+// Get user account information
+router.get('/account', authController.account);
+router.put('/account', authController.updateAccount);
+router.put('/account/password', authController.changePassword);
+router.delete('/account', authController.deleteAccount);
+router.post('/account/send-verification', authController.sendVerification);
+
 module.exports = router;
