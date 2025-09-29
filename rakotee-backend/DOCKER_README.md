@@ -38,3 +38,19 @@ Next steps I can help with (pick any):
 - create/update a `.dockerignore` (if you don't already have one),
 - add a GitHub Actions workflow that builds and pushes this image to a registry, or
 - adapt the Dockerfile for Docker Compose or a cloud provider's container registry.
+
+Publishing to GitHub Container Registry (GHCR)
+
+The CI workflow optionally publishes to GHCR. Locally you can push with:
+
+```powershell
+# Authenticate (use a personal access token with packages:write or GitHub CLI)
+echo $env:GITHUB_TOKEN | docker login ghcr.io -u <USERNAME> --password-stdin
+
+# Tag and push
+docker tag rakotee-backend:ci ghcr.io/<OWNER>/rakotee-backend:latest
+docker push ghcr.io/<OWNER>/rakotee-backend:latest
+```
+
+In CI the workflow uses `docker/build-push-action` with `GITHUB_TOKEN` if available and will push to `ghcr.io/<owner>/rakotee-backend`.
+

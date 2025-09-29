@@ -30,6 +30,17 @@ jobs:
         run: |
           docker build --target final -t rakotee-backend:ci ./rakotee-backend
 
+      - name: Publish to GitHub Container Registry (optional)
+        if: github.token != ''
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/rakotee-backend:latest
+            ghcr.io/${{ github.repository_owner }}/rakotee-backend:${{ github.sha }}
+          context: ./rakotee-backend
+          file: ./rakotee-backend/Dockerfile
+
       - name: Start container
         run: |
           docker run -d --name rakotee-ci -e MONGO_URI="mongodb://mongodb:27017/rakotee_test" -e JWT_SECRET="test-secret" -e PORT=5000 -p 5000:5000 rakotee-backend:ci
