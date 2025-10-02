@@ -1,3 +1,53 @@
+/* --- Improved Mobile Responsiveness --- */
+@media (max-width: 600px) {
+  .product-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  .product-card {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+  }
+  .main-header, .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 0.5rem;
+  }
+  .modal-content, .fullscreen-modal .modal-content {
+    width: 98vw !important;
+    max-width: 100vw !important;
+    padding: 1rem !important;
+  }
+  .modal-body {
+    flex-direction: column !important;
+    gap: 1rem;
+  }
+  .modal-left, .modal-right {
+    min-width: 0;
+    width: 100%;
+  }
+  .footer-content {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  .footer-payments img {
+    height: 28px !important;
+    margin: 0 4px;
+  }
+  .shop-now-banner {
+    height: 180px;
+    font-size: 1.2rem;
+  }
+  .shop-now-content h1 {
+    font-size: 1.5rem;
+  }
+}
 /* Base Color Palette */
 :root {
   --dark-navy: #0d1321;
@@ -5,6 +55,13 @@
   --slate-blue: #3e5c76;
   --steel-blue: #748cab;
   --light-beige: #f0ebd8;
+  /* Added project-wide variables */
+  --primary: #1e90ff;
+  --danger: #e74c3c;
+  --success: #1a7f37;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
 }
 
 /* Reset & Base */
@@ -288,37 +345,37 @@ a {
 
 /* footwear */
 .footwear-section::before {
-  background-image: url('products/purple\ dunk2.jpg');
+  background-image: url('images/products/purple\ dunk2.jpg');
 }
 .footwear-section::after {
-  background-image: url('products/white\ air4.jpg');
+  background-image: url('images/products/white\ air4.jpg');
 }
 
 
 /* Phones */
 .accessories-section::before {
-  background-image: url('products/11\ pro5.png');
+  background-image: url('images/products/11\ pro5.png');
 }
 .accessories-section::before {
-  background-image: url('products/131.png');
+  background-image: url('images/products/131.png');
 }
 
 
 /* sale */
 .sale-section::after {
-  background-image: url('images/campus\ blue.webp');
+  background-image: url('images/products/campus\ blue.webp');
 }
 .sale-section::before {
-  background-image: url('images/iPhone_13_Red.png');
+  background-image: url('images/products/iPhone_13_Red.png');
 }
 .sale-section::after {
-  background-image: url('images/airfoce.jpg');
+  background-image: url('images/products/airfoce.jpg');
 }
 .sale-section::before {
-  background-image: url('images/jordan-4\ -\ Copy.jpg');
+  background-image: url('images/products/jordan-4\ -\ Copy.jpg');
 }
 .sale-section::after {
-  background-image: url('images/hubbly.webp');
+  background-image: url('images/products/hubbly.webp');
 }
 
 
