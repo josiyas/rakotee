@@ -838,10 +838,10 @@ const products = [
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
-    "products/airforcew1.webp",
-    "products/airforcew2.jpeg",
-    "products/airforcew3.jpeg",
-    "products/airforcew4.jpeg"
+  "/products/airforcew1.webp",
+  "/products/airforcew2.jpeg",
+  "/products/airforcew3.jpeg",
+  "/products/airforcew4.jpeg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -857,10 +857,10 @@ const products = [
   name: "Streetwear Tee",
   price: 1900.00,
   images: [
-    "products/bluew.webp",
-    "products/bluew (2).webp",
-    "products/bluew (3).webp",
-    "products/bluew (4).webp"
+  "/products/bluew.webp",
+  "/products/bluew-(2).webp",
+  "/products/bluew-(3).webp",
+  "/products/bluew-(4).webp"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -876,10 +876,10 @@ const products = [
   name: "Nike Air Force 1 Low",
   price: 1300.00,
   images: [
-    "products/airforcew1.webp",
-    "products/airforcew2.jpeg",
-    "products/airforcew3.jpeg",
-    "products/airforcew4.jpeg"
+  "/products/airforcew1.webp",
+  "/products/airforcew2.jpeg",
+  "/products/airforcew3.jpeg",
+  "/products/airforcew4.jpeg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -895,10 +895,10 @@ const products = [
   name: "Streetwear Tee",
   price: 1900.00,
   images: [
-    "products/bluew.webp",
-    "products/bluew (2).webp",
-    "products/bluew (3).webp",
-    "products/bluew (4).webp"
+  "/products/bluew.webp",
+  "/products/bluew-(2).webp",
+  "/products/bluew-(3).webp",
+  "/products/bluew-(4).webp"
   ],
   sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
   colors: ["White n blue"],
