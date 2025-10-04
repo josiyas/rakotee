@@ -304,9 +304,9 @@ const products = [
     price: 2000.00,
     images: [
   "/products/grey.webp",
-  "/products/grey (2).webp",
-  "/products/grey (3).webp",
-  "/products/grey (4).webp"
+  "/products/grey-(2).webp",
+  "/products/grey-(3).webp",
+  "/products/grey-(4).webp"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -323,9 +323,9 @@ const products = [
   price: 2000.00,
   images: [
   "/products/jordan4 white.webp",
-  "/products/jordan4 white (2).webp",
-  "/products/jordan4 white (3).webp",
-  "/products/jordan4 white (4).webp"
+  "/products/jordan4-white-(2).webp",
+  "/products/jordan4-white-(3).webp",
+  "/products/jordan4-white-(4).webp"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -342,10 +342,10 @@ const products = [
     name: "Dunk-Low(Orange)",
     price: 2000.00,
     images: [
-  "/products/orange dunk1.jpg",
-  "/products/orange dunk2.jpg",
-  "/products/orange dunk3.jpg",
-  "/products/orange dunk4.jpg"
+  "/products/orange-dunk1.jpg",
+  "/products/orange-dunk2.jpg",
+  "/products/orange-dunk3.jpg",
+  "/products/orange-dunk4.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -361,10 +361,10 @@ const products = [
   name: "Puma-Campus(Black)",
   price: 1700.00,
   images: [
-  "/products/pumablaq cam1.jpg",
-  "/products/pumablaq cam2.jpg",
-  "/products/pumablaq cam3.jpg",
-  "/products/pumablaq cam4.jpg"
+  "/products/pumablaq-cam1.jpg",
+  "/products/pumablaq-cam2.jpg",
+  "/products/pumablaq-cam3.jpg",
+  "/products/pumablaq-cam4.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -381,10 +381,10 @@ const products = [
     name: "Puma-Campus(blue)",
     price: 1700.00,
     images: [
-  "/products/pumablue cam1.jpg",
-  "/products/pumablue cam2.jpg",
-  "/products/pumablue cam3.jpg",
-  "/products/pumablue cam4.jpg"
+  "/products/pumablue-cam1.jpg",
+  "/products/pumablue-cam2.jpg",
+  "/products/pumablue-cam3.jpg",
+  "/products/pumablue-cam4.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -400,8 +400,8 @@ const products = [
   name: "Puma-Campus(Green)",
   price: 1700.00,
   images: [
-  "/products/pumagreen cam1.jpg",
-  "/products/pumagreen cam2.jpg",
+  "/products/pumagreen-cam1.jpg",
+  "/products/pumagreen-cam2.jpg",
     
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
@@ -419,9 +419,9 @@ const products = [
     name: "Puma-Campus(Red)",
     price: 1700.00,
     images: [
-      "/products/pumared cam1.jpg",
-      "/products/pumared cam2.jpg",
-      "/products/pumared cam3.jpg",
+  "/products/pumared-cam1.jpg",
+  "/products/pumared-cam2.jpg",
+  "/products/pumared-cam3.jpg",
       
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
@@ -438,10 +438,10 @@ const products = [
   name: "Dunk-Low(Purple)",
   price: 1200.00,
   images: [
-  "/products/purple dunk1.jpg",
-  "/products/purple dunk2.jpg",
-  "/products/purple dunk3.jpg",
-  "/products/purple dunk4.jpg"
+  "/products/purple-dunk1.jpg",
+  "/products/purple-dunk2.jpg",
+  "/products/purple-dunk3.jpg",
+  "/products/purple-dunk4.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -459,9 +459,9 @@ const products = [
     price: 2000.00,
     images: [
   "/products/redw.webp",
-  "/products/redw (2).webp",
-  "/products/redw (3).webp",
-  "/products/redw (4).webp"
+  "/products/redw-(2).webp",
+  "/products/redw-(3).webp",
+  "/products/redw-(4).webp"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -477,11 +477,11 @@ const products = [
   name: "NIke Shox TL",
   price: 2900.00,
   images: [
-  "/products/shoxtl blaq1.jpg",
-  "/products/shoxtl blaq2.jpg",
-  "/products/shoxtl blaq3.jpg",
-  "/products/shoxtl blaq4.jpg",
-  "/products/shoxtl blaq5.jpg"
+  "/products/shoxtl-blaq1.jpg",
+  "/products/shoxtl-blaq2.jpg",
+  "/products/shoxtl-blaq3.jpg",
+  "/products/shoxtl-blaq4.jpg",
+  "/products/shoxtl-blaq5.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -498,9 +498,9 @@ const products = [
     name: "Vans-Campus(Black)",
     price: 1800.00,
     images: [
-  "/products/vansblaq cam1.jpg",
-  "/products/vansblaq cam2.jpg",
-  "/products/vansblaq cam3.jpg",
+  "/products/vansblaq-cam1.jpg",
+  "/products/vansblaq-cam2.jpg",
+  "/products/vansblaq-cam3.jpg",
     
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
@@ -741,9 +741,9 @@ const products = [
     price: 1900.00,
     images: [
   "products/bluew.webp",
-  "products/bluew (2).webp",
-  "products/bluew (3).webp",
-  "products/bluew (4).webp"
+  "/products/bluew-(2).webp",
+  "/products/bluew-(3).webp",
+  "/products/bluew-(4).webp"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
