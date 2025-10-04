@@ -1,0 +1,10 @@
+<svg width="800" height="380" viewBox="0 0 800 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="PayFast logo">
+<path d="M104.5 243.5L124.5 143.5H144.5L124.5 243.5H104.5Z" fill="#E30613"/>
+<path d="M144.5 143.5L164.5 243.5H184.5L164.5 143.5H144.5Z" fill="#E30613"/>
+<ellipse cx="664.5" cy="143.5" rx="40" ry="20" fill="#E30613"/>
+<ellipse cx="664.5" cy="183.5" rx="40" ry="20" fill="#E30613"/>
+<ellipse cx="664.5" cy="223.5" rx="40" ry="20" fill="#E30613"/>
+<text x="200" y="200" font-family="Arial" font-size="120" fill="#E30613">PayFast</text>
+</g>
+</svg>
