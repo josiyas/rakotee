@@ -14,6 +14,20 @@ const app = express();
 app.use(express.json());
 applySecurity(app);
 
+// Robust CORS setup
+const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
+  ? process.env.CORS_ALLOWED_ORIGINS.split(',')
+  : ['https://rakotee.site'];
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+}));
+// Handle preflight requests for all routes
+app.options('*', cors());
+
 // Trust proxy for secure cookies and HTTPS (if behind a proxy like Heroku/Vercel)
 if (process.env.TRUST_PROXY === 'true') {
   app.set('trust proxy', 1);
@@ -27,12 +41,6 @@ if (process.env.FORCE_HTTPS === 'true') {
     next();
   });
 }
-// CORS setup
-const corsOptions = {
-  origin: process.env.CORS_ALLOWED_ORIGINS?.split(',') || '*',
-  credentials: true
-};
-app.use(cors(corsOptions));
 // Secure cookies
 app.use((req, res, next) => {
   res.cookie = (...args) => {
