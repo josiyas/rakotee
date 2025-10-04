@@ -48,8 +48,16 @@
       return;
     }
 
+    // Use production backend API if not running locally
+    let apiBase = window.location.origin;
+    if (apiBase.includes('localhost')) {
+      apiBase = 'http://localhost:5000';
+    } else {
+      apiBase = 'https://rakotee.site'; // Change to your deployed backend URL if different
+    }
+
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(apiBase + '/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
