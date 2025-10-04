@@ -4,10 +4,10 @@ const products = [
   name: "Nike Air Force 1 Low(White)",
   price: 1200.00,
     images: [
-    "images/products/airforcew1.webp",
-    "images/products/airforcew2.jpeg",
-    "images/products/airforcew3.jpeg",
-    "images/products/airforcew4.jpeg"
+  "/products/airforcew1.webp",
+  "/products/airforcew2.jpeg",
+  "/products/airforcew3.jpeg",
+  "/products/airforcew4.jpeg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -27,10 +27,10 @@ const products = [
     name: "ADIDAS-CAMPUS(Black)",
     price: 1700.00,
     images: [
-  "images/products/adidasblaq cam1.jpg",
-  "images/products/adidasblaq cam2.jpg",
-  "images/products/adidasblaq cam3.jpg",
-  "images/products/adidasblaq cam4.jpg"
+  "/products/adidasblaq-cam1.jpg",
+  "/products/adidasblaq-cam2.jpg",
+  "/products/adidasblaq-cam3.jpg",
+  "/products/adidasblaq-cam4.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["BLACK"],
@@ -49,10 +49,10 @@ const products = [
   name: "ADIDAS-CAMPUS(Blue)",
   price: 1700.00,
     images: [
-    "images/products/adidasblue cam1.jpg",
-    "images/products/adidasblue cam2.jpg",
-    "images/products/adidasblue cam3.jpg",
-    "images/products/adidasblue cam4.jpg"
+  "/products/adidasblue-cam1.jpg",
+  "/products/adidasblue-cam2.jpg",
+  "/products/adidasblue-cam3.jpg",
+  "/products/adidasblue-cam4.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -69,10 +69,10 @@ const products = [
     name: "ADIDAS-CAMPUS(Grey)",
     price: 1700.00,
     images: [
-    "images/products/adidasgrey cam1.jpg",
-    "images/products/adidasgrey cam2.jpg",
-    "images/products/adidasgrey cam3.jpg",
-    "images/products/adidasgrey cam4.jpg"
+  "/products/adidasgrey-cam1.jpg",
+  "/products/adidasgrey-cam2.jpg",
+  "/products/adidasgrey-cam3.jpg",
+  "/products/adidasgrey-cam4.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -88,9 +88,9 @@ const products = [
   name: "ADIDAS-CAMPUS(Red)",
   price: 1700.00,
   images: [
-  "images/products/adidasred cam1.jpg",
-  "images/products/adidasred cam2.jpg",
-  "images/products/adidasred cam3.jpg",
+  "/products/adidasred-cam1.jpg",
+  "/products/adidasred-cam2.jpg",
+  "/products/adidasred-cam3.jpg",
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -107,11 +107,11 @@ const products = [
     name: "AIRFORCE-1 ROPE-LACE(Black)",
     price: 1400.00,
     images: [
-  "images/products/airRblaq cam1.jpg",
-  "images/products/airRblaq cam2.jpg",
-  "images/products/airRblaq cam3.jpg",
-  "images/products/airRblaq cam4.jpg",
-  "images/products/airRblaq cam5.jpg"
+  "/products/airRblaq-cam1.jpg",
+  "/products/airRblaq-cam2.jpg",
+  "/products/airRblaq-cam3.jpg",
+  "/products/airRblaq-cam4.jpg",
+  "/products/airRblaq-cam5.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -127,10 +127,10 @@ const products = [
   name: "AIRFORCE-1 ROPE-LACE(Pink)",
   price: 1400.00,
   images: [
-  "images/products/airRpink cam1.jpg",
-  "images/products/airRpink cam2.jpg",
-  "images/products/airRpink cam3.jpg",
-  "images/products/airRpink cam4.jpg"
+  "/products/airRpink-cam1.jpg",
+  "/products/airRpink-cam2.jpg",
+  "/products/airRpink-cam3.jpg",
+  "/products/airRpink-cam4.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -147,10 +147,10 @@ const products = [
     name: "AIRFORCE-1 ROPE-LACE(White)",
     price: 1400.00,
     images: [
-  "images/products/airRwhite cam1.jpg",
-  "images/products/airRwhite cam2.jpg",
-  "images/products/airRwhite cam3.jpg",
-  "images/products/airRwhite cam4.jpg"
+  "/products/airRwhite-cam1.jpg",
+  "/products/airRwhite-cam2.jpg",
+  "/products/airRwhite-cam3.jpg",
+  "/products/airRwhite-cam4.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -166,10 +166,10 @@ const products = [
   name: "Nike Air Force 1 Low(Black)",
   price: 1200.00,
   images: [
-  "images/products/black air1.jpg",
-  "images/products/black air2.jpg",
-  "images/products/black air3.jpg",
-  "images/products/black air4.jpg"
+  "/products/black-air1.jpg",
+  "/products/black-air2.jpg",
+  "/products/black-air3.jpg",
+  "/products/black-air4.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -186,11 +186,11 @@ const products = [
     name: "Jordan-4 RETRO(Black)",
     price: 2000.00,
     images: [
-  "images/products/black jordan1.jpg",
-  "images/products/black jordan2.jpg",
-  "images/products/black jordan3.jpg",
-  "images/products/black jordan4.jpg",
-  "images/products/black jordan5.jpg"
+  "/products/black-jordan1.jpg",
+  "/products/black-jordan2.jpg",
+  "/products/black-jordan3.jpg",
+  "/products/black-jordan4.jpg",
+  "/products/black-jordan5.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -206,10 +206,10 @@ const products = [
   name: "Jordan-4 RETRO(Black & RED)",
   price: 2000.00,
   images: [
-  "images/products/blaqnwhi jordan1.jpg",
-  "images/products/blaqnwhi jordan2.jpg",
-  "images/products/blaqnwhi jordan3.jpg",
-  "images/products/blaqnwhi jordan5.jpg"
+  "/products/blaqnwhi-jordan1.jpg",
+  "/products/blaqnwhi-jordan2.jpg",
+  "/products/blaqnwhi-jordan3.jpg",
+  "/products/blaqnwhi-jordan5.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -226,10 +226,10 @@ const products = [
     name: "Dunk-low(Black)",
     price: 1200.00,
     images: [
-  "images/products/blq dunk1.jpg",
-  "images/products/blq dunk1.jpg",
-  "images/products/blq dunk2.jpg",
-  "images/products/blq dunk3.jpg"
+  "/products/blq-dunk1.jpg",
+  "/products/blq-dunk1.jpg",
+  "/products/blq-dunk2.jpg",
+  "/products/blq-dunk3.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -245,10 +245,10 @@ const products = [
   name: "Dunk-Low(blue)",
   price: 1200.00,
   images: [
-  "images/products/blue dunk1.jpg",
-  "images/products/blue dunk3.jpg",
-  "images/products/blue dunk4.jpg",
-  "images/products/blue dunk2.jpg"
+  "/products/blue-dunk1.jpg",
+  "/products/blue-dunk3.jpg",
+  "/products/blue-dunk4.jpg",
+  "/products/blue-dunk2.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -265,9 +265,9 @@ const products = [
     name: "Jordan-4 RETRO(Blue & White)",
     price: 2000.00,
     images: [
-  "images/products/bluenwhi jordan1.jpg",
-  "images/products/bluenwhi jordan3.jpg",
-  "images/products/bluenwhi jordan4.jpg"
+  "/products/bluenwhi-jordan1.jpg",
+  "/products/bluenwhi-jordan3.jpg",
+  "/products/bluenwhi-jordan4.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -283,10 +283,10 @@ const products = [
   name: "Dunk-Low(grey)",
   price: 1200.00,
   images: [
-  "images/products/dunklowg1.webp",
-  "images/products/dunklowg2.webp",
-  "images/products/dunklowg3.webp",
-  "images/products/dunklowg4.webp"
+  "/products/dunklowg1.webp",
+  "/products/dunklowg2.webp",
+  "/products/dunklowg3.webp",
+  "/products/dunklowg4.webp"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -303,10 +303,10 @@ const products = [
     name: "Jordan-4 RETRO(Grey)",
     price: 2000.00,
     images: [
-  "images/products/grey.webp",
-  "images/products/grey (2).webp",
-  "images/products/grey (3).webp",
-  "images/products/grey (4).webp"
+  "/products/grey.webp",
+  "/products/grey (2).webp",
+  "/products/grey (3).webp",
+  "/products/grey (4).webp"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -322,10 +322,10 @@ const products = [
   name: "Jordan-4 RETRO(white)",
   price: 2000.00,
   images: [
-  "images/products/jordan4 white.webp",
-  "images/products/jordan4 white (2).webp",
-  "images/products/jordan4 white (3).webp",
-  "images/products/jordan4 white (4).webp"
+  "/products/jordan4 white.webp",
+  "/products/jordan4 white (2).webp",
+  "/products/jordan4 white (3).webp",
+  "/products/jordan4 white (4).webp"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -342,10 +342,10 @@ const products = [
     name: "Dunk-Low(Orange)",
     price: 2000.00,
     images: [
-  "images/products/orange dunk1.jpg",
-  "images/products/orange dunk2.jpg",
-  "images/products/orange dunk3.jpg",
-  "images/products/orange dunk4.jpg"
+  "/products/orange dunk1.jpg",
+  "/products/orange dunk2.jpg",
+  "/products/orange dunk3.jpg",
+  "/products/orange dunk4.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -361,10 +361,10 @@ const products = [
   name: "Puma-Campus(Black)",
   price: 1700.00,
   images: [
-  "images/products/pumablaq cam1.jpg",
-  "images/products/pumablaq cam2.jpg",
-  "images/products/pumablaq cam3.jpg",
-  "images/products/pumablaq cam4.jpg"
+  "/products/pumablaq cam1.jpg",
+  "/products/pumablaq cam2.jpg",
+  "/products/pumablaq cam3.jpg",
+  "/products/pumablaq cam4.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -381,10 +381,10 @@ const products = [
     name: "Puma-Campus(blue)",
     price: 1700.00,
     images: [
-  "images/products/pumablue cam1.jpg",
-  "images/products/pumablue cam2.jpg",
-  "images/products/pumablue cam3.jpg",
-  "images/products/pumablue cam4.jpg"
+  "/products/pumablue cam1.jpg",
+  "/products/pumablue cam2.jpg",
+  "/products/pumablue cam3.jpg",
+  "/products/pumablue cam4.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -400,8 +400,8 @@ const products = [
   name: "Puma-Campus(Green)",
   price: 1700.00,
   images: [
-  "images/products/pumagreen cam1.jpg",
-  "images/products/pumagreen cam2.jpg",
+  "/products/pumagreen cam1.jpg",
+  "/products/pumagreen cam2.jpg",
     
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
@@ -419,9 +419,9 @@ const products = [
     name: "Puma-Campus(Red)",
     price: 1700.00,
     images: [
-      "products/pumared cam1.jpg",
-      "products/pumared cam2.jpg",
-      "products/pumared cam3.jpg",
+      "/products/pumared cam1.jpg",
+      "/products/pumared cam2.jpg",
+      "/products/pumared cam3.jpg",
       
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
@@ -438,10 +438,10 @@ const products = [
   name: "Dunk-Low(Purple)",
   price: 1200.00,
   images: [
-  "images/products/purple dunk1.jpg",
-  "images/products/purple dunk2.jpg",
-  "images/products/purple dunk3.jpg",
-  "images/products/purple dunk4.jpg"
+  "/products/purple dunk1.jpg",
+  "/products/purple dunk2.jpg",
+  "/products/purple dunk3.jpg",
+  "/products/purple dunk4.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -458,10 +458,10 @@ const products = [
     name: "Jordan-4 RETRO(white n Red)",
     price: 2000.00,
     images: [
-  "images/products/redw.webp",
-  "images/products/redw (2).webp",
-  "images/products/redw (3).webp",
-  "images/products/redw (4).webp"
+  "/products/redw.webp",
+  "/products/redw (2).webp",
+  "/products/redw (3).webp",
+  "/products/redw (4).webp"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -477,11 +477,11 @@ const products = [
   name: "NIke Shox TL",
   price: 2900.00,
   images: [
-  "images/products/shoxtl blaq1.jpg",
-  "images/products/shoxtl blaq2.jpg",
-  "images/products/shoxtl blaq3.jpg",
-  "images/products/shoxtl blaq4.jpg",
-  "images/products/shoxtl blaq5.jpg"
+  "/products/shoxtl blaq1.jpg",
+  "/products/shoxtl blaq2.jpg",
+  "/products/shoxtl blaq3.jpg",
+  "/products/shoxtl blaq4.jpg",
+  "/products/shoxtl blaq5.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -498,9 +498,9 @@ const products = [
     name: "Vans-Campus(Black)",
     price: 1800.00,
     images: [
-  "images/products/vansblaq cam1.jpg",
-  "images/products/vansblaq cam2.jpg",
-  "images/products/vansblaq cam3.jpg",
+  "/products/vansblaq cam1.jpg",
+  "/products/vansblaq cam2.jpg",
+  "/products/vansblaq cam3.jpg",
     
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
@@ -517,11 +517,11 @@ const products = [
   name: "Nike-Shox TL(white)",
   price: 2900.00,
   images: [
-  "images/products/shoxtl white1.jpg",
-  "images/products/shoxtl white2.jpg",
-  "images/products/shoxtl white3.jpg",
-  "images/products/shoxtl white4.jpg",
-  "images/products/shoxtl white5.jpg"
+  "/products/shoxtl white1.jpg",
+  "/products/shoxtl white2.jpg",
+  "/products/shoxtl white3.jpg",
+  "/products/shoxtl white4.jpg",
+  "/products/shoxtl white5.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -538,9 +538,9 @@ const products = [
     name: "Jordan-4 RETRO(white)",
     price: 2000.00,
     images: [
-  "images/products/white jordan1.jpg",
-  "images/products/white jordan2.jpg",
-  "images/products/white jordan3.jpg",
+  "/products/white jordan1.jpg",
+  "/products/white jordan2.jpg",
+  "/products/white jordan3.jpg",
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -556,11 +556,11 @@ const products = [
   name: "Iphone XR(White)",
   price: 4500.00,
   images: [
-  "images/products/Xr1.jpg",
-  "images/products/Xr2.jpg",
-  "images/products/Xr3.jpg",
-  "images/products/Xr4.jpg",
-  "images/products/Xr5.jpg"
+  "/products/Xr1.jpg",
+  "/products/Xr2.jpg",
+  "/products/Xr3.jpg",
+  "/products/Xr4.jpg",
+  "/products/Xr5.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -577,12 +577,12 @@ const products = [
     name: "Iphone 11 Pro",
     price: 7000.00,
     images: [
-  "images/products/11 pro1.png",
-  "images/products/11 pro2.png",
-  "images/products/11 pro3.png",
-  "images/products/11 pro4.png",
-  "images/products/11 pro5.png",
-  "images/products/11 pro6.png"
+  "/products/11 pro1.png",
+  "/products/11 pro2.png",
+  "/products/11 pro3.png",
+  "/products/11 pro4.png",
+  "/products/11 pro5.png",
+  "/products/11 pro6.png"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -598,11 +598,11 @@ const products = [
   name: "Iphone-12 PRO Max",
   price: 10000.00,
   images: [
-  "images/products/12 pro max1.png",
-  "images/products/12 pro max2.png",
-  "images/products/12 pro max3.png",
-  "images/products/12 pro max4.png",
-  "images/products/12 pro max5.png"
+  "/products/12 pro max1.png",
+  "/products/12 pro max2.png",
+  "/products/12 pro max3.png",
+  "/products/12 pro max4.png",
+  "/products/12 pro max5.png"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -619,12 +619,12 @@ const products = [
     name: "Iphone-12 pro",
     price: 9500.00,
     images: [
-  "images/products/12 pro1.png",
-  "images/products/12 pro2.png",
-  "images/products/12 pro3.png",
-  "images/products/12 pro4.png",
-  "images/products/12 pro5.png",
-  "images/products/12 pro6.png"
+  "/products/12 pro1.png",
+  "/products/12 pro2.png",
+  "/products/12 pro3.png",
+  "/products/12 pro4.png",
+  "/products/12 pro5.png",
+  "/products/12 pro6.png"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -640,11 +640,11 @@ const products = [
   name: "Iphone-13 pro",
   price: 13000.00,
   images: [
-  "images/products/13 pro1.png",
-  "images/products/13 pro2.png",
-  "images/products/13 pro3.png",
-  "images/products/13 pro4.png",
-  "images/products/13 pro5.png"
+  "/products/13 pro1.png",
+  "/products/13 pro2.png",
+  "/products/13 pro3.png",
+  "/products/13 pro4.png",
+  "/products/13 pro5.png"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -661,11 +661,11 @@ const products = [
     name: "Iphone-11",
     price: 5500.00,
     images: [
-  "images/products/111.jpg",
-  "images/products/112.jpg",
-  "images/products/113.jpg",
-  "images/products/114.jpg",
-  "images/products/115.jpg"
+  "/products/111.jpg",
+  "/products/112.jpg",
+  "/products/113.jpg",
+  "/products/114.jpg",
+  "/products/115.jpg"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -681,10 +681,10 @@ const products = [
   name: "Iphone-12",
   price: 8000.00,
   images: [
-  "images/products/121.png",
-  "images/products/122.png",
-  "images/products/123.png",
-  "images/products/124.png"
+  "/products/121.png",
+  "/products/122.png",
+  "/products/123.png",
+  "/products/124.png"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -701,10 +701,10 @@ const products = [
     name: "Iphone-13",
     price: 13000.00,
     images: [
-  "images/products/131.png",
-  "images/products/132.png",
-  "images/products/133.png",
-  "images/products/134.png"
+  "/products/131.png",
+  "/products/132.png",
+  "/products/133.png",
+  "/products/134.png"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -720,10 +720,10 @@ const products = [
   name: "Nike Air Force 1 Low",
   price: 1200.00,
   images: [
-  "images/products/airforcew1.webp",
-  "images/products/airforcew2.jpeg",
-  "images/products/airforcew3.jpeg",
-  "images/products/airforcew4.jpeg"
+  "products/airforcew1.webp",
+    "/products/airforcew2.jpeg",
+  "products/airforcew3.jpeg",
+  "products/airforcew4.jpeg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -740,10 +740,10 @@ const products = [
     name: "Streetwear Tee",
     price: 1900.00,
     images: [
-  "images/products/bluew.webp",
-  "images/products/bluew (2).webp",
-  "images/products/bluew (3).webp",
-  "images/products/bluew (4).webp"
+  "products/bluew.webp",
+  "products/bluew (2).webp",
+  "products/bluew (3).webp",
+  "products/bluew (4).webp"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -760,7 +760,7 @@ const products = [
   price: 1300.00,
   images: [
   "images/products/airforcew1.webp",
-  "images/products/airforcew2.jpeg",
+    "/images/products/airforcew2.jpeg",
   "images/products/airforcew3.jpeg",
   "images/products/airforcew4.jpeg"
   ],
@@ -780,7 +780,7 @@ const products = [
     price: 1900.00,
     images: [
       "images/products/bluew.webp",
-      "images/products/bluew (2).webp",
+        "/images/products/bluew (2).webp",
       "images/products/bluew (3).webp",
       "images/products/bluew (4).webp"
     ],
@@ -800,7 +800,7 @@ const products = [
   price: 1300.00,
   images: [
     "images/products/airforcew1.webp",
-    "images/products/airforcew2.jpeg",
+      "/images/products/airforcew2.jpeg",
     "images/products/airforcew3.jpeg",
     "images/products/airforcew4.jpeg"
   ],
@@ -1158,7 +1158,7 @@ function displayProducts(filteredProducts) {
       const card = document.createElement('div');
       card.className = 'product-card';
       card.innerHTML = `
-        <img src="${product.images[0]}" alt="${product.name}" class="product-img">
+  <img src="${product.images[0].startsWith('/') ? product.images[0] : '/' + product.images[0]}" alt="${product.name}" class="product-img" loading="lazy" onerror="this.onerror=null;this.src='/products/fallback.png';">
         <h3>${product.name}</h3>
         <p>R ${product.price.toFixed(2)}</p>
         <button class="btn open-modal" data-id="${product.id}">View</button>
@@ -1173,7 +1173,12 @@ function displayProducts(filteredProducts) {
 function openModal(product) {
   selectedProduct = product;
 
-  modalImage.src = product.images[0];
+  modalImage.src = product.images[0].startsWith('/') ? product.images[0] : '/' + product.images[0];
+  modalImage.loading = 'lazy';
+  modalImage.onerror = function() {
+    this.onerror = null;
+    this.src = '/products/fallback.png';
+  };
   modalName.textContent = product.name;
   modalPrice.textContent = product.price.toFixed(2);
   modalDescription.textContent = product.description;
@@ -1197,10 +1202,15 @@ function openModal(product) {
   modalThumbnails.innerHTML = '';
   product.images.forEach((img, idx) => {
     const thumb = document.createElement('img');
-    thumb.src = img;
+    thumb.src = img.startsWith('/') ? img : '/' + img;
+    thumb.loading = 'lazy';
     thumb.className = idx === 0 ? 'selected' : '';
+    thumb.onerror = function() {
+      this.onerror = null;
+      this.src = '/products/fallback.png';
+    };
     thumb.addEventListener('click', () => {
-      modalImage.src = img;
+      modalImage.src = img.startsWith('/') ? img : '/' + img;
       document.querySelectorAll('#modalThumbnails img').forEach(i => i.classList.remove('selected'));
       thumb.classList.add('selected');
     });
