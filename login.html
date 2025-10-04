@@ -48,12 +48,12 @@
       return;
     }
 
-    // Use production backend API if not running locally
-    let apiBase = window.location.origin;
-    if (apiBase.includes('localhost')) {
+    // Use Render backend API in production, localhost for local dev
+    let apiBase = '';
+    if (window.location.hostname.includes('localhost')) {
       apiBase = 'http://localhost:5000';
     } else {
-      apiBase = 'https://rakotee.site'; // Change to your deployed backend URL if different
+      apiBase = 'https://rakotee-back.onrender.com';
     }
 
     try {
