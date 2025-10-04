@@ -322,7 +322,7 @@ const products = [
   name: "Jordan-4 RETRO(white)",
   price: 2000.00,
   images: [
-  "/products/jordan4 white.webp",
+  "/products/jordan4-white.webp",
   "/products/jordan4-white-(2).webp",
   "/products/jordan4-white-(3).webp",
   "/products/jordan4-white-(4).webp"
@@ -517,11 +517,11 @@ const products = [
   name: "Nike-Shox TL(white)",
   price: 2900.00,
   images: [
-  "/products/shoxtl white1.jpg",
-  "/products/shoxtl white2.jpg",
-  "/products/shoxtl white3.jpg",
-  "/products/shoxtl white4.jpg",
-  "/products/shoxtl white5.jpg"
+  "/products/shoxtl-white1.jpg",
+  "/products/shoxtl-white2.jpg",
+  "/products/shoxtl-white3.jpg",
+  "/products/shoxtl-white4.jpg",
+  "/products/shoxtl-white5.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -538,9 +538,9 @@ const products = [
     name: "Jordan-4 RETRO(white)",
     price: 2000.00,
     images: [
-  "/products/white jordan1.jpg",
-  "/products/white jordan2.jpg",
-  "/products/white jordan3.jpg",
+  "/products/white-jordan1.jpg",
+  "/products/white-jordan2.jpg",
+  "/products/white-jordan3.jpg",
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -577,12 +577,12 @@ const products = [
     name: "Iphone 11 Pro",
     price: 7000.00,
     images: [
-  "/products/11 pro1.png",
-  "/products/11 pro2.png",
-  "/products/11 pro3.png",
-  "/products/11 pro4.png",
-  "/products/11 pro5.png",
-  "/products/11 pro6.png"
+  "/products/11-pro1.png",
+  "/products/11-pro2.png",
+  "/products/11-pro3.png",
+  "/products/11-pro4.png",
+  "/products/11-pro5.png",
+  "/products/11-pro6.png"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -598,11 +598,11 @@ const products = [
   name: "Iphone-12 PRO Max",
   price: 10000.00,
   images: [
-  "/products/12 pro max1.png",
-  "/products/12 pro max2.png",
-  "/products/12 pro max3.png",
-  "/products/12 pro max4.png",
-  "/products/12 pro max5.png"
+  "/products/12-pro-max1.png",
+  "/products/12-pro-max2.png",
+  "/products/12-pro-max3.png",
+  "/products/12-pro-max4.png",
+  "/products/12-pro-max5.png"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -619,12 +619,12 @@ const products = [
     name: "Iphone-12 pro",
     price: 9500.00,
     images: [
-  "/products/12 pro1.png",
-  "/products/12 pro2.png",
-  "/products/12 pro3.png",
-  "/products/12 pro4.png",
-  "/products/12 pro5.png",
-  "/products/12 pro6.png"
+  "/products/12-pro1.png",
+  "/products/12-pro2.png",
+  "/products/12-pro3.png",
+  "/products/12-pro4.png",
+  "/products/12-pro5.png",
+  "/products/12-pro6.png"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -640,11 +640,11 @@ const products = [
   name: "Iphone-13 pro",
   price: 13000.00,
   images: [
-  "/products/13 pro1.png",
-  "/products/13 pro2.png",
-  "/products/13 pro3.png",
-  "/products/13 pro4.png",
-  "/products/13 pro5.png"
+  "/products/13-pro1.png",
+  "/products/13-pro2.png",
+  "/products/13-pro3.png",
+  "/products/13-pro4.png",
+  "/products/13-pro5.png"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
   colors: ["White"],
@@ -780,9 +780,9 @@ const products = [
     price: 1900.00,
     images: [
       "images/products/bluew.webp",
-        "/images/products/bluew (2).webp",
-      "images/products/bluew (3).webp",
-      "images/products/bluew (4).webp"
+        "/images/products/bluew-(2).webp",
+      "/images/products/bluew-(3).webp",
+      "/images/products/bluew-(4).webp"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -820,9 +820,9 @@ const products = [
     price: 1900.00,
     images: [
       "products/bluew.webp",
-      "products/bluew (2).webp",
-      "products/bluew (3).webp",
-      "products/bluew (4).webp"
+  "/products/bluew-(2).webp",
+  "/products/bluew-(3).webp",
+  "/products/bluew-(4).webp"
     ],
     sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
     colors: ["White n blue"],
@@ -934,9 +934,9 @@ const products = [
   price: 1900.00,
   images: [
     "products/bluew.webp",
-    "products/bluew (2).webp",
-    "products/bluew (3).webp",
-    "products/bluew (4).webp"
+  "/products/bluew-(2).webp",
+  "/products/bluew-(3).webp",
+  "/products/bluew-(4).webp"
   ],
   sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
   colors: ["White n blue"],
