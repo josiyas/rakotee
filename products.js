@@ -1,89 +1,87 @@
 const products = [
   {
-  id: 1,
-  name: "Nike Air Force 1 Low(White)",
-  price: 1200.00,
+    id: 1,
+    name: "Nike Air Force 1 Low(White)",
+    price: 1200.00,
     images: [
-  "/products/airforcew1.webp",
-  "/products/airforcew2.jpeg",
-  "/products/airforcew3.jpeg",
-  "/products/airforcew4.jpeg"
-  ],
-  sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
-  colors: ["White"],
-  description: "A cozy and stylish hoodie made from premium materials, perfect for every season.",
-  highlights: [
-    "Premium leather upper",
-    "Air-cushioned sole for comfort",
-    "Classic Nike silhouette",
-    "Durable and long-lasting",
-    "Leather upper",
-    "Lace closure",
-    "Regular fit"
-  ]
+      "/products/airforcew1.webp",
+      "/products/airforcew2.jpeg",
+      "/products/airforcew3.jpeg",
+      "/products/airforcew4.jpeg"
+    ],
+    sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
+    colors: ["White"],
+    description: "A classic Nike silhouette with premium leather upper and comfortable air-cushioned sole.",
+    highlights: [
+      "Air-cushioned sole for comfort",
+      "Classic Nike silhouette",
+      "Durable and long-lasting",
+      "Leather upper",
+      "Lace closure",
+      "Regular fit"
+    ]
   },
   {
     id: 2,
     name: "ADIDAS-CAMPUS(Black)",
     price: 1700.00,
     images: [
-  "/products/adidasblaq-cam1.jpg",
-  "/products/adidasblaq-cam2.jpg",
-  "/products/adidasblaq-cam3.jpg",
-  "/products/adidasblaq-cam4.jpg"
+      "/products/adidasblaq-cam1.jpg",
+      "/products/adidasblaq-cam2.jpg",
+      "/products/adidasblaq-cam3.jpg",
+      "/products/adidasblaq-cam4.jpg"
     ],
-    sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
+    sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
     colors: ["BLACK"],
-    description: "Although they made their debut on the hardwood, the adidas Campus shoes were quickly adopted just about everywhere else. With this pair, we move the iconic silhouette in another direction and add modern materials, colours and proportions. They're done with a premium leather upper lined with soft textile terry fabric, with all of it riding on an off-white midsole — a clear connect to the Campus legacy.",
-    highlights: [ "Product Code : HQ8708",
-      "Rubber outsole",
+    description: "Premium leather upper with terry textile lining and an off-white midsole for a retro look.",
+    highlights: [
+      "Product Code : HQ8708",
       "Terry textile lining",
-          "Durable and long-lasting",
-    "Leather upper",
-    "Lace closure",
-    "Regular fit"
-  ]
+      "Durable and long-lasting",
+      "Leather upper",
+      "Lace closure",
+      "Regular fit"
+    ]
   },
   {
-  id: 3,
-  name: "ADIDAS-CAMPUS(Blue)",
-  price: 1700.00,
+    id: 3,
+    name: "ADIDAS-CAMPUS(Blue)",
+    price: 1700.00,
     images: [
-  "/products/adidasblue-cam1.jpg",
-  "/products/adidasblue-cam2.jpg",
-  "/products/adidasblue-cam3.jpg",
-  "/products/adidasblue-cam4.jpg"
-  ],
-  sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
-  colors: ["White"],
-  description: "A cozy and stylish hoodie made from premium materials, perfect for every season.",
-  highlights: [
-    "Premium leather upper",
-    "Air-cushioned sole for comfort",
-    "Classic Nike silhouette",
-    "Durable and long-lasting"
-  ]
+      "/products/adidasblue-cam1.jpg",
+      "/products/adidasblue-cam2.jpg",
+      "/products/adidasblue-cam3.jpg",
+      "/products/adidasblue-cam4.jpg"
+    ],
+    sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
+    colors: ["White"],
+    description: "A versatile campus shoe updated with modern materials and proportions.",
+    highlights: [
+      "Air-cushioned sole for comfort",
+      "Classic adidas Campus look",
+      "Durable and long-lasting"
+    ]
   },
   {
     id: 4,
     name: "ADIDAS-CAMPUS(Grey)",
     price: 1700.00,
     images: [
-  "/products/adidasgrey-cam1.jpg",
-  "/products/adidasgrey-cam2.jpg",
-  "/products/adidasgrey-cam3.jpg",
-  "/products/adidasgrey-cam4.jpg"
+      "/products/adidasgrey-cam1.jpg",
+      "/products/adidasgrey-cam2.jpg",
+      "/products/adidasgrey-cam3.jpg",
+      "/products/adidasgrey-cam4.jpg"
     ],
-    sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
+    sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
     colors: ["White n blue"],
     description: "",
     highlights: [
-    "Premium leather upper",
-    "Air-cushioned sole for comfort",
-    "Classic Nike silhouette",
-    "Durable and long-lasting"
-  ]
-  },{
+      "Air-cushioned sole for comfort",
+      "Classic Nike silhouette",
+      "Durable and long-lasting"
+    ]
+  },
+  {
   id: 5,
   name: "ADIDAS-CAMPUS(Red)",
   price: 1700.00,
@@ -123,9 +121,10 @@ const products = [
     "Durable and long-lasting"
   ]
   },{
-  id: 7,
-  name: "AIRFORCE-1 ROPE-LACE(Pink)",
-  price: 1400.00,
+    id: 29,
+    category: "Phones",
+    name: "Iphone XR(White)",
+    price: 4500.00,
   images: [
   "/products/airRpink-cam1.jpg",
   "/products/airRpink-cam2.jpg",
@@ -133,7 +132,7 @@ const products = [
   "/products/airRpink-cam4.jpg"
   ],
   sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
-  colors: ["White"],
+  sizes: ["64GB", "128GB", "256GB", "512GB"],
   description: "A cozy and stylish hoodie made from premium materials, perfect for every season.",
   highlights: [
     "Premium leather upper",
@@ -575,6 +574,7 @@ const products = [
   {
     id: 30,
     name: "Iphone 11 Pro",
+    category: "Phones",
     price: 7000.00,
     images: [
   "/products/11-pro1.png",
@@ -584,7 +584,7 @@ const products = [
   "/products/11-pro5.png",
   "/products/11-pro6.png"
     ],
-    sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
+  sizes: ["64GB", "128GB", "256GB", "512GB"],
     colors: ["White n blue"],
     description: "",
     highlights: [
@@ -595,6 +595,7 @@ const products = [
   ]
   },{
   id: 31,
+    category: "Phones",
   name: "Iphone-12 PRO Max",
   price: 10000.00,
   images: [
@@ -604,7 +605,7 @@ const products = [
   "/products/12-pro-max4.png",
   "/products/12-pro-max5.png"
   ],
-  sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
+  sizes: ["64GB", "128GB", "256GB", "512GB"],
   colors: ["White"],
   description: "A cozy and stylish hoodie made from premium materials, perfect for every season.",
   highlights: [
@@ -617,6 +618,7 @@ const products = [
   {
     id: 32,
     name: "Iphone-12 pro",
+    category: "Phones",
     price: 9500.00,
     images: [
   "/products/12-pro1.png",
@@ -626,7 +628,7 @@ const products = [
   "/products/12-pro5.png",
   "/products/12-pro6.png"
     ],
-    sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
+  sizes: ["64GB", "128GB", "256GB", "512GB"],
     colors: ["White n blue"],
     description: "",
     highlights: [
@@ -637,6 +639,7 @@ const products = [
   ]
   },{
   id: 33,
+    category: "Phones",
   name: "Iphone-13 pro",
   price: 13000.00,
   images: [
@@ -646,7 +649,7 @@ const products = [
   "/products/13-pro4.png",
   "/products/13-pro5.png"
   ],
-  sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
+  sizes: ["64GB", "128GB", "256GB", "512GB"],
   colors: ["White"],
   description: "A cozy and stylish hoodie made from premium materials, perfect for every season.",
   highlights: [
@@ -659,6 +662,7 @@ const products = [
   {
     id: 34,
     name: "Iphone-11",
+    category: "Phones",
     price: 5500.00,
     images: [
   "/products/111.jpg",
@@ -667,7 +671,7 @@ const products = [
   "/products/114.jpg",
   "/products/115.jpg"
     ],
-    sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
+  sizes: ["64GB", "128GB", "256GB", "512GB"],
     colors: ["White n blue"],
     description: "",
     highlights: [
@@ -678,6 +682,7 @@ const products = [
   ]
   },{
   id: 35,
+    category: "Phones",
   name: "Iphone-12",
   price: 8000.00,
   images: [
@@ -686,7 +691,7 @@ const products = [
   "/products/123.png",
   "/products/124.png"
   ],
-  sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
+  sizes: ["64GB", "128GB", "256GB", "512GB"],
   colors: ["White"],
   description: "A cozy and stylish hoodie made from premium materials, perfect for every season.",
   highlights: [
@@ -698,7 +703,8 @@ const products = [
   },
   {
     id: 36,
-    name: "Iphone-13",
+    category: "Phones",
+    category: "Phones",
     price: 13000.00,
     images: [
   "/products/131.png",
@@ -706,7 +712,7 @@ const products = [
   "/products/133.png",
   "/products/134.png"
     ],
-    sizes: ["2UK", "3UK", "4UK","5UK", "6UK", "7UK","8UK", "9UK", "10UK","11UK","12UK"],
+  sizes: ["64GB", "128GB", "256GB", "512GB"],
     colors: ["White n blue"],
     description: "",
     highlights: [
@@ -1123,6 +1129,80 @@ const products = [
 
 ];
 
+// Auto-tag categories for any products that don't have an explicit category.
+// This uses name-based heuristics so the category filter works immediately
+// without modifying every product object manually.
+;(function autoTagCategories() {
+  const phoneRe = /\b(iphone|xr|11 pro|12 pro|max|13 pro|iphone-|iphone)\b|\b11\b|\b12\b|\b13\b/i;
+  const shoesRe = /\b(nike|adidas|jordan|dunk|puma|vans|shox|air force|airforce|airforce-1|airforce1)\b/i;
+  const hubblyRe = /\b(hubbly|hubble|shisha|hookah)\b/i;
+  const accessoriesRe = /\b(case|charger|cable|accessor|earbud|headphone|cover|screen protector|charger)\b/i;
+
+  products.forEach(p => {
+    if (p.category) return; // keep explicit categories
+    const name = (p.name || '').toString().toLowerCase();
+    if (phoneRe.test(name)) {
+      p.category = 'Phones';
+    } else if (shoesRe.test(name)) {
+      p.category = 'Shoes';
+    } else if (hubblyRe.test(name)) {
+      p.category = 'Hubbly';
+    } else if (accessoriesRe.test(name)) {
+      p.category = 'Accessories';
+    } else {
+      p.category = 'Other';
+    }
+  });
+})();
+
+  // Ensure phone products have storage options instead of shoe sizes
+  ;(function ensurePhoneStorage() {
+    const storageOptions = ["64GB", "128GB", "256GB", "512GB"];
+    products.forEach(p => {
+      if ((p.category && p.category.toLowerCase() === 'phones')) {
+        // only replace if sizes looks like shoe sizes (contains 'UK') or is missing
+        if (!Array.isArray(p.sizes) || p.sizes.some(s => /UK$/i.test(s))) {
+          p.sizes = [...storageOptions];
+        }
+      }
+    });
+  })();
+
+  // Auto-build variants mapping per product: group images by detected color tokens
+  ;(function buildVariants() {
+    const tokenize = s => s.toString().toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+    products.forEach(p => {
+      if (!p.images || !Array.isArray(p.images)) return;
+      const variants = {};
+      p.images.forEach(img => {
+        const name = img.toLowerCase();
+        // try to match any declared color first
+        if (p.colors && p.colors.length) {
+          for (const color of p.colors) {
+            const toks = tokenize(color);
+            if (toks.some(t => name.includes(t))) {
+              variants[color] = variants[color] || [];
+              variants[color].push(img);
+              return;
+            }
+          }
+        }
+        // otherwise, try to infer color token from filename
+        const toks = tokenize(img);
+        for (const t of toks) {
+          if (/^(black|white|blaq|red|blue|grey|green|orange|pink|gold|silver|navy|brown)$/.test(t)) {
+            variants[t] = variants[t] || [];
+            variants[t].push(img);
+            return;
+          }
+        }
+        // fallback: push to a default 'all' bucket
+        variants.all = variants.all || [];
+        variants.all.push(img);
+      });
+      p.variants = variants;
+    });
+  })();
 // DOM Elements
 const productGrid = document.getElementById('productGrid');
 const searchInput = document.getElementById('searchInput');
@@ -1200,26 +1280,67 @@ function openModal(product) {
 
   // Thumbnails
   modalThumbnails.innerHTML = '';
-  product.images.forEach((img, idx) => {
-    const thumb = document.createElement('img');
-    thumb.src = img.startsWith('/') ? img : '/' + img;
-    thumb.loading = 'lazy';
-    thumb.className = idx === 0 ? 'selected' : '';
-    thumb.onerror = function() {
-      this.onerror = null;
-      this.src = '/products/fallback.png';
-    };
-    thumb.addEventListener('click', () => {
-      modalImage.src = img.startsWith('/') ? img : '/' + img;
-      document.querySelectorAll('#modalThumbnails img').forEach(i => i.classList.remove('selected'));
-      thumb.classList.add('selected');
+  // helper: compute images to show for a chosen color
+  function imagesForColor(color) {
+    if (!color) return product.images || [];
+    // prefer explicit product variants when available
+    if (product.variants) {
+      // exact color match
+      if (product.variants[color] && product.variants[color].length) return product.variants[color];
+      // tokenized color match (e.g., 'Black' -> 'black' key)
+      const key = color.toString().toLowerCase();
+      if (product.variants[key] && product.variants[key].length) return product.variants[key];
+      // check for any variant key that contains the token
+      for (const k of Object.keys(product.variants)) {
+        if (k.toLowerCase().includes(key) && product.variants[k].length) return product.variants[k];
+      }
+    }
+
+    const tokens = color.toString().toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+    if (!tokens.length) return product.images || [];
+    const imgs = (product.images || []).filter(img => {
+      const name = img.toLowerCase();
+      // match any color token present in the filename
+      return tokens.some(t => name.includes(t));
     });
-    modalThumbnails.appendChild(thumb);
-  });
+    return imgs.length ? imgs : (product.images || []);
+  }
+
+  // render thumbnails for a given image list
+  function renderThumbnails(imgList) {
+    modalThumbnails.innerHTML = '';
+    imgList.forEach((img, idx) => {
+      const thumb = document.createElement('img');
+      thumb.src = img.startsWith('/') ? img : '/' + img;
+      thumb.loading = 'lazy';
+      thumb.className = idx === 0 ? 'selected' : '';
+      thumb.onerror = function() { this.onerror = null; this.src = '/products/fallback.png'; };
+      thumb.addEventListener('click', () => {
+        modalImage.src = img.startsWith('/') ? img : '/' + img;
+        document.querySelectorAll('#modalThumbnails img').forEach(i => i.classList.remove('selected'));
+        thumb.classList.add('selected');
+      });
+      modalThumbnails.appendChild(thumb);
+    });
+    // set main image to first
+    if (imgList && imgList.length) {
+      modalImage.src = imgList[0].startsWith('/') ? imgList[0] : '/' + imgList[0];
+    }
+  }
 
   // Sizes
+  // Update label to 'Storage:' for phone products
+  try {
+    const sizeLabelEl = document.getElementById('sizeLabel');
+    if (sizeLabelEl) {
+      sizeLabelEl.textContent = (product.category && product.category.toLowerCase() === 'phones') ? 'Storage:' : 'Size:';
+    }
+  } catch (e) {
+    // ignore DOM errors in environments without the element
+  }
+
   sizeSelect.innerHTML = '';
-  product.sizes.forEach(size => {
+  (product.sizes || []).forEach(size => {
     const option = document.createElement('option');
     option.value = size;
     option.textContent = size;
@@ -1234,6 +1355,26 @@ function openModal(product) {
     option.textContent = color;
     colorSelect.appendChild(option);
   });
+
+  // When color changes, show images that match the color (filename heuristic)
+  const applyColorImages = () => {
+    try {
+      const selectedColor = colorSelect.value;
+      const imgs = imagesForColor(selectedColor);
+      renderThumbnails(imgs);
+    } catch (e) {
+      renderThumbnails(product.images || []);
+    }
+  };
+  colorSelect.addEventListener('change', applyColorImages);
+  // initialize thumbnails according to the default or first color
+  if (product.colors && product.colors.length) {
+    // set the select to the first color then apply
+    colorSelect.value = product.colors[0];
+    applyColorImages();
+  } else {
+    renderThumbnails(product.images || []);
+  }
 
   quantityInput.value = 1;
   productModal.classList.add('show');
@@ -1305,22 +1446,57 @@ addToCartBtn.addEventListener('click', () => {
 
 const colorFilter = document.getElementById('colorFilter');
 const sizeFilter = document.getElementById('sizeFilter');
+const categoryFilter = document.getElementById('categoryFilter');
+const sizeFilterEl = document.getElementById('sizeFilter');
 
 function filterProducts() {
   const term = searchInput.value.toLowerCase();
   const color = colorFilter.value;
   const size = sizeFilter.value;
-  let filtered = products.filter(p =>
-    p.name.toLowerCase().includes(term) &&
-    (color === '' || (p.colors && p.colors.includes(color))) &&
-    (size === '' || (p.sizes && p.sizes.includes(size)))
-  );
+  const category = categoryFilter ? categoryFilter.value : '';
+  let filtered = products.filter(p => {
+    const matchesTerm = p.name.toLowerCase().includes(term);
+    const matchesColor = (color === '' || (p.colors && p.colors.includes(color)));
+    const matchesSize = (size === '' || (p.sizes && p.sizes.includes(size)));
+    let matchesCategory = true;
+    if (category && category !== '') {
+      if (p.category) {
+        matchesCategory = p.category.toLowerCase() === category.toLowerCase();
+      } else {
+        // fallback to name-based mapping
+        matchesCategory = getCategoryProducts(category).some(x => x.id === p.id);
+      }
+    }
+    return matchesTerm && matchesColor && matchesSize && matchesCategory;
+  });
   displayProducts(filtered);
 }
 
 searchInput.addEventListener('input', filterProducts);
 colorFilter.addEventListener('change', filterProducts);
 sizeFilter.addEventListener('change', filterProducts);
+if (categoryFilter) categoryFilter.addEventListener('change', filterProducts);
+// When category changes, adjust the size filter options to show storage options for Phones
+if (categoryFilter) {
+  categoryFilter.addEventListener('change', () => {
+    try {
+      const cat = categoryFilter.value;
+      if (!sizeFilterEl) return;
+      sizeFilterEl.innerHTML = '';
+      const makeOption = (val, text) => {
+        const o = document.createElement('option'); o.value = val; o.textContent = text || val; return o;
+      };
+      sizeFilterEl.appendChild(makeOption('', 'All Sizes'));
+      if (cat && cat.toLowerCase() === 'phones') {
+        ['64GB','128GB','256GB','512GB'].forEach(s => sizeFilterEl.appendChild(makeOption(s)));
+      } else {
+        ['2UK','3UK','4UK','5UK','6UK','7UK','8UK','9UK','10UK','11UK','12UK'].forEach(s => sizeFilterEl.appendChild(makeOption(s)));
+      }
+    } catch (e) {
+      // ignore dynamic UI failures
+    }
+  });
+}
 sortSelect.addEventListener('change', () => {
   let sorted = [...products];
   const val = sortSelect.value;

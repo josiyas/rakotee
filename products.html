@@ -54,6 +54,14 @@
     <!-- Search and Sort Toolbar -->
     <div class="products-toolbar">
       <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products">
+      <select id="categoryFilter" aria-label="Filter by category">
+        <option value="">All Categories</option>
+        <option value="Shoes">Shoes</option>
+        <option value="Phones">Phones</option>
+        <option value="Hubbly">Hubbly</option>
+        <option value="Accessories">Accessories</option>
+        <option value="Sale">Sale</option>
+      </select>
       <select id="colorFilter" aria-label="Filter by color">
         <option value="">All Colors</option>
         <option value="White">White</option>
@@ -123,7 +131,7 @@
         <p class="price">R <span id="modalPrice"></span></p>
         <p id="modalDescription" class="product-description"></p>
 
-        <label for="sizeSelect">Size:</label>
+  <label for="sizeSelect" id="sizeLabel">Size:</label>
         <select id="sizeSelect"></select>
 
         <label for="colorSelect">Color:</label>
@@ -165,18 +173,24 @@ updateCartCount();
 const cartIconBtn = document.getElementById('cartIconBtn');
 const cartSidebar = document.getElementById('cartSidebar');
 const closeCartBtn = document.getElementById('closeCartBtn');
+const cartOverlay = document.getElementById('cartOverlay');
 
 // Open cart sidebar
 cartIconBtn.addEventListener('click', () => {
   renderCartSidebar();
   cartSidebar.classList.add('open');
   cartSidebar.style.display = 'block';
+  // show overlay and prevent background scroll while cart is open
+  if (typeof cartOverlay !== 'undefined' && cartOverlay) cartOverlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
 });
 
 // Close cart sidebar
 closeCartBtn.addEventListener('click', () => {
   cartSidebar.classList.remove('open');
   cartSidebar.style.display = 'none';
+  if (typeof cartOverlay !== 'undefined' && cartOverlay) cartOverlay.classList.remove('active');
+  document.body.style.overflow = '';
 });
 
 // Optional: Hide sidebar on click outside (mobile UX)
@@ -188,6 +202,8 @@ window.addEventListener('click', function(e) {
   ) {
     cartSidebar.classList.remove('open');
     cartSidebar.style.display = 'none';
+    if (typeof cartOverlay !== 'undefined' && cartOverlay) cartOverlay.classList.remove('active');
+    document.body.style.overflow = '';
   }
 });
 

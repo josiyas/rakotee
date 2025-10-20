@@ -12,12 +12,19 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+// Parse URL-encoded bodies (for HTML form POSTs)
+app.use(express.urlencoded({ extended: true }));
 applySecurity(app);
 
 // Robust CORS setup
 const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
   ? process.env.CORS_ALLOWED_ORIGINS.split(',')
-  : ['https://rakotee.site'];
+  : [
+    'http://localhost:5000',
+    'http://localhost:5001',
+    'http://127.0.0.1:5000',
+    'https://rakotee.site'
+  ];
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
@@ -69,6 +76,9 @@ app.use(morgan(process.env.LOG_LEVEL || 'dev'));
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/order', require('./routes/orders'));
+
+// Public products routes
+app.use('/api/products', require('./routes/products'));
 
 const adminRouter = require('./routes/admin');
 app.use('/api/admin', adminRouter);

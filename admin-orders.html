@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin — Orders</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 1rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .orders, .logs { margin-top: 1rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f4f4f4; }
+    .btn { padding: 6px 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Admin — Orders & IPN Logs</h1>
+    <p>For demo access include header <code>x-admin-password</code> with your ADMIN_PASSWORD value or use the admin cookie.</p>
+    <div>
+      <label>Admin password: <input id="adminPass" type="password" /></label>
+      <button id="refreshBtn">Refresh</button>
+    </div>
+    <div class="orders">
+      <h2>Orders</h2>
+      <table id="ordersTable"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Total</th><th>Paid</th><th>Delivered</th><th>Actions</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="logs">
+      <h2>IPN Logs</h2>
+      <table id="logsTable"><thead><tr><th>Time</th><th>Provider</th><th>OrderId</th><th>Verified</th><th>Amount</th><th>Payload</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+  <script>
+    function getAuthHeaders() {
+      const pass = document.getElementById('adminPass').value;
+      return pass ? { 'x-admin-password': pass } : {};
+    }
+    async function loadOrders() {
+      const h = getAuthHeaders();
+      const res = await fetch('/api/order/all', { headers: h });
+      if (!res.ok) { alert('Failed to fetch orders. Check admin password.'); return; }
+      const orders = await res.json();
+      const tbody = document.querySelector('#ordersTable tbody'); tbody.innerHTML = '';
+      orders.forEach(o => {
+        const tr = document.createElement('tr');
+        const total = (o.cart || []).reduce((s,i) => s + (i.price * (i.quantity || 1)), 0).toFixed(2);
+        tr.innerHTML = `<td>${o._id}</td><td>${o.name}</td><td>${o.email}</td><td>R${total}</td><td>${o.paid}</td><td>${o.delivered}</td><td><button class="btn" data-id="${o._id}" data-action="deliver">Mark Delivered</button></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    async function loadLogs() {
+      const h = getAuthHeaders();
+      const res = await fetch('/api/order/ipn-logs', { headers: h });
+      if (!res.ok) { alert('Failed to fetch ipn logs. Check admin password.'); return; }
+      const logs = await res.json();
+      const tbody = document.querySelector('#logsTable tbody'); tbody.innerHTML = '';
+      logs.forEach(l => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${new Date(l.createdAt).toLocaleString()}</td><td>${l.provider}</td><td>${l.orderId || ''}</td><td>${l.verified}</td><td>${l.amount || ''}</td><td><pre style="max-height:80px;overflow:auto">${JSON.stringify(l.payload,null,2)}</pre></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    document.getElementById('refreshBtn').addEventListener('click', () => { loadOrders(); loadLogs(); });
+    document.querySelector('#ordersTable').addEventListener('click', async (e) => {
+      const btn = e.target.closest('button'); if (!btn) return;
+      const id = btn.getAttribute('data-id'); const action = btn.getAttribute('data-action');
+      if (action === 'deliver') {
+        const conf = confirm('Mark order delivered?'); if (!conf) return;
+        const h = getAuthHeaders();
+        const res = await fetch('/api/order/mark-delivered/' + id, { method: 'POST', headers: h });
+        if (!res.ok) { alert('Failed to mark delivered'); return; }
+        alert('Marked delivered'); loadOrders();
+      }
+    });
+  </script>
+</body>
+</html>

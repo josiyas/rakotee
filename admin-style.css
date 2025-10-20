@@ -53,8 +53,11 @@ body {
 }
 
 .product-card img {
-  max-width: 100px;
+  max-width: 100%;
   border-radius: 8px;
+  height: auto;
+  aspect-ratio: 4/3;
+  object-fit: cover;
 }
 
 .product-card h4,
@@ -64,4 +67,12 @@ body {
 
 .hidden {
   display: none;
+}
+
+@media (max-width: 600px) {
+  .admin-container { padding: 0 12px; }
+  .top-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .product-card { display: flex; gap: 10px; align-items: center; }
+  .product-card img { width: 80px; height: auto; }
+  .product-card h4, .product-card p { margin: 0; }
 }

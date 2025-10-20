@@ -132,6 +132,9 @@ document.addEventListener('DOMContentLoaded', function() {
     cartIconBtn.addEventListener('click', () => {
       renderCart();
       cartSidebar.classList.add('open');
+      // show overlay (if present) and prevent background scroll when open
+      if (cartOverlay) cartOverlay.classList.add('active');
+      cartSidebar.style.display = 'block';
       document.body.style.overflow = 'hidden'; // prevent background scroll when open
     });
   }
@@ -139,7 +142,22 @@ document.addEventListener('DOMContentLoaded', function() {
   if (closeCartBtn && cartSidebar) {
     closeCartBtn.addEventListener('click', () => {
       cartSidebar.classList.remove('open');
+      // hide overlay (if present) and re-enable scroll
+      if (cartOverlay) cartOverlay.classList.remove('active');
+      cartSidebar.style.display = 'none';
       document.body.style.overflow = ''; // re-enable scroll
+    });
+  }
+
+  // Close cart when clicking the overlay
+  if (cartOverlay) {
+    cartOverlay.addEventListener('click', () => {
+      if (cartSidebar.classList.contains('open')) {
+        cartSidebar.classList.remove('open');
+        cartOverlay.classList.remove('active');
+        cartSidebar.style.display = 'none';
+        document.body.style.overflow = '';
+      }
     });
   }
 

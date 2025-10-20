@@ -6,6 +6,43 @@ const router = express.Router();
 const Admin = require('../models/admin');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { adminLoginLimiter } = require('../middleware/rateLimiter');
+
+// PIN-based access (server-side)
+// Expects { pin } in the body. The bcrypt hash of the PIN should be set in env ADMIN_PIN_HASH
+router.post('/pin', adminLoginLimiter, async (req, res) => {
+  const { pin } = req.body;
+  if (!pin) return res.status(400).json({ error: 'PIN required' });
+  try {
+    const hash = process.env.ADMIN_PIN_HASH;
+    if (!hash) return res.status(500).json({ error: 'Server not configured for PIN access' });
+    const ok = await bcrypt.compare(pin, hash);
+    if (!ok) return res.status(401).json({ error: 'Invalid PIN' });
+    // issue a token like the normal admin login (role must be 'admin')
+    const token = jwt.sign({ adminId: 'pin', role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '20m' });
+    // Set HttpOnly cookie for admin session. server.js provides a res.cookie serializer function
+    const cookieOpts = {
+      httpOnly: true,
+      secure: process.env.COOKIE_SECURE === 'true',
+      sameSite: 'strict',
+      maxAge: 20 * 60 * 1000 // 20 minutes
+    };
+    try {
+      const serialized = res.cookie('admin_token', token, cookieOpts);
+      // set header
+      res.setHeader('Set-Cookie', serialized);
+    } catch (err) {
+      console.warn('Failed to set cookie via res.cookie helper, attempting manual serialization', err);
+      const cookie = require('cookie');
+      res.setHeader('Set-Cookie', cookie.serialize('admin_token', token, cookieOpts));
+    }
+    // Also return token in JSON for compatibility (frontend will prefer cookie if present)
+    res.json({ token, role: 'admin' });
+  } catch (err) {
+    console.error('PIN login error', err);
+    res.status(500).json({ error: 'PIN login failed' });
+  }
+});
 
 // Admin login
 router.post('/login', async (req, res) => {
@@ -26,14 +63,99 @@ router.post('/login', async (req, res) => {
 
 // --- Product Management ---
 const Product = require('../models/Product');
+const multer = require('multer');
+const path = require('path');
 
-// Create product
-router.post('/products', requireAdmin, async (req, res) => {
+// Utility: validate that variant image paths exist on disk or are valid http(s) URLs
+function validateVariantsObject(variants) {
+  const fs = require('fs');
+  const missing = [];
+  if (!variants || typeof variants !== 'object') return { ok: true };
+  const baseDir = path.join(__dirname, '..', '..'); // repo root
+  for (const [color, imgs] of Object.entries(variants)) {
+    if (!Array.isArray(imgs)) continue;
+    for (const img of imgs) {
+      if (!img || typeof img !== 'string') continue;
+      const trimmed = img.trim();
+      if (/^https?:\/\//i.test(trimmed)) continue; // external URL, accept
+      // resolve relative to repo root
+      const abs = path.join(baseDir, trimmed.replace(/^\//, ''));
+      if (!fs.existsSync(abs)) {
+        missing.push(trimmed);
+      }
+    }
+  }
+  return { ok: missing.length === 0, missing };
+}
+
+// multer setup: store uploads in memory (caller may move to disk/ S3 in production)
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+// Create product (accept multipart/form-data with files named 'images')
+router.post('/products', requireAdmin, upload.array('images'), async (req, res) => {
   try {
-    const product = new Product(req.body);
+    const body = req.body || {};
+    // parse arrays/JSON fields when sent as strings
+    const sizes = body.sizes ? JSON.parse(body.sizes) : (body.sizes || []);
+    const colors = body.colors ? JSON.parse(body.colors) : (body.colors || []);
+    const highlights = body.highlights ? JSON.parse(body.highlights) : (body.highlights || []);
+    let variants = undefined;
+    if (body.variants) {
+      try { variants = JSON.parse(body.variants); } catch (e) { variants = body.variants; }
+    }
+
+    const images = [];
+    // If files were uploaded, we need to persist them somewhere. For now, store them in ./images/products with a timestamped filename.
+    if (req.files && req.files.length) {
+      const fs = require('fs');
+      const uploadDir = path.join(__dirname, '..', '..', 'images', 'products');
+      if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+      for (const file of req.files) {
+        const ext = path.extname(file.originalname) || '.jpg';
+        const fname = `${Date.now()}-${Math.random().toString(36).slice(2,8)}${ext}`;
+        const outPath = path.join(uploadDir, fname);
+        fs.writeFileSync(outPath, file.buffer);
+        // store relative path for frontend
+        images.push(`/images/products/${fname}`);
+      }
+    }
+
+  // fallback: if body.images provided as JSON string or array
+    if ((!images.length) && body.images) {
+      try {
+        const parsed = JSON.parse(body.images);
+        if (Array.isArray(parsed)) images.push(...parsed);
+      } catch (e) {
+        // if it's a single url string
+        if (typeof body.images === 'string' && body.images.trim()) images.push(body.images.trim());
+      }
+    }
+
+    // validate variants reference files
+    if (variants) {
+      const vres = validateVariantsObject(variants);
+      if (!vres.ok) return res.status(400).json({ error: 'Variant validation failed', missing: vres.missing });
+    }
+
+    const prodData = {
+      name: body.name,
+      description: body.description,
+      price: parseFloat(body.price) || 0,
+      image: images[0] || body.image || '',
+      images,
+      sizes,
+      colors,
+      highlights,
+      variants,
+      category: body.category || ''
+    };
+
+    const product = new Product(prodData);
     await product.save();
     res.status(201).json(product);
   } catch (err) {
+    console.error('Create product error', err);
     res.status(400).json({ error: 'Failed to create product', details: err.message });
   }
 });
@@ -80,12 +202,53 @@ router.get('/products/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// Update product
-router.put('/products/:id', requireAdmin, async (req, res) => {
+// Update product (supports multipart/form-data with images appended)
+router.put('/products/:id', requireAdmin, upload.array('images'), async (req, res) => {
   try {
+    const body = req.body || {};
+    const update = { ...body };
+    // parse JSON string fields if present
+    if (body.sizes && typeof body.sizes === 'string') {
+      try { update.sizes = JSON.parse(body.sizes); } catch (e) { update.sizes = body.sizes.split(/,|\n/).map(s=>s.trim()).filter(Boolean); }
+    }
+    if (body.colors && typeof body.colors === 'string') {
+      try { update.colors = JSON.parse(body.colors); } catch (e) { update.colors = body.colors.split(/,|\n/).map(s=>s.trim()).filter(Boolean); }
+    }
+    if (body.highlights && typeof body.highlights === 'string') {
+      try { update.highlights = JSON.parse(body.highlights); } catch (e) { update.highlights = body.highlights.split(/,|\n/).map(s=>s.trim()).filter(Boolean); }
+    }
+    if (body.variants && typeof body.variants === 'string') {
+      try { update.variants = JSON.parse(body.variants); } catch (e) { update.variants = body.variants; }
+    }
+
+    // handle uploaded files: save and append to images
+    if (req.files && req.files.length) {
+      const fs = require('fs');
+      const uploadDir = path.join(__dirname, '..', '..', 'images', 'products');
+      if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+      const newImgs = [];
+      for (const file of req.files) {
+        const ext = path.extname(file.originalname) || '.jpg';
+        const fname = `${Date.now()}-${Math.random().toString(36).slice(2,8)}${ext}`;
+        const outPath = path.join(uploadDir, fname);
+        fs.writeFileSync(outPath, file.buffer);
+        newImgs.push(`/images/products/${fname}`);
+      }
+      // append new images to existing images array
+      const existing = (await Product.findById(req.params.id)) || {};
+      update.images = Array.isArray(existing.images) ? [...existing.images, ...newImgs] : [...newImgs];
+      if (!update.image) update.image = update.images[0];
+    }
+
+    // validate variants if provided
+    if (update.variants) {
+      const vres = validateVariantsObject(update.variants);
+      if (!vres.ok) return res.status(400).json({ error: 'Variant validation failed', missing: vres.missing });
+    }
+
     const product = await Product.findByIdAndUpdate(
       req.params.id,
-      { ...req.body, updatedAt: new Date() },
+      { ...update, updatedAt: new Date() },
       { new: true, runValidators: true }
     );
     if (!product) return res.status(404).json({ error: 'Product not found' });
@@ -423,9 +586,18 @@ const AdminLog = require('../models/AdminLog');
 
 // Access control middleware (simple demo)
 function requireAdmin(req, res, next) {
+  let token = null;
   const authHeader = req.headers['authorization'];
-  if (!authHeader) return res.status(401).json({ error: 'No token provided' });
-  const token = authHeader.replace('Bearer ', '');
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.replace('Bearer ', '');
+  }
+  // Check cookie header if present (cookie parsing minimal)
+  if (!token && req.headers.cookie) {
+    const cookie = require('cookie');
+    const parsed = cookie.parse(req.headers.cookie || '');
+    if (parsed && parsed.admin_token) token = parsed.admin_token;
+  }
+  if (!token) return res.status(401).json({ error: 'No token provided' });
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded || decoded.role !== 'admin') {
