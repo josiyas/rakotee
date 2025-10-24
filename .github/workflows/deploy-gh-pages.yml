@@ -1,0 +1,28 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare public folder (copy frontend files)
+        shell: bash
+        run: |
+          set -e
+          rm -rf public
+          mkdir -p public
+          # Copy everything except backend, supabase, .github, node_modules, .git
+          shopt -s extglob || true
+          rsync -av --progress --exclude 'rakotee-backend' --exclude 'supabase' --exclude '.github' --exclude 'node_modules' --exclude '.git' ./ public/ || true
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
