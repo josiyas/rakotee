@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rakotee Admin</title>
+  <link rel="stylesheet" href="admin-style.css" />
+</head>
+<body>
+  <div class="admin-container">
+    <!-- LOGIN SCREEN -->
+    <div id="loginSection" class="card">
+      <h2>Admin Login</h2>
+  <input type="email" id="loginEmail" placeholder="Email" required class="hidden" />
+  <input type="password" id="loginPassword" placeholder="Password" required class="hidden" />
+  <button id="loginBtn" class="hidden">Login</button>
+  <hr class="hidden" />
+  <label for="pinInput">Or enter admin PIN</label>
+      <input type="text" id="pinInput" placeholder="Admin PIN" />
+      <button id="pinBtn">Enter PIN</button>
+      <p id="loginError"></p>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="adminDashboard" class="hidden">
+      <div class="top-bar">
+        <h2>Rakotee Admin Panel</h2>
+        <button id="logoutBtn">Logout</button>
+      </div>
+      <div id="adminBanner" style="display:none;padding:8px 12px;border-radius:8px;margin:12px 0;font-size:0.95rem"></div>
+
+      <!-- Order List -->
+      <div id="orderList" class="card">
+        <h3>Orders</h3>
+        <table id="ordersTable" style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Amount</th>
+              <th>Paid</th>
+              <th>Delivered</th>
+              <th>Payment Method</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody">
+            <tr><td colspan="8" style="text-align:center;">No orders yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Upload Form -->
+      <form id="productForm" class="card">
+        <h3>Upload New Product</h3>
+        <input type="text" id="name" placeholder="Product Name" required />
+        <input type="number" id="price" placeholder="Product Price" required step="0.01" />
+        <!-- allow multiple images to match front-end product shape -->
+        <label for="imageFiles">Images (first image will be primary). You can select multiple files.</label>
+        <input type="file" id="imageFiles" accept="image/*" multiple />
+        <input type="text" id="sizes" placeholder="Sizes (comma separated) e.g. 6UK,7UK,8UK" />
+        <input type="text" id="colors" placeholder="Colors (comma separated) e.g. White,Black" />
+        <label for="category">Category</label>
+        <select id="category">
+          <option value="">Uncategorized</option>
+          <option value="Shoes">Shoes</option>
+          <option value="Phones">Phones</option>
+          <option value="Hubbly">Hubbly</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Sale">Sale</option>
+          <option value="Other">Other</option>
+        </select>
+        <textarea id="description" placeholder="Description" rows="3"></textarea>
+        <textarea id="highlights" placeholder="Highlights (one per line)" rows="3"></textarea>
+        <label for="variants">Variants (optional) - JSON mapping color -> image filenames/URLs</label>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <button type="button" id="autoVariantsBtn">Auto-generate variants</button>
+          <small style="color:#666;">(scans selected file names and your Colors field to build a starter mapping)</small>
+        </div>
+        <textarea id="variants" placeholder='e.g. {"Black":["/images/products/blaq1.jpg","/images/products/blaq2.jpg"], "White":["/images/products/white1.jpg"] }' rows="4"></textarea>
+        <button type="submit">Upload</button>
+        <p id="uploadStatus"></p>
+      </form>
+
+      <!-- Product List -->
+      <div id="productList" class="product-list card">
+        <h3>Existing Products</h3>
+        <div id="productsContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Admin Script -->
+  <script type="module">
+
+    const loginSection = document.getElementById("loginSection");
+    const adminDashboard = document.getElementById("adminDashboard");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const loginError = document.getElementById("loginError");
+
+    // UI helpers
+    function showAdmin() {
+      loginSection.classList.add('hidden');
+      adminDashboard.classList.remove('hidden');
+    }
+    function showLogin() {
+      adminDashboard.classList.add('hidden');
+      loginSection.classList.remove('hidden');
+    }
+
+    // Try auto-login: prefer server-set cookie; fall back to legacy localStorage token for migration
+    (function tryAutoLogin() {
+      const cookieAdmin = document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('admin_token='));
+      const legacyToken = localStorage.getItem('rakotee_admin_token');
+      if (cookieAdmin || legacyToken) {
+        showAdmin();
+        // Fire-and-forget load; these functions handle errors internally
+        loadProducts();
+        loadOrders();
+        setAdminBanner();
+      }
+    })();
+
+    function setAdminBanner() {
+      const banner = document.getElementById('adminBanner');
+      if (!banner) return;
+      // detect admin via token or cookie
+      const token = localStorage.getItem('rakotee_admin_token');
+      const cookieAdmin = document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('admin_token='));
+      if (token || cookieAdmin) {
+        banner.style.display = 'block';
+        banner.style.background = '#153e2b';
+        banner.style.color = '#d4f8e8';
+        banner.textContent = 'Admin mode: You have full edit access.';
+      } else {
+        banner.style.display = 'block';
+        banner.style.background = '#3a3838';
+        banner.style.color = '#fff';
+        banner.textContent = 'Read-only mode: Server authentication required for edits.';
+      }
+    }
+
+    // Admin login with backend
+    loginBtn.onclick = async () => {
+      loginError.textContent = '';
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      try {
+        const res = await fetch('http://localhost:5000/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.token) {
+          // Server should set an HttpOnly cookie; do not persist token to localStorage for new logins.
+          // Keep token in response only for backward compatibility; we avoid storing it here.
+          showAdmin();
+          loadProducts();
+          loadOrders();
+        } else {
+          loginError.textContent = data.error || 'Login failed.';
+        }
+      } catch (err) {
+        loginError.textContent = "Login failed: " + (err.message || err);
+      }
+    };
+
+  // PIN-based access (server-validated)
+    const pinBtn = document.getElementById('pinBtn');
+    const pinInput = document.getElementById('pinInput');
+    pinBtn.onclick = async () => {
+      const val = (pinInput.value || '').trim();
+      if (!val) return;
+      loginError.textContent = '';
+      try {
+        const res = await fetch('http://localhost:5000/api/admin/pin', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: val })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          // Server should set HttpOnly cookie; do not store token in localStorage for new logins.
+          showAdmin();
+          loadProducts();
+          loadOrders();
+          return;
+        }
+        // server responded but PIN invalid
+        loginError.textContent = data.error || 'Invalid PIN.';
+      } catch (err) {
+        console.error('PIN request failed', err);
+        loginError.textContent = 'PIN request failed. Check server.';
+      }
+    };
+
+    logoutBtn.onclick = () => {
+      localStorage.removeItem('rakotee_admin_token');
+      showLogin();
+    };
+
+    // Upload product
+    const form = document.getElementById("productForm");
+    const status = document.getElementById("uploadStatus");
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      const name = document.getElementById("name").value;
+      const price = parseFloat(document.getElementById("price").value);
+      const files = Array.from(document.getElementById("imageFiles").files || []);
+      const sizesInput = document.getElementById("sizes").value;
+      const colorsInput = document.getElementById("colors").value;
+      const description = document.getElementById("description").value;
+      const highlightsInput = document.getElementById("highlights").value;
+
+      // parse inputs to arrays
+      const sizes = sizesInput.split(/,|\n/).map(s => s.trim()).filter(Boolean);
+      const colors = colorsInput.split(/,|\n/).map(s => s.trim()).filter(Boolean);
+      const highlights = highlightsInput.split(/\r?\n|,/).map(s => s.trim()).filter(Boolean);
+
+      try {
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('price', price);
+  formData.append('description', description);
+      const category = document.getElementById('category').value;
+      formData.append('category', category);
+  formData.append('sizes', JSON.stringify(sizes));
+  formData.append('colors', JSON.stringify(colors));
+  formData.append('highlights', JSON.stringify(highlights));
+  // optional explicit variants mapping
+  const variantsInput = document.getElementById('variants').value;
+  if (variantsInput && variantsInput.trim()) {
+    formData.append('variants', variantsInput);
+  }
+  // append image files (backend should accept multiple files named 'images')
+  files.forEach(f => formData.append('images', f));
+        const legacyToken = localStorage.getItem('rakotee_admin_token');
+        const res = await fetch('http://localhost:5000/api/admin/products', {
+          method: 'POST',
+          credentials: 'include',
+          headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {},
+          body: formData
+        });
+          const data = await res.json();
+        if (res.ok) {
+          status.textContent = "✅ Product uploaded!";
+          form.reset();
+          loadProducts();
+        } else {
+          status.textContent = data.error || "❌ Failed to upload product.";
+        }
+      } catch (err) {
+        console.error(err);
+        status.textContent = "❌ Failed to upload product.";
+      }
+    };
+
+    // Auto-generate variants from selected image filenames and colors input
+    document.getElementById('autoVariantsBtn').addEventListener('click', () => {
+      const files = Array.from(document.getElementById('imageFiles').files || []);
+      const colors = document.getElementById('colors').value.split(/,|\n/).map(s=>s.trim()).filter(Boolean);
+      const mapping = {};
+      const tokenize = s => s.toString().toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+      if (files.length) {
+        files.forEach(f => {
+          const name = f.name.toLowerCase();
+          let matched = false;
+          for (const c of colors) {
+            const toks = tokenize(c);
+            if (toks.some(t => name.includes(t))) {
+              mapping[c] = mapping[c] || [];
+              mapping[c].push(f.name);
+              matched = true;
+              break;
+            }
+          }
+          if (!matched) {
+            mapping.all = mapping.all || [];
+            mapping.all.push(f.name);
+          }
+        });
+      } else {
+        // no files selected; try a heuristic: if colors include file-like names, just create empty arrays
+        colors.forEach(c => mapping[c] = []);
+      }
+      document.getElementById('variants').value = JSON.stringify(mapping, null, 2);
+    });
+
+    // Load and show products
+    async function loadProducts() {
+      const container = document.getElementById("productsContainer");
+      container.innerHTML = "";
+      try {
+        const legacyToken = localStorage.getItem('rakotee_admin_token');
+        const res = await fetch('http://localhost:5000/api/admin/products', {
+          credentials: 'include',
+          headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
+        });
+
+        // If unauthorized, fall back to public products endpoint and render read-only
+        if (res.status === 401 || res.status === 403) {
+          console.warn('Admin products unauthorized; fetching public products');
+          const pub = await fetch('http://localhost:5000/api/products');
+          if (!pub.ok) {
+            container.innerHTML = '<p>Failed to load products.</p>';
+            return;
+          }
+          const productsArr = await pub.json();
+          if (!productsArr || !productsArr.length) {
+            container.innerHTML = '<p>No products found.</p>';
+            return;
+          }
+          // Render read-only cards (no update/delete)
+          productsArr.forEach(product => {
+            const productCard = document.createElement("div");
+            productCard.className = "product-card";
+            const primaryImage = (product.images && product.images.length) ? product.images[0] : (product.image || '');
+            productCard.innerHTML = `
+              <img src="${primaryImage}" alt="${product.name}" />
+              <h4>${product.name}</h4>
+              <p class="price">R ${product.price}</p>
+              <p class="sizes">${(product.sizes||[]).join(', ')}</p>
+              <p class="colors">${(product.colors||[]).join(', ')}</p>
+              <p class="description">${product.description || ''}</p>
+              <p class="highlights">${(product.highlights||[]).join('\n')}</p>
+            `;
+            container.appendChild(productCard);
+          });
+          return;
+        }
+
+        if (!res.ok) {
+          container.innerHTML = '<p>Failed to load products.</p>';
+          return;
+        }
+        const data = await res.json();
+        const products = data.products || [];
+        if (!products.length) {
+          container.innerHTML = '<p>No products found.</p>';
+          return;
+        }
+        products.forEach(product => {
+          const productCard = document.createElement("div");
+          productCard.className = "product-card";
+          // for compatibility with existing product shape, show first image and other metadata
+          const primaryImage = (product.images && product.images.length) ? product.images[0] : (product.image || '');
+          productCard.innerHTML = `
+            <img src="${primaryImage}" alt="${product.name}" />
+            <h4 contenteditable="true">${product.name}</h4>
+            <p class="price" contenteditable="true">R ${product.price}</p>
+            <p class="sizes" contenteditable="true">${(product.sizes||[]).join(', ')}</p>
+            <p class="colors" contenteditable="true">${(product.colors||[]).join(', ')}</p>
+            <p class="category" contenteditable="true">${product.category || ''}</p>
+            <p class="description" contenteditable="true">${product.description || ''}</p>
+            <p class="highlights" contenteditable="true">${(product.highlights||[]).join('\n')}</p>
+            <label>Variants (JSON)</label>
+            <textarea class="variants">${product.variants ? JSON.stringify(product.variants) : ''}</textarea>
+            <button data-id="${product._id}" class="updateBtn">Save</button>
+            <button data-id="${product._id}" class="deleteBtn">Delete</button>
+          `;
+          container.appendChild(productCard);
+        });
+
+        // Edit & delete
+        container.querySelectorAll(".deleteBtn").forEach(btn => {
+          btn.onclick = async () => {
+            try {
+              const legacyToken = localStorage.getItem('rakotee_admin_token');
+              await fetch(`http://localhost:5000/api/admin/products/${btn.dataset.id}`, {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
+              });
+              loadProducts();
+            } catch (err) {
+              console.error('Delete failed', err);
+            }
+          };
+        });
+
+        container.querySelectorAll(".updateBtn").forEach(btn => {
+          btn.onclick = async () => {
+            try {
+              const card = btn.parentElement;
+              const newName = card.querySelector("h4").textContent.trim();
+              const newPrice = parseFloat(card.querySelector(".price").textContent.replace(/[^\d.]/g, ''));
+              const sizesStr = card.querySelector('.sizes').textContent.trim();
+              const colorsStr = card.querySelector('.colors').textContent.trim();
+              const description = card.querySelector('.description').textContent.trim();
+              const highlightsStr = card.querySelector('.highlights').textContent.trim();
+              const variantsStr = card.querySelector('.variants').value.trim();
+              const sizes = sizesStr.split(/,|\n/).map(s => s.trim()).filter(Boolean);
+              const colors = colorsStr.split(/,|\n/).map(s => s.trim()).filter(Boolean);
+              const highlights = highlightsStr.split(/\r?\n|,/).map(s => s.trim()).filter(Boolean);
+              const legacyToken = localStorage.getItem('rakotee_admin_token');
+              const category = card.querySelector('.category').textContent.trim();
+              let variants = undefined;
+              if (variantsStr) {
+                try { variants = JSON.parse(variantsStr); } catch (e) { variants = variantsStr; }
+              }
+              const body = { name: newName, price: newPrice, sizes, colors, description, highlights, category, variants };
+              const res = await fetch(`http://localhost:5000/api/admin/products/${btn.dataset.id}`, {
+                  method: 'PUT',
+                  credentials: 'include',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    ...(legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {})
+                  },
+                  body: JSON.stringify(body)
+                });
+              if (!res.ok) console.error('Update failed', await res.text());
+              loadProducts();
+            } catch (err) {
+              console.error('Update failed', err);
+            }
+          };
+        });
+
+      } catch (err) {
+        console.error('Load products error', err);
+        container.innerHTML = '<p>Error loading products.</p>';
+      }
+    }
+
+    // Load and show orders
+    async function loadOrders() {
+      try {
+        const legacyToken = localStorage.getItem('rakotee_admin_token');
+        const res = await fetch('http://localhost:5000/api/order/all', {
+          credentials: 'include',
+          headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
+        });
+        const tbody = document.getElementById("ordersBody");
+        tbody.innerHTML = '';
+        if (!res.ok) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Failed to load orders.</td></tr>';
+          return;
+        }
+        const orders = await res.json();
+        if (!orders.length) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No orders yet.</td></tr>';
+          return;
+        }
+        orders.forEach(order => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${order._id}</td>
+            <td>${order.name}</td>
+            <td>${order.email}</td>
+            <td>R${order.cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}</td>
+            <td class="${order.paid ? 'paid' : 'unpaid'}">${order.paid ? 'Paid' : 'Unpaid'}</td>
+            <td class="${order.delivered ? 'delivered' : 'not-delivered'}">${order.delivered ? 'Delivered' : 'Not Delivered'}</td>
+            <td>${order.paymentMethod || '-'}</td>
+            <td>
+              <button onclick="markDelivered('${order._id}')" ${order.delivered ? 'disabled' : ''}>Mark Delivered</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        console.error('Load orders error', err);
+        const tbody = document.getElementById("ordersBody");
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Error loading orders.</td></tr>';
+      }
+    }
+    window.markDelivered = async function(orderId) {
+      try {
+        const legacyToken = localStorage.getItem('rakotee_admin_token');
+        await fetch(`http://localhost:5000/api/order/deliver/${orderId}`, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
+        });
+        loadOrders();
+      } catch (err) {
+        console.error('Mark delivered failed', err);
+      }
+    }
+  </script>
+</body>
+</html>
