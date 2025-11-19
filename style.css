@@ -1782,40 +1782,7 @@ a {
 }
 
 
-.account-dropdown {
-  position: relative;
-  display: inline-block;
-}
 
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 40px;
-  right: 0;
-  flex-direction: column;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  min-width: 140px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  z-index: 999;
-}
-
-.dropdown-menu.active {
-  display: flex;
-}
-
-.dropdown-menu a {
-  padding: 10px;
-  text-decoration: none;
-  color: black;
-  background-color: #fff;
-  border-bottom: 1px solid #eee;
-  transition: background 0.2s;
-}
-
-.dropdown-menu a:hover {
-  background-color: #f4f4f4;
-}
 
 
 .product-card {
@@ -1859,7 +1826,7 @@ a {
 
 /* --- Mobile Forms & Tables --- */
 @media (max-width: 600px) {
-  form, .auth-form, .checkout-form, .modal-content form {
+  form, .checkout-form, .modal-content form {
     width: 100% !important;
     max-width: 100vw;
     padding: 1rem 0.5rem !important;

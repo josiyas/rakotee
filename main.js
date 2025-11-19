@@ -48,64 +48,8 @@ if (searchToggle && searchBar) {
   });
 }
 
-// --- Account dropdown logic ---
-function renderAccountDropdown() {
-  const isLoggedIn = localStorage.getItem("rakotee_logged_in") === "true";
-  const userEmail = localStorage.getItem("user_email");
-  const accountDropdown = document.getElementById("accountDropdown");
-  if (!accountDropdown) return;
-  if (isLoggedIn) {
-    accountDropdown.innerHTML = `
-      <button class="icon-btn" id="accountToggle" aria-label="Account" tabindex="0">
-        <i class="fas fa-user"></i>
-        <span class="user-email" style="margin-left:8px;font-size:0.95em;">${userEmail ? userEmail : ""}</span>
-      </button>
-      <div class="dropdown-menu" id="accountMenu">
-        <a href="account.html">Account</a>
-        <a href="#" id="logoutBtn">Logout</a>
-      </div>
-    `;
-  } else {
-    accountDropdown.innerHTML = `
-      <button class="icon-btn" id="accountToggle" aria-label="Account" tabindex="0">
-        <i class="fas fa-user"></i>
-      </button>
-      <div class="dropdown-menu" id="accountMenu">
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
-      </div>
-    `;
-  }
-  // Dropdown toggle logic
-  const toggle = accountDropdown.querySelector("#accountToggle");
-  const menu = accountDropdown.querySelector("#accountMenu");
-  if (toggle && menu) {
-    toggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      menu.classList.toggle("active");
-      accountDropdown.setAttribute("aria-expanded", menu.classList.contains("active"));
-      if (menu.classList.contains("active")) menu.querySelector("a").focus();
-    });
-    toggle.addEventListener("keydown", e => {
-      if (e.key === "Enter" || e.key === " ") toggle.click();
-    });
-    document.addEventListener("click", function handler() {
-      menu.classList.remove("active");
-      accountDropdown.setAttribute("aria-expanded", false);
-    }, { once: true });
-  }
-  // Logout handler
-  const logoutBtn = accountDropdown.querySelector("#logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.onclick = function(e) {
-      e.preventDefault();
-      localStorage.setItem("rakotee_logged_in", "false");
-      localStorage.removeItem("user_email");
-      location.reload();
-    };
-  }
-}
-renderAccountDropdown();
+// Account features removed — account pages and auth scripts deleted.
+// If you later want to re-enable account UI, restore the old `renderAccountDropdown` function and the related pages.
 
 // --- Mailing list form feedback ---
 const mailingListForm = document.getElementById("mailingListForm");
