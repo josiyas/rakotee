@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin — Orders</title>
+  <link rel="stylesheet" href="admin-orders.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Admin — Orders</h1>
+
+    <div class="controls">
+      <button id="btnNewSample" class="btn">Create Sample Order</button>
+      <button id="btnClearAll" class="btn danger">Clear All Orders</button>
+      <button id="btnExport" class="btn">Export Orders</button>
+      <label class="btn" for="importFile">Import Orders</label>
+      <input id="importFile" type="file" accept="application/json" style="display:none" />
+      <input id="searchInput" placeholder="Search by customer or id" />
+    </div>
+
+    <section class="orders-section">
+      <h2>Orders</h2>
+      <div class="table-wrap">
+        <table id="ordersTable">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Payment</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Order details modal -->
+    <div id="orderModal" class="modal" aria-hidden="true">
+      <div class="modal-dialog">
+        <header>
+          <h3>Order Details</h3>
+          <button id="modalClose" class="btn">Close</button>
+        </header>
+        <main>
+          <section class="customer-info"></section>
+          <section class="products-list"></section>
+          <section class="order-financials"></section>
+          <section class="order-controls"></section>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="orders.module.js"></script>
+  <script type="module" src="admin-orders.js"></script>

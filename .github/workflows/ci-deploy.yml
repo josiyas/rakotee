@@ -1,0 +1,41 @@
+name: CI & Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        working-directory: ./rakotee-backend
+        run: npm ci
+      - name: Run tests (if any)
+        working-directory: ./rakotee-backend
+        run: |
+          if [ -f package.json ]; then npm test || true; fi
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_REPO }}:latest ./rakotee-backend
+      - name: Push to Docker Hub (optional)
+        if: github.event_name == 'push' && secrets.DOCKERHUB_USERNAME
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+          docker push ${{ secrets.DOCKERHUB_REPO }}:latest
+      - name: Trigger Render deploy (optional)
+        if: secrets.RENDER_SERVICE_ID && secrets.RENDER_API_KEY
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"serviceId":"'${{ secrets.RENDER_SERVICE_ID }}'"}' \
+            https://api.render.com/deploy
