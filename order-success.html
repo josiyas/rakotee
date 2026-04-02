@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Order Successful</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body{font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f7fafc;margin:0}
+    .card{background:#fff;padding:20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.08);max-width:900px;width:96%}
+    .success{color:green;font-weight:700}
+    .muted{color:#666}
+    a.btn{display:inline-block;margin-top:12px;padding:8px 12px;background:#2b6cb0;color:#fff;border-radius:6px;text-decoration:none}
+    .receipt{display:grid;grid-template-columns:1fr;gap:12px}
+    .flex-row{display:flex;gap:12px;align-items:flex-start}
+    .products{border-top:1px solid #eee;padding-top:8px}
+    .product-row{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px dashed #f0f0f0}
+    .product-row img{width:64px;height:64px;object-fit:cover;border-radius:6px;background:#fafafa}
+    .totals{font-weight:700}
+    .controls{display:flex;gap:8px;margin-top:12px}
+    @media(min-width:700px){ .receipt{grid-template-columns:2fr 1fr} }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Thank you — your payment was processed</h2>
+    <p id="msg">Finalising your order...</p>
+    <div id="details"></div>
+    <a href="/" class="btn">Return to shop</a>
+  </div>
+
+  <script type="module">
+    // order-success: displays a printable receipt and (optionally) emails via EmailJS.
+    import Orders from './orders.module.js';
+    const CART_KEY = 'rakotee_cart_v1';
+    const PENDING_KEY = 'rakotee_pending_order';
+
+    // EmailJS placeholders (replace with your ids)
+    const EMAILJS = { user_id: '', service_id: '', template_id: '' };
+
+    function readCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY)||'[]'); }catch(e){ return []; } }
+    function clearCart(){ localStorage.removeItem(CART_KEY); window.dispatchEvent(new CustomEvent('cart-cleared')); }
+
+    function getQuery(){ const qs = new URLSearchParams(window.location.search); const obj={}; for(const [k,v] of qs.entries()) obj[k]=v; return obj; }
+
+    // render a receipt DOM from an order object
+    function renderReceipt(order, method){
+      const card = document.querySelector('.card');
+      document.getElementById('msg').innerHTML = '<span class="success">Order created successfully</span>';
+      const receipt = document.createElement('div'); receipt.className = 'receipt';
+      const left = document.createElement('div'); left.className='left';
+      left.innerHTML = `
+        <h3>Customer</h3>
+        <p><strong>${escapeHtml(order.customerName)}</strong><br>${escapeHtml(order.customerEmail)}<br>${escapeHtml(order.customerPhone||'')}</p>
+        <h3>Products</h3>
+        <div class="products">
+          ${order.products.map(p=>`<div class="product-row"><img src="${escapeHtml(p.image||'/products/fallback.png')}" alt=""/><div><div class="pname">${escapeHtml(p.name)}</div><div>Qty: ${p.quantity}</div><div>Price: R ${Number(p.price).toFixed(2)}</div></div></div>`).join('')}
+        </div>
+      `;
+      const right = document.createElement('div'); right.className='right';
+      right.innerHTML = `
+        <h3>Summary</h3>
+        <p class="totals">Total: R ${Number(order.totalAmount).toFixed(2)}</p>
+        <p>Payment method: ${escapeHtml(method)}</p>
+        <p>Order ID: <strong>${escapeHtml(order.orderId)}</strong></p>
+        <p>Payment status: ${escapeHtml(order.paymentStatus)}</p>
+        <p>Order status: ${escapeHtml(order.orderStatus)}</p>
+        <p>Created: ${new Date(order.createdAt).toLocaleString()}</p>
+        <div class="controls">
+          <button id="printBtn" class="btn">Print Receipt</button>
+        </div>
+      `;
+      receipt.appendChild(left); receipt.appendChild(right);
+      document.getElementById('details').innerHTML = ''; document.getElementById('details').appendChild(receipt);
+
+      const printBtn = document.getElementById('printBtn'); if(printBtn){ printBtn.addEventListener('click', ()=>{ try{ window.print(); }catch(e){ alert('Print not supported in this browser'); } }); }
+    }
+
+    // basic escaping
+    function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+
+    // email sending via EmailJS with validation and fallback
+    async function sendConfirmationEmail(order){
+      if(!EMAILJS.user_id || !EMAILJS.service_id || !EMAILJS.template_id){ return; }
+      if(!order.customerEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(order.customerEmail)) return;
+      try{
+        if(!window.emailjs){ await loadScript('https://cdn.emailjs.com/sdk/3.2.0/email.min.js'); emailjs.init(EMAILJS.user_id); }
+        const itemsText = order.products.map(p=>`${p.name} x${p.quantity} - R ${Number(p.price).toFixed(2)}`).join('\n');
+        const templateParams = { to_email: order.customerEmail, to_name: order.customerName, order_id: order.orderId, order_total: Number(order.totalAmount).toFixed(2), order_items: itemsText };
+        await emailjs.send(EMAILJS.service_id, EMAILJS.template_id, templateParams);
+      }catch(e){ console.warn('EmailJS failed', e); }
+    }
+
+    document.addEventListener('DOMContentLoaded', async ()=>{
+      const q = getQuery();
+      const detailsNode = document.getElementById('details');
+      let createdOrder = null;
+
+      // PayFast flow: pending info exists and cart still in storage
+      const pending = (()=>{ try{ return JSON.parse(localStorage.getItem(PENDING_KEY)||'null'); }catch(e){ return null; } })();
+      if(pending && pending.method === 'payfast'){
+        const cartItems = readCart();
+        if(!cartItems || !cartItems.length){ document.getElementById('msg').textContent = 'Payment processed but your cart was empty. If you need help, contact support.'; return; }
+        const products = cartItems.map(i=>({ id:i.id, name:i.name, price:Number(i.price), quantity:Number(i.quantity||1), image:i.image||'' }));
+        const totalAmount = products.reduce((s,p)=>s + (p.price * p.quantity),0);
+        try{
+          createdOrder = Orders.createOrder({ customerName: pending.customerName, customerEmail: pending.customerEmail, customerPhone: pending.customerPhone, products, totalAmount, paymentStatus: 'Paid', orderStatus: 'Processing' });
+          localStorage.removeItem(PENDING_KEY);
+          clearCart();
+          renderReceipt(createdOrder, 'PayFast');
+          // send email after creation
+          await sendConfirmationEmail(createdOrder);
+        }catch(e){ console.error(e); document.getElementById('msg').textContent = 'Payment succeeded but creating local order failed.'; detailsNode.textContent = e.message || e; }
+        return;
+      }
+
+      // PayPal: orderId provided in query param
+      if(q.method === 'paypal' && q.orderId){
+        const order = Orders.getOrder(q.orderId);
+        if(order){ createdOrder = order; renderReceipt(order, 'PayPal'); await sendConfirmationEmail(order); return; }
+        document.getElementById('msg').textContent = 'Payment completed but local order not found.'; return;
+      }
+
+      document.getElementById('msg').textContent = 'Payment completed. If you do not see an order, please contact support.';
+    });
+
+    // loader helper for EmailJS
+    function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
+  </script>
+</body>
+</html>
