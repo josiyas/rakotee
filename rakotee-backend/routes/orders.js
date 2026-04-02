@@ -36,22 +36,22 @@ router.post('/', async (req, res) => {
 router.post('/payfast', async (req, res) => {
   try {
     console.log('PayFast request received');
-    console.log('PAYFAST_MERCHANT_ID:', process.env.PAYFAST_MERCHANT_ID ? 'SET' : 'NOT SET');
-    console.log('PAYFAST_MERCHANT_KEY:', process.env.PAYFAST_MERCHANT_KEY ? 'SET' : 'NOT SET');
+    console.log('Environment check - PAYFAST_MERCHANT_ID:', process.env.PAYFAST_MERCHANT_ID);
+    console.log('Environment check - PAYFAST_MERCHANT_KEY:', process.env.PAYFAST_MERCHANT_KEY);
     
     const { name, email, address, cart, return_url } = req.body;
     if (!name || !email || !address || !Array.isArray(cart) || cart.length === 0) {
       return res.status(400).json({ error: 'Missing required fields or cart is empty.' });
     }
     
-    // TEMPORARY: Hardcode credentials for testing
-    const merchant_id = process.env.PAYFAST_MERCHANT_ID || '32069113';
-    const merchant_key = process.env.PAYFAST_MERCHANT_KEY || 'r6ujmvnqysl5p';
-    console.log('Using merchant_id:', merchant_id);
+    // Get credentials from environment variables (set in Render dashboard)
+    const merchant_id = process.env.PAYFAST_MERCHANT_ID;
+    const merchant_key = process.env.PAYFAST_MERCHANT_KEY;
     
     if (!merchant_id || !merchant_key) {
-      console.error('PayFast credentials missing:', { merchant_id: !!merchant_id, merchant_key: !!merchant_key });
-      return res.status(500).json({ error: 'Payment provider not configured.' });
+      console.error('PayFast credentials not found in environment variables');
+      console.error('Available env vars:', Object.keys(process.env).filter(key => key.includes('PAYFAST')));
+      return res.status(500).json({ error: 'Payment provider not configured. Please check environment variables.' });
     }
 
     // Save order as pending

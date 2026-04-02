@@ -86,7 +86,15 @@ app.use('/api/admin', adminRouter);
 // Health check
 app.get('/health', (req, res) => {
   const mongoReady = mongoose.connection.readyState === 1;
-  res.json({ status: 'ok', mongo: mongoReady ? 'connected' : 'disconnected' });
+  res.json({ 
+    status: 'ok', 
+    mongo: mongoReady ? 'connected' : 'disconnected',
+    payfast: {
+      merchant_id: process.env.PAYFAST_MERCHANT_ID ? 'configured' : 'missing',
+      merchant_key: process.env.PAYFAST_MERCHANT_KEY ? 'configured' : 'missing',
+      mode: process.env.PAYFAST_MODE || 'not set'
+    }
+  });
 });
 
 // Debug endpoints (one-off admin tests like sending an SMTP test email)
