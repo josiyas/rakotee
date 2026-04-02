@@ -244,36 +244,34 @@
 
   // If user returns from PayPal approval, attempt server-side capture (capture requires paypalOrderId or orderId)
   if (urlParams.get('paypal') === 'success') {
+    (async () => {
       const id = urlParams.get('orderId');
-      if (id) {
-        // attempt to capture: the server-side create endpoint returns paypalOrderId to client in create flow, but we may not have it here.
-        // We'll try a best-effort capture if paypalOrderId is present in URL (some PayPal redirects include token)
-        const token = urlParams.get('token') || urlParams.get('PayerID');
-        if (token) {
-          // Attempt capture by sending token as paypalOrderId; server will use PayPal API to capture
-          try {
-            const cap = await fetch('/api/order/paypal-capture', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ paypalOrderId: token, orderId: id }) });
-            if (cap.ok) {
-              document.getElementById('order-success').textContent = `Payment completed. Order ID: ${id}`;
-              document.getElementById('order-success').style.display = 'block';
-              localStorage.removeItem('cart');
-            } else {
-              document.getElementById('order-success').textContent = 'Payment approved. We will confirm once capture completes.';
-              document.getElementById('order-success').style.display = 'block';
-              localStorage.removeItem('cart');
-            }
-          } catch (err) {
+      if (!id) return;
+
+      const token = urlParams.get('token') || urlParams.get('PayerID');
+      if (token) {
+        try {
+          const cap = await fetch(`${API_BASE}/api/order/paypal-capture`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paypalOrderId: token, orderId: id })
+          });
+          if (cap.ok) {
+            document.getElementById('order-success').textContent = `Payment completed. Order ID: ${id}`;
+          } else {
             document.getElementById('order-success').textContent = 'Payment approved. We will confirm once capture completes.';
-            document.getElementById('order-success').style.display = 'block';
-            localStorage.removeItem('cart');
           }
-        } else {
-          document.getElementById('order-success').textContent = `Payment initiated via PayPal. Order ID: ${id}. We'll confirm once payment is finalized.`;
-          document.getElementById('order-success').style.display = 'block';
-          localStorage.removeItem('cart');
+        } catch (err) {
+          document.getElementById('order-success').textContent = 'Payment approved. We will confirm once capture completes.';
         }
+      } else {
+        document.getElementById('order-success').textContent = `Payment initiated via PayPal. Order ID: ${id}. We'll confirm once payment is finalized.`;
       }
-    }
+
+      document.getElementById('order-success').style.display = 'block';
+      localStorage.removeItem('cart');
+    })();
+  }
     // Yoco and Peach Payments demo (guard for optional buttons)
     const yocoBtn = document.getElementById('yocoPayBtn');
     if (yocoBtn) yocoBtn.onclick = function() { placeOrderAfterPayment('Yoco'); };
