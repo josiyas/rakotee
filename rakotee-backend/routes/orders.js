@@ -35,6 +35,10 @@ router.post('/', async (req, res) => {
 // Create PayFast payment form server-side and redirect customer
 router.post('/payfast', async (req, res) => {
   try {
+    console.log('PayFast request received');
+    console.log('PAYFAST_MERCHANT_ID:', process.env.PAYFAST_MERCHANT_ID ? 'SET' : 'NOT SET');
+    console.log('PAYFAST_MERCHANT_KEY:', process.env.PAYFAST_MERCHANT_KEY ? 'SET' : 'NOT SET');
+    
     const { name, email, address, cart, return_url } = req.body;
     if (!name || !email || !address || !Array.isArray(cart) || cart.length === 0) {
       return res.status(400).json({ error: 'Missing required fields or cart is empty.' });
@@ -43,6 +47,7 @@ router.post('/payfast', async (req, res) => {
     const merchant_id = process.env.PAYFAST_MERCHANT_ID;
     const merchant_key = process.env.PAYFAST_MERCHANT_KEY;
     if (!merchant_id || !merchant_key) {
+      console.error('PayFast credentials missing:', { merchant_id: !!merchant_id, merchant_key: !!merchant_key });
       return res.status(500).json({ error: 'Payment provider not configured.' });
     }
 
