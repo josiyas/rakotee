@@ -116,7 +116,6 @@
     <h2>Choose Payment Method</h2>
     <div id="payment-options" style="margin-bottom:2rem;width:100%;">
       <button id="payfastBtn" class="payment-btn payfast">PayFast</button>
-      <button id="paypalBtn" class="payment-btn paypal">PayPal</button>
     </div>
   </div>
   <script>
@@ -200,7 +199,6 @@
         });
         if (!resp.ok) throw new Error('Failed to initiate payment');
         const html = await resp.text();
-        // Open a new window and write the returned HTML (auto-submitting form will redirect to PayFast)
         const win = window.open('', '_blank');
         if (!win) {
           errorDiv.textContent = 'Popup blocked. Please allow popups for this site.';
@@ -213,65 +211,6 @@
         errorDiv.textContent = 'Could not initiate PayFast payment. Please try again.';
       }
     });
-    // PayPal flow: create order on server and open approval URL
-    document.getElementById('paypalBtn').addEventListener('click', async function (e) {
-      e.preventDefault();
-      if (!cart.length) { document.getElementById('form-error').textContent = 'Your cart is empty.'; return; }
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const errorDiv = document.getElementById('form-error');
-      errorDiv.textContent = '';
-      if (!name || !email || !address) { errorDiv.textContent = 'Please fill in your name, email and address before paying.'; return; }
-      try {
-        const resp = await fetch(`${API_BASE}/api/order/paypal-create`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, address, cart })
-        });
-        if (!resp.ok) throw new Error('Failed to create PayPal order');
-        const json = await resp.json();
-        if (json.approveUrl) {
-          // open approval URL in new window
-          const w = window.open(json.approveUrl, '_blank');
-          if (!w) { errorDiv.textContent = 'Popup blocked. Please allow popups for this site.'; }
-        } else {
-          errorDiv.textContent = 'No approval URL returned from server.';
-        }
-      } catch (err) {
-        errorDiv.textContent = 'Could not initiate PayPal payment. Please try again.';
-      }
-    });
-
-  // If user returns from PayPal approval, attempt server-side capture (capture requires paypalOrderId or orderId)
-  if (urlParams.get('paypal') === 'success') {
-    (async () => {
-      const id = urlParams.get('orderId');
-      if (!id) return;
-
-      const token = urlParams.get('token') || urlParams.get('PayerID');
-      if (token) {
-        try {
-          const cap = await fetch(`${API_BASE}/api/order/paypal-capture`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paypalOrderId: token, orderId: id })
-          });
-          if (cap.ok) {
-            document.getElementById('order-success').textContent = `Payment completed. Order ID: ${id}`;
-          } else {
-            document.getElementById('order-success').textContent = 'Payment approved. We will confirm once capture completes.';
-          }
-        } catch (err) {
-          document.getElementById('order-success').textContent = 'Payment approved. We will confirm once capture completes.';
-        }
-      } else {
-        document.getElementById('order-success').textContent = `Payment initiated via PayPal. Order ID: ${id}. We'll confirm once payment is finalized.`;
-      }
-
-      document.getElementById('order-success').style.display = 'block';
-      localStorage.removeItem('cart');
-    })();
-  }
     // Yoco and Peach Payments demo (guard for optional buttons)
     const yocoBtn = document.getElementById('yocoPayBtn');
     if (yocoBtn) yocoBtn.onclick = function() { placeOrderAfterPayment('Yoco'); };
