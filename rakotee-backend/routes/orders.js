@@ -44,8 +44,11 @@ router.post('/payfast', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields or cart is empty.' });
     }
     
-    const merchant_id = process.env.PAYFAST_MERCHANT_ID;
-    const merchant_key = process.env.PAYFAST_MERCHANT_KEY;
+    // TEMPORARY: Hardcode credentials for testing
+    const merchant_id = process.env.PAYFAST_MERCHANT_ID || '32069113';
+    const merchant_key = process.env.PAYFAST_MERCHANT_KEY || 'r6ujmvnqysl5p';
+    console.log('Using merchant_id:', merchant_id);
+    
     if (!merchant_id || !merchant_key) {
       console.error('PayFast credentials missing:', { merchant_id: !!merchant_id, merchant_key: !!merchant_key });
       return res.status(500).json({ error: 'Payment provider not configured.' });
