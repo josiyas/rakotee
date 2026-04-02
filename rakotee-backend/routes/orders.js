@@ -44,15 +44,17 @@ router.post('/payfast', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields or cart is empty.' });
     }
     
-    // Get credentials from environment variables (set in Render dashboard)
-    const merchant_id = process.env.PAYFAST_MERCHANT_ID;
-    const merchant_key = process.env.PAYFAST_MERCHANT_KEY;
-    
+    // Get credentials from environment variables (set in Render dashboard) with permanent fallback
+    const merchant_id = process.env.PAYFAST_MERCHANT_ID || '32069113';
+    const merchant_key = process.env.PAYFAST_MERCHANT_KEY || 'r6ujmvnqysl5p';
+    const payfast_mode = process.env.PAYFAST_MODE || 'sandbox';
+
     if (!merchant_id || !merchant_key) {
-      console.error('PayFast credentials not found in environment variables');
-      console.error('Available env vars:', Object.keys(process.env).filter(key => key.includes('PAYFAST')));
+      console.error('PayFast credentials not found in environment variables and fallback is missing');
       return res.status(500).json({ error: 'Payment provider not configured. Please check environment variables.' });
     }
+    
+    console.log('PayFast config:', { merchant_id: !!process.env.PAYFAST_MERCHANT_ID ? 'env' : 'fallback', payfast_mode });
 
     // Save order as pending
     let order;
