@@ -19,6 +19,9 @@
     align-items: center;
     padding: 1rem 0.5rem;
   }
+  .nav-icons {
+    gap: 0.6rem;
+  }
   .modal-content, .fullscreen-modal .modal-content {
     width: 98vw !important;
     max-width: 100vw !important;
