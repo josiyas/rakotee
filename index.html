@@ -738,12 +738,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const price = Number(product && product.price) || 0;
     const firstImage = product && Array.isArray(product.images) && product.images[0]
       ? product.images[0]
-      : '/products/fallback.png';
-    const imgUrl = firstImage.startsWith('/') ? firstImage : '/' + firstImage;
+      : 'products/fallback.png';
+    const imgUrl = firstImage.startsWith('/') ? firstImage.slice(1) : firstImage;
 
     return `
       <article class="product-card" style="cursor:pointer;">
-        <img src="${imgUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='/products/fallback.png';">
+        <img src="${imgUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='products/fallback.png';">
         <h3>${name}</h3>
         <p>R ${price.toFixed(2)}</p>
       </article>
