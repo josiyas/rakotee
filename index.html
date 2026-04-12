@@ -388,7 +388,7 @@
 }
 
 .premium-home .shop-now-banner {
-  min-height: 52vh;
+  min-height: clamp(340px, 62svh, 580px);
   background:
     linear-gradient(130deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.85)),
     url('images/products/airforce/air-force-black.png') center/cover no-repeat;
@@ -397,7 +397,7 @@
 
 .premium-home .shop-now-content {
   max-width: 900px;
-  padding: 2.6rem 1rem;
+  padding: clamp(1.4rem, 3.2vh, 2.6rem) 1rem;
   animation: homeLift 0.7s ease;
 }
 
@@ -564,7 +564,23 @@
   }
 
   .premium-home .shop-now-banner {
-    min-height: 45vh;
+    min-height: clamp(300px, 58svh, 460px);
+  }
+
+  .premium-home .shop-now-content {
+    max-width: min(560px, 100%);
+    padding: clamp(1rem, 2.8vh, 1.8rem) 0.75rem;
+  }
+
+  .premium-home .shop-now-content h1 {
+    font-size: clamp(2.2rem, 13vw, 4rem);
+  }
+
+  .premium-home .home-subtitle {
+    font-size: clamp(0.92rem, 3.2vw, 1.05rem);
+    line-height: 1.45;
+    max-width: 40ch;
+    margin-inline: auto;
   }
 
   .premium-home .container {
@@ -1043,7 +1059,30 @@
   }
 
   .premium-home .shop-now-content {
-    padding: 1.5rem 0.6rem;
+    padding: clamp(0.8rem, 2.2vh, 1.3rem) 0.55rem;
+  }
+
+  .premium-home .shop-now-banner {
+    min-height: clamp(260px, 52svh, 380px);
+  }
+
+  .premium-home .home-kicker {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
+  .premium-home .shop-now-content h1 {
+    font-size: clamp(2rem, 14.5vw, 3.2rem);
+    margin: 0.2rem 0;
+  }
+
+  .premium-home .home-subtitle {
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+
+  .premium-home .home-cta-row {
+    margin-top: 0.9rem;
   }
 
   .premium-home .home-cta-row {
