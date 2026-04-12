@@ -2415,7 +2415,22 @@ const products = [
       if (Number.isFinite(itemId)) {
         const existingIndex = products.findIndex((p) => Number(p && p.id) === itemId);
         if (existingIndex >= 0) {
-          products[existingIndex] = { ...products[existingIndex], ...item };
+          const base = products[existingIndex];
+          const merged = { ...base, ...item };
+
+          const overrideDesc = Array.isArray(item.description)
+            ? item.description.map((d) => (d || '').toString().trim()).filter(Boolean)
+            : [];
+          const looksLikeNamePlaceholder =
+            overrideDesc.length === 1 &&
+            overrideDesc[0].toLowerCase() === (item.name || '').toString().trim().toLowerCase();
+
+          // Keep base description unless the override contains a real description value.
+          if (!overrideDesc.length || looksLikeNamePlaceholder) {
+            merged.description = base.description;
+          }
+
+          products[existingIndex] = merged;
           return;
         }
       }

@@ -230,11 +230,14 @@ form.addEventListener('submit', (event) => {
 		name,
 		price,
 		images,
-		description: descriptionText ? [descriptionText] : [name],
 		colors: colors.length ? colors : ['Default'],
 		sizes: sizes.length ? sizes : [...DEFAULT_SIZES],
 		category: category || 'Shoes'
 	};
+
+	if (descriptionText) {
+		payload.description = [descriptionText];
+	}
 
 	const existingIndex = products.findIndex((item) => Number(item.id) === Number(payload.id));
 	if (existingIndex >= 0) {
