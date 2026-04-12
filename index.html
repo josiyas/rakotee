@@ -502,6 +502,10 @@
 }
 
 @media (max-width: 768px) {
+  .premium-home {
+    --mobile-section-height: clamp(300px, 58svh, 460px);
+  }
+
   .premium-home .main-header {
     border-bottom-color: rgba(116, 140, 171, 0.28);
   }
@@ -564,7 +568,8 @@
   }
 
   .premium-home .shop-now-banner {
-    min-height: clamp(300px, 58svh, 460px);
+    min-height: var(--mobile-section-height);
+    height: var(--mobile-section-height);
   }
 
   .premium-home .shop-now-content {
@@ -589,17 +594,21 @@
 
   .premium-home .product-section {
     padding: 0.95rem;
-    min-height: clamp(300px, 58svh, 460px);
+    min-height: var(--mobile-section-height);
+    height: var(--mobile-section-height);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: hidden;
   }
 
   .premium-home .contact-section {
-    min-height: clamp(300px, 58svh, 460px);
+    min-height: var(--mobile-section-height);
+    height: var(--mobile-section-height);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: hidden;
   }
 }
 
@@ -1056,6 +1065,10 @@
 }
 
 @media (max-width: 480px) {
+  .premium-home {
+    --mobile-section-height: clamp(260px, 52svh, 380px);
+  }
+
   .premium-home .main-header {
     padding-top: max(0.25rem, env(safe-area-inset-top));
   }
@@ -1074,7 +1087,8 @@
   }
 
   .premium-home .shop-now-banner {
-    min-height: clamp(260px, 52svh, 380px);
+    min-height: var(--mobile-section-height);
+    height: var(--mobile-section-height);
   }
 
   .premium-home .home-kicker {
@@ -1115,7 +1129,8 @@
   .premium-home .product-section {
     border-radius: 12px;
     padding: 0.85rem;
-    min-height: clamp(260px, 52svh, 380px);
+    min-height: var(--mobile-section-height);
+    height: var(--mobile-section-height);
   }
 
   .premium-home .product-carousel .product-card {
@@ -1130,7 +1145,8 @@
   .premium-home .contact-section {
     margin: 1rem 0;
     padding: 1.15rem 0.75rem;
-    min-height: clamp(260px, 52svh, 380px);
+    min-height: var(--mobile-section-height);
+    height: var(--mobile-section-height);
   }
 
   .premium-home .contact-list {
