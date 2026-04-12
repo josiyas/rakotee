@@ -60,21 +60,6 @@
     </div>
   </header>
 
-  <section class="products-highlights" aria-label="Store highlights">
-    <article class="highlight-pill">
-      <span class="highlight-title">Fast Delivery</span>
-      <span class="highlight-copy">Nationwide dispatch in 24-48 hours</span>
-    </article>
-    <article class="highlight-pill">
-      <span class="highlight-title">Curated Brands</span>
-      <span class="highlight-copy">Classic silhouettes and limited releases</span>
-    </article>
-    <article class="highlight-pill">
-      <span class="highlight-title">Secure Checkout</span>
-      <span class="highlight-copy">Trusted payments with instant confirmation</span>
-    </article>
-  </section>
-
   <!-- Products Section -->
   <section class="products" aria-labelledby="products-heading">
     <div class="products-header-wrap">
@@ -299,9 +284,9 @@ renderCartSidebar();
     body {
       font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background:
-        radial-gradient(circle at 10% 20%, rgba(255, 210, 90, 0.12), transparent 30%),
-        radial-gradient(circle at 85% 0%, rgba(0, 214, 255, 0.12), transparent 35%),
-        #0b1120;
+        radial-gradient(circle at 12% 16%, rgba(116, 140, 171, 0.2), transparent 36%),
+        radial-gradient(circle at 88% 4%, rgba(62, 92, 118, 0.22), transparent 38%),
+        var(--dark-navy);
     }
 
     .products-hero {
@@ -310,7 +295,7 @@ renderCartSidebar();
       display: grid;
       place-items: center;
       background:
-        linear-gradient(120deg, rgba(7, 10, 18, 0.9), rgba(22, 29, 50, 0.88)),
+        linear-gradient(120deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.88)),
         url('images/products/airforce/air-force-black.png') center/cover no-repeat;
       overflow: hidden;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -319,7 +304,7 @@ renderCartSidebar();
     .products-hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(11, 17, 32, 0.95), rgba(11, 17, 32, 0.2));
+      background: linear-gradient(to top, rgba(13, 19, 33, 0.94), rgba(13, 19, 33, 0.2));
       pointer-events: none;
     }
 
@@ -334,7 +319,7 @@ renderCartSidebar();
 
     .hero-kicker {
       margin: 0;
-      color: #ffd25a;
+      color: var(--steel-blue);
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -361,23 +346,23 @@ renderCartSidebar();
 
     .hero-cta {
       margin-top: 1.25rem;
-      background: linear-gradient(125deg, #ffd25a, #ff7a18);
-      color: #111827;
+      background: linear-gradient(125deg, var(--slate-blue), var(--steel-blue));
+      color: var(--light-beige);
       border-radius: 999px;
       padding: 0.8rem 1.6rem;
       font-weight: 800;
       letter-spacing: 0.02em;
-      box-shadow: 0 14px 28px rgba(255, 122, 24, 0.3);
+      box-shadow: 0 14px 28px rgba(62, 92, 118, 0.35);
     }
 
     .hero-cta:hover {
       transform: translateY(-2px);
-      box-shadow: 0 18px 34px rgba(255, 122, 24, 0.38);
+      box-shadow: 0 18px 34px rgba(116, 140, 171, 0.4);
     }
 
     .products-highlights {
       width: min(1180px, calc(100% - 2rem));
-      margin: -1.8rem auto 2rem;
+      margin: 2rem auto 1.5rem;
       display: grid;
       grid-template-columns: repeat(3, minmax(180px, 1fr));
       gap: 1rem;
@@ -389,7 +374,7 @@ renderCartSidebar();
       display: flex;
       flex-direction: column;
       gap: 0.25rem;
-      background: linear-gradient(140deg, rgba(17, 24, 39, 0.95), rgba(13, 19, 33, 0.95));
+      background: linear-gradient(140deg, rgba(29, 45, 68, 0.95), rgba(13, 19, 33, 0.96));
       border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 14px;
       padding: 1rem 1.1rem;
@@ -397,7 +382,7 @@ renderCartSidebar();
     }
 
     .highlight-title {
-      color: #ffd25a;
+      color: var(--steel-blue);
       font-weight: 800;
       font-size: 0.88rem;
       text-transform: uppercase;
@@ -423,7 +408,7 @@ renderCartSidebar();
 
     .products-overline {
       margin: 0;
-      color: #ffb84d;
+      color: var(--steel-blue);
       font-size: 0.84rem;
       font-weight: 800;
       text-transform: uppercase;
@@ -437,7 +422,7 @@ renderCartSidebar();
     }
 
     .products-toolbar {
-      background: linear-gradient(160deg, rgba(12, 18, 30, 0.86), rgba(22, 28, 45, 0.86));
+      background: linear-gradient(160deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.85));
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 18px;
       padding: 1rem;
@@ -481,8 +466,8 @@ renderCartSidebar();
     .toolbar-search-wrap input:focus,
     .toolbar-filter-item select:focus {
       outline: none;
-      border-color: rgba(255, 210, 90, 0.82);
-      box-shadow: 0 0 0 3px rgba(255, 210, 90, 0.2);
+      border-color: rgba(116, 140, 171, 0.9);
+      box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.25);
     }
 
     .toolbar-filter-grid {
@@ -503,13 +488,13 @@ renderCartSidebar();
 
     .product-card:hover {
       transform: translateY(-8px);
-      border-color: rgba(255, 210, 90, 0.46);
+      border-color: rgba(116, 140, 171, 0.5);
       box-shadow: 0 20px 36px rgba(0, 0, 0, 0.34);
     }
 
     .spinner {
       border: 4px solid rgba(255, 255, 255, 0.18);
-      border-top: 4px solid #ffd25a;
+      border-top: 4px solid var(--steel-blue);
       border-radius: 50%;
       width: 40px;
       height: 40px;
@@ -524,7 +509,7 @@ renderCartSidebar();
 
       .products-highlights {
         grid-template-columns: 1fr;
-        margin-top: -1.1rem;
+        margin-top: 1.2rem;
       }
 
       .toolbar-filter-grid {
@@ -552,6 +537,21 @@ renderCartSidebar();
       100% { opacity: 1; transform: translateY(0); }
     }
   </style>
+
+  <section class="products-highlights" aria-label="Store highlights">
+    <article class="highlight-pill">
+      <span class="highlight-title">Fast Delivery</span>
+      <span class="highlight-copy">Nationwide dispatch in 24-48 hours</span>
+    </article>
+    <article class="highlight-pill">
+      <span class="highlight-title">Curated Brands</span>
+      <span class="highlight-copy">Classic silhouettes and limited releases</span>
+    </article>
+    <article class="highlight-pill">
+      <span class="highlight-title">Secure Checkout</span>
+      <span class="highlight-copy">Trusted payments with instant confirmation</span>
+    </article>
+  </section>
 
 <!-- Footer -->
 <footer class="main-footer">
