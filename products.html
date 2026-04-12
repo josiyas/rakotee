@@ -50,20 +50,10 @@
     </button>
   </nav>
 
-  <header class="products-hero" aria-label="Products Intro">
-    <div class="products-hero-overlay"></div>
-    <div class="products-hero-content">
-      <p class="hero-kicker">Streetwear Curated</p>
-      <h1>Shop The Drop</h1>
-      <p class="hero-subtitle">Premium sneaker rotation, updated constantly. Built for everyday flex and comfort.</p>
-      <a href="#products-heading" class="btn hero-cta">Browse Collection</a>
-    </div>
-  </header>
-
   <!-- Products Section -->
   <section class="products" aria-labelledby="products-heading">
     <div class="products-header-wrap">
-      <p class="products-overline">Catalog</p>
+      <p class="products-overline">Cataloge</p>
       <h2 id="products-heading">Our Products</h2>
       <p class="products-subline">Find your size, filter by style, and discover your next daily pair.</p>
     </div>
@@ -289,77 +279,6 @@ renderCartSidebar();
         var(--dark-navy);
     }
 
-    .products-hero {
-      position: relative;
-      min-height: 48vh;
-      display: grid;
-      place-items: center;
-      background:
-        linear-gradient(120deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.88)),
-        url('images/products/airforce/air-force-black.png') center/cover no-repeat;
-      overflow: hidden;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .products-hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(13, 19, 33, 0.94), rgba(13, 19, 33, 0.2));
-      pointer-events: none;
-    }
-
-    .products-hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 920px;
-      text-align: center;
-      padding: 2.5rem 1.25rem;
-      animation: heroLift 0.7s ease;
-    }
-
-    .hero-kicker {
-      margin: 0;
-      color: var(--steel-blue);
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.82rem;
-    }
-
-    .products-hero-content h1 {
-      margin: 0.45rem 0;
-      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
-      font-size: clamp(2.6rem, 7vw, 5.4rem);
-      letter-spacing: 0.04em;
-      color: #ffffff;
-      line-height: 0.92;
-      text-transform: uppercase;
-    }
-
-    .hero-subtitle {
-      max-width: 680px;
-      margin: 0 auto;
-      color: rgba(255, 255, 255, 0.88);
-      font-size: clamp(1rem, 2.2vw, 1.16rem);
-      line-height: 1.6;
-    }
-
-    .hero-cta {
-      margin-top: 1.25rem;
-      background: linear-gradient(125deg, var(--slate-blue), var(--steel-blue));
-      color: var(--light-beige);
-      border-radius: 999px;
-      padding: 0.8rem 1.6rem;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      box-shadow: 0 14px 28px rgba(62, 92, 118, 0.35);
-    }
-
-    .hero-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 34px rgba(116, 140, 171, 0.4);
-    }
-
     .products-highlights {
       width: min(1180px, calc(100% - 2rem));
       margin: 2rem auto 1.5rem;
@@ -503,10 +422,6 @@ renderCartSidebar();
     }
 
     @media (max-width: 768px) {
-      .products-hero {
-        min-height: 42vh;
-      }
-
       .products-highlights {
         grid-template-columns: 1fr;
         margin-top: 1.2rem;
@@ -532,10 +447,6 @@ renderCartSidebar();
       100% { transform: rotate(360deg); }
     }
 
-    @keyframes heroLift {
-      0% { opacity: 0; transform: translateY(22px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
   </style>
 
   <section class="products-highlights" aria-label="Store highlights">
