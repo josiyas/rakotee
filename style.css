@@ -2183,6 +2183,45 @@ button {
     min-width: 0;
     overflow-wrap: anywhere;
   }
+
+  /* Keep header/menu controls compact on phones (global mobile button rule is too broad). */
+  .main-header .nav-container,
+  .main-header .nav-icons {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .main-header .nav-icons {
+    gap: 0.45rem !important;
+    flex-wrap: nowrap !important;
+    margin-left: auto !important;
+  }
+
+  .main-header .icon-btn,
+  .main-header .menu-toggle,
+  .main-header .cart-icon-btn,
+  .main-header #accountToggle,
+  .main-header #searchToggle,
+  .main-header #cartIconBtn {
+    width: auto !important;
+    min-width: 40px !important;
+    max-width: 56px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0.4rem 0.55rem !important;
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 999px !important;
+  }
+
+  .main-header .menu-toggle {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
 }
 
 /* --- Stuck-Open Guard (Android) --- */
