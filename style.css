@@ -2023,7 +2023,22 @@ a {
     padding: 1rem 0.5rem !important;
     box-sizing: border-box;
   }
-  input, select, textarea, button {
+  form input,
+  form select,
+  form textarea,
+  form button,
+  .auth-form input,
+  .auth-form select,
+  .auth-form textarea,
+  .auth-form button,
+  .checkout-form input,
+  .checkout-form select,
+  .checkout-form textarea,
+  .checkout-form button,
+  .modal-content form input,
+  .modal-content form select,
+  .modal-content form textarea,
+  .modal-content form button {
   font-size: 1.1rem !important;
   padding: 0.9rem 1rem !important;
   border-radius: 10px !important;
@@ -2038,7 +2053,18 @@ a {
     margin-bottom: 0.5rem;
     display: block;
   }
-  .btn, .btn-primary, button[type="submit"] {
+  form .btn,
+  form .btn-primary,
+  form button[type="submit"],
+  .auth-form .btn,
+  .auth-form .btn-primary,
+  .auth-form button[type="submit"],
+  .checkout-form .btn,
+  .checkout-form .btn-primary,
+  .checkout-form button[type="submit"],
+  .modal-content form .btn,
+  .modal-content form .btn-primary,
+  .modal-content form button[type="submit"] {
     width: 100%;
     font-size: 1.15rem;
     padding: 1rem 0;
@@ -2050,12 +2076,46 @@ a {
     user-select: none;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   }
-  .btn:active, .btn-primary:active, button[type="submit"]:active {
+  form .btn:active,
+  form .btn-primary:active,
+  form button[type="submit"]:active,
+  .auth-form .btn:active,
+  .auth-form .btn-primary:active,
+  .auth-form button[type="submit"]:active,
+  .checkout-form .btn:active,
+  .checkout-form .btn-primary:active,
+  .checkout-form button[type="submit"]:active,
+  .modal-content form .btn:active,
+  .modal-content form .btn-primary:active,
+  .modal-content form button[type="submit"]:active {
     background-color: #e63200 !important;
     color: #fff !important;
     transform: scale(0.98);
   }
-  .btn:focus, .btn-primary:focus, button[type="submit"]:focus, input:focus, select:focus, textarea:focus {
+  form .btn:focus,
+  form .btn-primary:focus,
+  form button[type="submit"]:focus,
+  form input:focus,
+  form select:focus,
+  form textarea:focus,
+  .auth-form .btn:focus,
+  .auth-form .btn-primary:focus,
+  .auth-form button[type="submit"]:focus,
+  .auth-form input:focus,
+  .auth-form select:focus,
+  .auth-form textarea:focus,
+  .checkout-form .btn:focus,
+  .checkout-form .btn-primary:focus,
+  .checkout-form button[type="submit"]:focus,
+  .checkout-form input:focus,
+  .checkout-form select:focus,
+  .checkout-form textarea:focus,
+  .modal-content form .btn:focus,
+  .modal-content form .btn-primary:focus,
+  .modal-content form button[type="submit"]:focus,
+  .modal-content form input:focus,
+  .modal-content form select:focus,
+  .modal-content form textarea:focus {
     outline: 2px solid #1e90ff;
     outline-offset: 2px;
     box-shadow: 0 0 0 3px rgba(30,144,255,0.15);
@@ -2184,44 +2244,6 @@ button {
     overflow-wrap: anywhere;
   }
 
-  /* Keep header/menu controls compact on phones (global mobile button rule is too broad). */
-  .main-header .nav-container,
-  .main-header .nav-icons {
-    display: flex !important;
-    align-items: center !important;
-  }
-
-  .main-header .nav-icons {
-    gap: 0.45rem !important;
-    flex-wrap: nowrap !important;
-    margin-left: auto !important;
-  }
-
-  .main-header .icon-btn,
-  .main-header .menu-toggle,
-  .main-header .cart-icon-btn,
-  .main-header #accountToggle,
-  .main-header #searchToggle,
-  .main-header #cartIconBtn {
-    width: auto !important;
-    min-width: 40px !important;
-    max-width: 56px !important;
-    height: 40px !important;
-    min-height: 40px !important;
-    margin: 0 !important;
-    margin-bottom: 0 !important;
-    padding: 0.4rem 0.55rem !important;
-    flex: 0 0 auto !important;
-    display: inline-flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    border-radius: 999px !important;
-  }
-
-  .main-header .menu-toggle {
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
 }
 
 /* --- Stuck-Open Guard (Android) --- */
