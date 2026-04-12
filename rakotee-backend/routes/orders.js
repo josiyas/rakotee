@@ -6,8 +6,33 @@ const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const Order = require('../models/Order');
 const IpnLog = require('../models/IpnLog');
-const qs = require('querystring');
 const axios = require('axios');
+const crypto = require('crypto');
+
+function getBaseUrl(req) {
+  return process.env.SERVER_PUBLIC_URL || `${req.protocol}://${req.get('host')}`;
+}
+
+function getFrontendUrl(req) {
+  return process.env.CLIENT_URL || req.headers.origin || getBaseUrl(req);
+}
+
+function normalizeBaseUrl(url) {
+  return String(url || '').replace(/\/+$/, '');
+}
+
+function buildPayfastSignature(fields, passphrase) {
+  const cleaned = Object.entries(fields).filter(([, value]) => value !== undefined && value !== null && String(value) !== '');
+  const payload = cleaned
+    .map(([key, value]) => `${key}=${encodeURIComponent(String(value).trim()).replace(/%20/g, '+')}`)
+    .join('&');
+
+  const finalPayload = passphrase
+    ? `${payload}&passphrase=${encodeURIComponent(String(passphrase).trim()).replace(/%20/g, '+')}`
+    : payload;
+
+  return crypto.createHash('md5').update(finalPayload).digest('hex');
+}
 
 // Security middleware
 router.use(helmet());
@@ -35,26 +60,23 @@ router.post('/', async (req, res) => {
 // Create PayFast payment form server-side and redirect customer
 router.post('/payfast', async (req, res) => {
   try {
-    console.log('PayFast request received');
-    console.log('Environment check - PAYFAST_MERCHANT_ID:', process.env.PAYFAST_MERCHANT_ID);
-    console.log('Environment check - PAYFAST_MERCHANT_KEY:', process.env.PAYFAST_MERCHANT_KEY);
-    
     const { name, email, address, cart, return_url } = req.body;
     if (!name || !email || !address || !Array.isArray(cart) || cart.length === 0) {
       return res.status(400).json({ error: 'Missing required fields or cart is empty.' });
     }
-    
-    // Get credentials from environment variables (set in Render dashboard) with permanent fallback
-    const merchant_id = process.env.PAYFAST_MERCHANT_ID || '32069113';
-    const merchant_key = process.env.PAYFAST_MERCHANT_KEY || 'r6ujmvnqysl5p';
-    const payfast_mode = process.env.PAYFAST_MODE || 'sandbox';
+
+    const merchant_id = process.env.PAYFAST_MERCHANT_ID;
+    const merchant_key = process.env.PAYFAST_MERCHANT_KEY;
+    const passphrase = process.env.PAYFAST_PASSPHRASE || '';
+    const payfast_mode = (process.env.PAYFAST_MODE || 'sandbox').toLowerCase();
+    const payfastProcessUrl = payfast_mode === 'live'
+      ? 'https://www.payfast.co.za/eng/process'
+      : 'https://sandbox.payfast.co.za/eng/process';
 
     if (!merchant_id || !merchant_key) {
-      console.error('PayFast credentials not found in environment variables and fallback is missing');
+      console.error('PayFast credentials are missing in environment variables.');
       return res.status(500).json({ error: 'Payment provider not configured. Please check environment variables.' });
     }
-    
-    console.log('PayFast config:', { merchant_id: !!process.env.PAYFAST_MERCHANT_ID ? 'env' : 'fallback', payfast_mode });
 
     // Save order as pending
     let order;
@@ -70,25 +92,31 @@ router.post('/payfast', async (req, res) => {
     }
 
     const amount = cart.reduce((s, it) => s + (it.price * (it.quantity || 1)), 0).toFixed(2);
-  const baseReturn = return_url || (req.headers.origin || `${req.protocol}://${req.get('host')}`) + '/checkout.html';
-  // Include order id so client can show order info on return
-  const pfReturn = `${baseReturn}?payfast=success&orderId=${order._id}`;
-  const notifyUrl = (req.headers.origin || `${req.protocol}://${req.get('host')}`) + '/api/order/payfast-ipn';
+    const frontendBase = normalizeBaseUrl(return_url || getFrontendUrl(req));
+    const backendBase = normalizeBaseUrl(getBaseUrl(req));
+    const pfReturn = `${frontendBase}/checkout.html?payfast=success&orderId=${order._id}`;
+    const pfCancel = `${frontendBase}/checkout.html?payfast=cancelled&orderId=${order._id}`;
+    const notifyUrl = `${backendBase}/api/order/payfast-ipn`;
 
     // Build a simple HTML form that auto-submits to PayFast
     const fields = {
       merchant_id,
-  merchant_key,
-  amount,
-  item_name: `Rakotee Order ${order._id}`,
-  return_url: pfReturn,
-  notify_url: notifyUrl,
-  custom_int1: order._id.toString(), // use custom field to correlate
+      merchant_key,
+      return_url: pfReturn,
+      cancel_url: pfCancel,
+      notify_url: notifyUrl,
+      name_first: String(name).split(' ')[0],
+      email_address: email,
+      m_payment_id: order._id.toString(),
+      amount,
+      item_name: `Rakotee Order ${order._id}`,
+      custom_str1: order._id.toString()
     };
+    fields.signature = buildPayfastSignature(fields, passphrase);
 
     const formInputs = Object.entries(fields).map(([k, v]) => `  <input type="hidden" name="${k}" value="${String(v).replace(/\"/g, '&quot;')}"/>`).join('\n');
 
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Redirecting to PayFast</title></head><body><p>Redirecting to PayFast...</p><form id="pf" action="https://www.payfast.co.za/eng/process" method="post">\n${formInputs}\n</form><script>document.getElementById('pf').submit();</script></body></html>`;
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Redirecting to PayFast</title></head><body><p>Redirecting to PayFast...</p><form id="pf" action="${payfastProcessUrl}" method="post">\n${formInputs}\n</form><script>document.getElementById('pf').submit();</script></body></html>`;
     res.set('Content-Type', 'text/html');
     return res.send(html);
   } catch (err) {
@@ -108,22 +136,26 @@ router.post('/payfast-ipn', async (req, res) => {
     // Build urlencoded payload to post back for verification
     const params = new URLSearchParams();
     Object.keys(body).forEach(k => params.append(k, body[k]));
-    const validationUrl = 'https://www.payfast.co.za/eng/query/validate';
+    const payfast_mode = (process.env.PAYFAST_MODE || 'sandbox').toLowerCase();
+    const validationUrl = payfast_mode === 'live'
+      ? 'https://www.payfast.co.za/eng/query/validate'
+      : 'https://sandbox.payfast.co.za/eng/query/validate';
     let verified = false;
+    let verificationResponse = '';
     try {
       const resp = await axios.post(validationUrl, params.toString(), {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         timeout: 10000
       });
-      const data = (resp && resp.data) ? String(resp.data) : '';
-      // PayFast responds with a body indicating validity; check for keyword
-      if (/valid|verified/i.test(data) || resp.status === 200) verified = true;
+      verificationResponse = (resp && resp.data) ? String(resp.data).trim() : '';
+      verified = verificationResponse.toUpperCase() === 'VALID';
     } catch (vErr) {
       // If verification endpoint fails, log and continue to strict check fallback
       console.error('PayFast verification request failed:', vErr && vErr.message);
+      verificationResponse = vErr && vErr.message ? String(vErr.message) : 'verification_request_failed';
     }
 
-    const orderId = body.custom_int1 || body.custom_str1 || null;
+    const orderId = body.m_payment_id || body.custom_int1 || body.custom_str1 || null;
     if (!orderId) {
       console.warn('PayFast IPN missing custom order id', body);
       ipnLog.verificationResponse = 'Missing order id';
@@ -142,19 +174,22 @@ router.post('/payfast-ipn', async (req, res) => {
 
     ipnLog.orderId = order._id;
     ipnLog.amount = amount_gross;
-    ipnLog.verificationResponse = verified ? 'verified' : 'not_verified';
-    ipnLog.verified = !!(verified && amountMatches);
+    ipnLog.verificationResponse = verificationResponse || (verified ? 'VALID' : 'INVALID');
+    const paymentStatus = String(body.payment_status || '').toUpperCase();
+    const paymentComplete = paymentStatus === 'COMPLETE';
+    ipnLog.verified = !!(verified && amountMatches && paymentComplete);
     await ipnLog.save();
 
-    if (verified && amountMatches) {
+    if (verified && amountMatches && paymentComplete) {
       order.paid = true;
+      order.status = 'paid';
       order.paymentMethod = 'PayFast';
       order.paymentRef = body.m_payment_id || body.payment_id || '';
       await order.save();
       return res.status(200).send('OK');
     }
 
-    console.warn('PayFast IPN failed verification or amount mismatch', { verified, amount_gross, expected });
+    console.warn('PayFast IPN failed checks', { verified, paymentStatus, amount_gross, expected });
     return res.status(400).send('Invalid IPN');
   } catch (err) {
     console.error('PayFast IPN error', err);
