@@ -400,6 +400,144 @@
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.premium-home .main-footer {
+  background: linear-gradient(165deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.94));
+  border-top: 1px solid rgba(116, 140, 171, 0.3);
+  color: var(--light-beige);
+  padding: 2rem 1rem;
+  margin-top: 2rem;
+}
+
+.premium-home .footer-content {
+  width: min(1200px, calc(100% - 2rem));
+  margin: 0 auto 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.premium-home .footer-column h4 {
+  margin: 0 0 0.8rem;
+  color: var(--steel-blue);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.premium-home .footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.premium-home .footer-column ul li {
+  margin: 0.5rem 0;
+}
+
+.premium-home .footer-column ul li a {
+  color: rgba(240, 235, 216, 0.85);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.25s ease;
+}
+
+.premium-home .footer-column ul li a:hover {
+  color: var(--steel-blue);
+}
+
+.premium-home .footer-column form {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.premium-home .footer-column input[type="email"] {
+  flex: 1;
+  padding: 0.6rem 0.85rem;
+  background: rgba(13, 19, 33, 0.8);
+  border: 1px solid rgba(116, 140, 171, 0.48);
+  border-radius: 8px;
+  color: var(--light-beige);
+  font-size: 0.9rem;
+}
+
+.premium-home .footer-column input[type="email"]:focus {
+  outline: none;
+  border-color: rgba(116, 140, 171, 0.8);
+  box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.2);
+}
+
+.premium-home .footer-column button {
+  padding: 0.6rem 1rem;
+  background: rgba(116, 140, 171, 0.3);
+  border: 1px solid rgba(116, 140, 171, 0.6);
+  border-radius: 8px;
+  color: var(--light-beige);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.premium-home .footer-column button:hover {
+  background: rgba(116, 140, 171, 0.55);
+  border-color: rgba(116, 140, 171, 0.9);
+}
+
+.premium-home .footer-payments {
+  text-align: center;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(116, 140, 171, 0.2);
+  border-bottom: 1px solid rgba(116, 140, 171, 0.2);
+}
+
+.premium-home .footer-payments img {
+  height: 32px;
+  margin: 0 0.8rem;
+  opacity: 0.9;
+  transition: opacity 0.25s ease;
+}
+
+.premium-home .footer-payments img:hover {
+  opacity: 1;
+}
+
+.premium-home .footer-socials {
+  text-align: center;
+  padding: 1rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.premium-home .footer-socials a {
+  display: inline-block;
+  width: 42px;
+  height: 42px;
+  background: rgba(116, 140, 171, 0.2);
+  border: 1px solid rgba(116, 140, 171, 0.4);
+  border-radius: 999px;
+  color: var(--light-beige);
+  text-decoration: none;
+  font-size: 1.1rem;
+  line-height: 40px;
+  margin: 0 0.4rem;
+  transition: all 0.25s ease;
+}
+
+.premium-home .footer-socials a:hover {
+  transform: translateY(-2px);
+  background: rgba(116, 140, 171, 0.45);
+  border-color: rgba(116, 140, 171, 0.75);
+}
+
+.premium-home .footer-note {
+  text-align: center;
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(116, 140, 171, 0.2);
+  color: rgba(240, 235, 216, 0.7);
+  font-size: 0.88rem;
+}
+
 </style>
 
 <script src="main.js"></script>
