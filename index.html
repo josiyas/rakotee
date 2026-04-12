@@ -25,8 +25,8 @@
       <div class="account-dropdown" id="accountDropdown" aria-haspopup="true" aria-expanded="false">
         <!-- Account menu will be rendered by JS -->
       </div>
-      <button class="icon-btn cart-icon" id="cartIconBtn" aria-label="Cart" tabindex="0">
-        <i class="fas fa-shopping-cart"></i>
+      <button class="cart-icon-btn" id="cartIconBtn" aria-label="Open Cart" tabindex="0">
+        🛒
         <span id="cartCount" class="cart-count" aria-live="polite">0</span>
       </button>
       <button class="icon-btn menu-toggle" aria-label="Menu" tabindex="0">
@@ -265,6 +265,37 @@
   gap: 0.6rem;
 }
 
+.premium-home .cart-icon-btn {
+  color: var(--light-beige);
+  background: rgba(13, 19, 33, 0.65);
+  border: 1px solid rgba(116, 140, 171, 0.48);
+  border-radius: 999px;
+  padding: 0.48rem 0.9rem;
+  font-size: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+  margin-left: 0;
+  position: relative;
+  cursor: pointer;
+}
+
+.premium-home .cart-icon-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(62, 92, 118, 0.55);
+}
+
+.premium-home .cart-icon-btn .cart-count {
+  top: -8px;
+  right: -8px;
+  background: var(--steel-blue);
+  color: var(--dark-navy);
+  border: 1px solid rgba(240, 235, 216, 0.5);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
 .premium-home .account-dropdown {
   display: inline-flex;
   align-items: center;
@@ -494,6 +525,11 @@
     width: 38px;
     height: 38px;
     font-size: 1rem;
+  }
+
+  .premium-home .cart-icon-btn {
+    min-width: 50px;
+    padding: 0.45rem 0.75rem;
   }
 
   .premium-home .search-bar {
