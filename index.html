@@ -915,6 +915,110 @@
   color: var(--steel-blue);
 }
 
+/* Android-focused homepage portability */
+.premium-home {
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  .premium-home .container,
+  .premium-home .product-section,
+  .premium-home .contact-section,
+  .premium-home .main-footer {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .premium-home .carousel-wrapper {
+    display: block;
+  }
+
+  .premium-home .carousel-nav {
+    display: none !important;
+  }
+
+  .premium-home .product-carousel {
+    gap: 0.75rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .premium-home .product-carousel .product-card {
+    flex: 0 0 84vw;
+    min-width: 84vw;
+  }
+
+  .premium-home #footwear .product-carousel.is-marquee .product-card {
+    flex: 0 0 72vw;
+    min-width: 72vw;
+  }
+
+  .premium-home .footer-column form {
+    flex-direction: column;
+  }
+
+  .premium-home .footer-column button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .premium-home .main-header {
+    padding-top: max(0.25rem, env(safe-area-inset-top));
+  }
+
+  .premium-home .nav-container {
+    padding: 0.55rem;
+  }
+
+  .premium-home .logo a {
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+  }
+
+  .premium-home .shop-now-content {
+    padding: 1.5rem 0.6rem;
+  }
+
+  .premium-home .home-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .premium-home .shop-now-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .premium-home .product-section {
+    border-radius: 12px;
+    padding: 0.85rem;
+  }
+
+  .premium-home .product-carousel .product-card {
+    flex: 0 0 88vw;
+    min-width: 88vw;
+  }
+
+  .premium-home .product-carousel .product-card img {
+    height: 160px;
+  }
+
+  .premium-home .contact-section {
+    margin: 1rem 0;
+    padding: 1.15rem 0.75rem;
+  }
+
+  .premium-home .contact-list {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-home .footer-content {
+    width: 100%;
+    gap: 1.2rem;
+  }
+}
+
 </style>
 
 <script src="main.js"></script>
