@@ -56,7 +56,7 @@ async function getStoreProducts() {
 				name: match[2],
 				price: Number(match[3]) || 0,
 				images: images.length ? images : ['products/fallback.png'],
-				description: descriptions.length ? descriptions : [match[2]],
+				description: descriptions,
 				colors: ['Default'],
 				sizes: [...DEFAULT_SIZES],
 				category: 'Shoes'
@@ -83,6 +83,7 @@ function cardTemplate(product, idx, canDelete) {
 	const description = Array.isArray(product.description)
 		? product.description.join(' ')
 		: (product.description || '').toString();
+	const descriptionPreview = description.trim();
 	return `
 		<article class="item">
 			<img class="thumb" src="${image}" alt="${name}" onerror="this.onerror=null;this.src='products/fallback.png';">
@@ -91,7 +92,7 @@ function cardTemplate(product, idx, canDelete) {
 				<div class="sub">R ${price.toFixed(2)} · ${imageCount} image(s)</div>
 				<div class="sub">Colors: ${colors}</div>
 				<div class="sub">Sizes: ${sizes}</div>
-				<div class="sub">${description ? description.slice(0, 140) : ''}</div>
+				<div class="sub">${descriptionPreview ? descriptionPreview.slice(0, 140) : ''}</div>
 			</div>
 			<div class="item-actions">
 				<button type="button" data-edit="${idx}" class="edit-btn">Edit</button>
