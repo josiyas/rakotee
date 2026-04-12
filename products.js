@@ -2410,10 +2410,10 @@ const products = [
   products.forEach(p => {
     if (p.category) return; // keep explicit categories
     const name = (p.name || '').toString().toLowerCase();
-    if (phoneRe.test(name)) {
-      p.category = 'Phones';
-    } else if (shoesRe.test(name)) {
+    if (shoesRe.test(name)) {
       p.category = 'Shoes';
+    } else if (phoneRe.test(name)) {
+      p.category = 'Phones';
     } else if (hubblyRe.test(name)) {
       p.category = 'Hubbly';
     } else if (accessoriesRe.test(name)) {
