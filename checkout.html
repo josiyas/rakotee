@@ -276,11 +276,10 @@
       <input type="text" id="name" placeholder="Full Name" required>
       <input type="email" id="email" placeholder="Email" required>
       <input type="text" id="address" placeholder="Shipping Address" required>
-      <button id="placeOrderBtn" type="submit" class="payment-btn peach">Place Order (Manual)</button>
       <div id="form-error"></div>
     </form>
     <div id="order-success" style="display:none;"></div>
-    <h2>Choose Payment Method</h2>
+    <h2>Complete Payment</h2>
     <div id="payment-options">
       <button id="payfastBtn" type="button" class="payment-btn payfast">PayFast</button>
     </div>
@@ -297,7 +296,6 @@
     const errorEl = document.getElementById('form-error');
     const successEl = document.getElementById('order-success');
     const payfastBtn = document.getElementById('payfastBtn');
-    const placeOrderBtn = document.getElementById('placeOrderBtn');
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
     const addressInput = document.getElementById('address');
@@ -324,7 +322,6 @@
 
     function setButtonsDisabled(disabled) {
       payfastBtn.disabled = disabled;
-      placeOrderBtn.disabled = disabled;
     }
 
     function validateCustomer() {
@@ -394,35 +391,9 @@
       input.addEventListener('input', persistCheckoutDetails);
     });
 
-    formEl.addEventListener('submit', async function (e) {
+    formEl.addEventListener('submit', function (e) {
       e.preventDefault();
-      showError('');
-
-      const { cart } = renderSummary();
-      const customer = validateCustomer();
-      if (!customer) return;
-      if (!cart.length) return;
-
-      setButtonsDisabled(true);
-      placeOrderBtn.textContent = 'Placing Order...';
-
-      try {
-        const response = await fetch(`${API_BASE}/api/order`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...customer, cart })
-        });
-        if (!response.ok) throw new Error('Order failed.');
-
-        showSuccess('Order placed! Thank you for shopping with us.');
-        localStorage.removeItem('cart');
-        setTimeout(() => { window.location.href = 'order-success.html'; }, 2000);
-      } catch {
-        showError('Could not place order. Please try again.');
-        setButtonsDisabled(false);
-      } finally {
-        placeOrderBtn.textContent = 'Place Order (Manual)';
-      }
+      payfastBtn.click();
     });
 
     payfastBtn.addEventListener('click', async function () {
