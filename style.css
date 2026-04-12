@@ -2124,3 +2124,63 @@ a {
     font-size: 1.5rem;
   }
 }
+
+/* --- Android Portability Hardening (global) --- */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+@media (max-width: 900px) {
+  .container,
+  .main-container,
+  .content,
+  .products,
+  .cart-container,
+  .admin-container {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    padding-left: max(0.5rem, env(safe-area-inset-left));
+    padding-right: max(0.5rem, env(safe-area-inset-right));
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 16px !important;
+  }
+
+  .main-footer,
+  .footer-content,
+  .products-toolbar,
+  .nav-container,
+  .navbar {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
