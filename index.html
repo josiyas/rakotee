@@ -708,49 +708,66 @@
 </div>
 <div class="cart-overlay" id="cartOverlay" tabindex="-1"></div>
 
-<script src="products.js"></script>
 <script>
-// Render carousel products dynamically from products.js
-document.addEventListener('DOMContentLoaded', () => {
-  if (typeof products === 'undefined' || !Array.isArray(products)) {
-    console.error('Products array not loaded');
+// Render homepage carousels with a resilient data source.
+document.addEventListener('DOMContentLoaded', async () => {
+  const loadCatalog = async () => {
+    if (Array.isArray(window.products) && window.products.length) {
+      return window.products;
+    }
+
+    try {
+      const response = await fetch('products.json', { cache: 'no-store' });
+      if (!response.ok) return [];
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error('Could not load products for homepage carousel.', error);
+      return [];
+    }
+  };
+
+  const catalog = await loadCatalog();
+  if (!catalog.length) {
+    console.error('No products available to render on homepage.');
     return;
   }
 
-  // Populate each carousel with 15 products
+  const renderCardHTML = (product) => {
+    const name = product && product.name ? product.name : 'Product';
+    const price = Number(product && product.price) || 0;
+    const firstImage = product && Array.isArray(product.images) && product.images[0]
+      ? product.images[0]
+      : '/products/fallback.png';
+    const imgUrl = firstImage.startsWith('/') ? firstImage : '/' + firstImage;
+
+    return `
+      <article class="product-card" style="cursor:pointer;">
+        <img src="${imgUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='/products/fallback.png';">
+        <h3>${name}</h3>
+        <p>R ${price.toFixed(2)}</p>
+      </article>
+    `;
+  };
+
+  // Populate each carousel with 15 products.
   const carouselIds = ['footwear', 'phones', 'sale'];
-  
+
   carouselIds.forEach(id => {
     const carousel = document.querySelector(`[data-carousel="${id}"]`);
-    if (!carousel || products.length === 0) return;
+    if (!carousel) return;
 
-    // Render up to 15 product cards
-    const fragment = document.createDocumentFragment();
-    const productsToShow = products.slice(0, 15);
-    
-    productsToShow.forEach(product => {
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.style.cursor = 'pointer';
-      const imgUrl = product.images && product.images[0] 
-        ? (product.images[0].startsWith('/') ? product.images[0] : '/' + product.images[0])
-        : '/products/fallback.png';
-      
-      card.innerHTML = `
-        <img src="${imgUrl}" alt="${product.name}" loading="lazy" onerror="this.onerror=null;this.src='/products/fallback.png';">
-        <h3>${product.name}</h3>
-        <p>R ${product.price.toFixed(2)}</p>
-      `;
-      fragment.appendChild(card);
-    });
-    
-    carousel.appendChild(fragment);
+    const productsToShow = catalog.slice(0, 15);
+    const cardsHTML = productsToShow.map(renderCardHTML).join('');
 
     if (id === 'footwear') {
-      // Duplicate cards to create a seamless marquee loop for footwear.
+      // Duplicate footwear cards for seamless across-page marquee movement.
       carousel.classList.add('is-marquee');
-      carousel.appendChild(fragment.cloneNode(true));
+      carousel.innerHTML = cardsHTML + cardsHTML;
+      return;
     }
+
+    carousel.innerHTML = cardsHTML;
   });
 
   // Continuous across-page motion for footwear section.
