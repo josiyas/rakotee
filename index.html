@@ -291,6 +291,54 @@
   box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.2);
 }
 
+.premium-home .mobile-menu {
+  background: linear-gradient(150deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.96));
+  border: 1px solid rgba(116, 140, 171, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.35);
+  padding: 0.85rem;
+}
+
+.premium-home .mobile-menu a {
+  color: var(--light-beige);
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+  margin: 0.15rem 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.premium-home .mobile-menu a:hover {
+  background: rgba(116, 140, 171, 0.25);
+  color: #ffffff;
+}
+
+.premium-home .mobile-overlay {
+  background: rgba(6, 10, 18, 0.62);
+  backdrop-filter: blur(2px);
+}
+
+.premium-home .dropdown-menu {
+  background: linear-gradient(150deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.96));
+  border: 1px solid rgba(116, 140, 171, 0.38);
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.premium-home .dropdown-menu a {
+  color: var(--light-beige);
+  border-bottom: 1px solid rgba(116, 140, 171, 0.2);
+}
+
+.premium-home .dropdown-menu a:last-child {
+  border-bottom: none;
+}
+
+.premium-home .dropdown-menu a:hover {
+  background: rgba(116, 140, 171, 0.22);
+  color: #ffffff;
+}
+
 .premium-home .shop-now-banner {
   min-height: 52vh;
   background:
@@ -434,6 +482,12 @@
   .premium-home .search-bar {
     width: 100%;
     padding: 0 0.75rem 0.75rem;
+  }
+
+  .premium-home .mobile-menu {
+    top: 64px;
+    right: 0.75rem;
+    width: min(280px, calc(100vw - 1.5rem));
   }
 
   .premium-home .shop-now-banner {
