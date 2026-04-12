@@ -32,14 +32,21 @@ async function getStoreProducts() {
 		const jsText = await response.text();
 
 		const parsed = [];
-		const rx = /id:\s*([0-9]+)[\s\S]*?name:\s*"([^"]+)"[\s\S]*?price:\s*([0-9]+(?:\.[0-9]+)?)[\s\S]*?images:\s*\[\s*"([^"]+)"/g;
+		const rx = /\{[\s\S]*?id:\s*([0-9]+)[\s\S]*?name:\s*"([^"]+)"[\s\S]*?price:\s*([0-9]+(?:\.[0-9]+)?)[\s\S]*?images:\s*\[([\s\S]*?)\][\s\S]*?\}/g;
 		let match;
 		while ((match = rx.exec(jsText)) !== null) {
+			const images = [];
+			const imageRx = /"([^"]+)"/g;
+			let imageMatch;
+			while ((imageMatch = imageRx.exec(match[4])) !== null) {
+				images.push(imageMatch[1]);
+			}
+
 			parsed.push({
 				id: Number(match[1]),
 				name: match[2],
 				price: Number(match[3]) || 0,
-				images: [match[4]],
+				images: images.length ? images : ['products/fallback.png'],
 				colors: ['Default'],
 				sizes: [...DEFAULT_SIZES],
 				category: 'Shoes'
