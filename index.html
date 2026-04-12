@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=20260413a" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="premium-home">
@@ -931,6 +931,56 @@
   color: var(--steel-blue);
 }
 
+/* Critical Android header layout guard */
+@media (max-width: 900px) {
+  .premium-home .main-header,
+  .premium-home .nav-container,
+  .premium-home .nav-icons {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .premium-home .nav-container {
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .premium-home .nav-icons {
+    margin-left: auto !important;
+    gap: 0.45rem !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+  }
+
+  .premium-home .menu-toggle,
+  .premium-home #searchToggle,
+  .premium-home #cartIconBtn,
+  .premium-home #accountToggle {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0.4rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 auto !important;
+    border-radius: 999px !important;
+  }
+
+  .premium-home #cartIconBtn {
+    width: auto !important;
+    min-width: 52px !important;
+    padding: 0.35rem 0.65rem !important;
+  }
+}
+
 /* Android-focused homepage portability */
 .premium-home {
   overflow-x: hidden;
@@ -1037,8 +1087,8 @@
 
 </style>
 
-<script src="main.js"></script>
-<script src="cart.js"></script>
+<script src="main.js?v=20260413a"></script>
+<script src="cart.js?v=20260413a"></script>
 <!-- Cart Sidebar -->
 <div id="cartSidebar" class="cart-sidebar" role="complementary" aria-label="Shopping Cart Sidebar" tabindex="-1">
   <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart" tabindex="0">&times;</button>
