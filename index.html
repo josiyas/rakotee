@@ -1159,6 +1159,39 @@
   }
 }
 
+/* Final Android layout lock (must stay last to override earlier rules) */
+@media (max-width: 768px) {
+  .premium-home {
+    --android-section-h: clamp(300px, 58svh, 460px);
+  }
+
+  .premium-home .shop-now-banner,
+  .premium-home .product-section,
+  .premium-home .contact-section {
+    height: var(--android-section-h) !important;
+    min-height: var(--android-section-h) !important;
+    max-height: var(--android-section-h) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .premium-home {
+    --android-section-h: clamp(260px, 52svh, 380px);
+  }
+
+  .premium-home .shop-now-banner,
+  .premium-home .product-section,
+  .premium-home .contact-section {
+    height: var(--android-section-h) !important;
+    min-height: var(--android-section-h) !important;
+    max-height: var(--android-section-h) !important;
+  }
+}
+
 </style>
 
 <script src="main.js?v=20260413a"></script>
