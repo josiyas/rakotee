@@ -2476,17 +2476,28 @@ const products = [
   const imageRe = /\.(jpg|jpeg|png|webp)$/i;
   const seenIds = new Set();
   const cleaned = [];
+  const ukSizes = ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"];
+
+  let nextId =
+    products.reduce((maxId, row) => {
+      const n = Number(row && row.id);
+      return Number.isFinite(n) && n > maxId ? n : maxId;
+    }, 0) + 1;
 
   products.forEach((p) => {
     if (!p || typeof p !== 'object') return;
 
-    const id = Number(p.id);
-    if (!Number.isFinite(id) || seenIds.has(id)) return;
+    const requestedId = Number(p.id);
+    const id = Number.isFinite(requestedId) && !seenIds.has(requestedId) ? requestedId : nextId++;
 
     const name = (p.name || '').toString().trim();
     if (!name) return;
 
-    const images = (Array.isArray(p.images) ? p.images : [])
+    const rawImages = Array.isArray(p.images)
+      ? p.images
+      : (typeof p.image === 'string' && p.image.trim() ? [p.image] : []);
+
+    const images = rawImages
       .map((img) => (img || '').toString().trim())
       .filter((img) => img && imageRe.test(img));
     if (!images.length) return;
@@ -2511,9 +2522,9 @@ const products = [
       name,
       price: Number.isFinite(price) ? price : 0,
       images,
-      colors,
-      sizes,
-      description
+      colors: colors.length ? colors : ['Default'],
+      sizes: sizes.length ? sizes : [...ukSizes],
+      description: description || `${name} is available now at RAKOTEE.`
     });
 
     seenIds.add(id);
