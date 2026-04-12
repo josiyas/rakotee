@@ -2645,11 +2645,12 @@ function openModal(product) {
   }
 
   // Sizes
-  // Update label to 'Storage:' for phone products
+  // Update label to 'Storage:' for shoes with storage sizes (GB), otherwise 'Size:'
   try {
     const sizeLabelEl = document.getElementById('sizeLabel');
     if (sizeLabelEl) {
-      sizeLabelEl.textContent = (product.category && product.category.toLowerCase() === 'phones') ? 'Storage:' : 'Size:';
+      const hasStorageSizes = (product.sizes && product.sizes.some(s => /gb$/i.test(s)));
+      sizeLabelEl.textContent = hasStorageSizes ? 'Storage:' : 'Size:';
     }
   } catch (e) {
     // ignore DOM errors in environments without the element
