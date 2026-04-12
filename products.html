@@ -42,12 +42,20 @@
 <body>
 
   <!-- Navbar -->
-  <nav class="navbar" role="navigation" aria-label="Main Navigation">
-    <img src="rakotee.png.png" alt="RAKOTEE Store Logo" class="products-logo-nav"/>
-    <a href="index.html" class="btn nav-btn">Home</a>
-    <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open Cart">
-      🛒 <span id="cartCount" class="cart-count">0</span>
-    </button>
+  <nav class="navbar products-navbar" role="navigation" aria-label="Main Navigation">
+    <div class="products-nav-brand">
+      <img src="rakotee.png.png" alt="RAKOTEE Store Logo" class="products-logo-nav"/>
+      <div class="products-nav-copy">
+        <strong>RAKOTEE</strong>
+        <span>Products</span>
+      </div>
+    </div>
+    <div class="products-nav-actions">
+      <a href="index.html" class="btn nav-btn">Home</a>
+      <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open Cart">
+        🛒 <span id="cartCount" class="cart-count">0</span>
+      </button>
+    </div>
   </nav>
 
   <!-- Products Section -->
@@ -279,6 +287,108 @@ renderCartSidebar();
         var(--dark-navy);
     }
 
+    .products-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+      background: linear-gradient(120deg, rgba(13, 19, 33, 0.95), rgba(29, 45, 68, 0.92));
+      border-bottom: 1px solid rgba(116, 140, 171, 0.35);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(8px);
+      padding: 0.85rem 1.2rem;
+    }
+
+    .products-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .products-nav-copy {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      color: var(--light-beige);
+    }
+
+    .products-nav-copy strong {
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      letter-spacing: 0.08em;
+      font-size: 1.32rem;
+      font-weight: 400;
+    }
+
+    .products-nav-copy span {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: rgba(240, 235, 216, 0.7);
+      margin-top: 0.1rem;
+    }
+
+    .products-navbar .products-logo-nav {
+      height: 42px;
+      width: 42px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid rgba(116, 140, 171, 0.55);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      padding: 3px;
+      background: rgba(13, 19, 33, 0.8);
+    }
+
+    .products-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .products-navbar .nav-btn {
+      background: rgba(116, 140, 171, 0.18) !important;
+      border: 1px solid rgba(116, 140, 171, 0.5) !important;
+      color: var(--light-beige) !important;
+      padding: 0.55rem 1rem !important;
+      border-radius: 999px !important;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .products-navbar .nav-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(116, 140, 171, 0.35) !important;
+      border-color: rgba(116, 140, 171, 0.75) !important;
+    }
+
+    .products-navbar .cart-icon-btn {
+      color: var(--light-beige);
+      background: rgba(13, 19, 33, 0.65);
+      border: 1px solid rgba(116, 140, 171, 0.48);
+      border-radius: 999px;
+      padding: 0.48rem 0.9rem;
+      font-size: 1.15rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 56px;
+      transition: transform 0.25s ease, background-color 0.25s ease;
+      margin-left: 0;
+    }
+
+    .products-navbar .cart-icon-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(62, 92, 118, 0.55);
+    }
+
+    .products-navbar .cart-count {
+      top: -8px;
+      right: -8px;
+      background: var(--steel-blue);
+      color: var(--dark-navy);
+      border: 1px solid rgba(240, 235, 216, 0.5);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    }
+
     .products-highlights {
       width: min(1180px, calc(100% - 2rem));
       margin: 2rem auto 1.5rem;
@@ -422,6 +532,28 @@ renderCartSidebar();
     }
 
     @media (max-width: 768px) {
+      .products-navbar {
+        padding: 0.75rem 0.85rem;
+      }
+
+      .products-navbar .products-logo-nav {
+        height: 38px;
+        width: 38px;
+      }
+
+      .products-nav-copy strong {
+        font-size: 1.2rem;
+      }
+
+      .products-navbar .nav-btn {
+        padding: 0.5rem 0.85rem !important;
+      }
+
+      .products-navbar .cart-icon-btn {
+        min-width: 50px;
+        padding: 0.45rem 0.75rem;
+      }
+
       .products-highlights {
         grid-template-columns: 1fr;
         margin-top: 1.2rem;
