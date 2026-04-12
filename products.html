@@ -8,6 +8,9 @@
   <meta name="keywords" content="sneakers, shoes, Nike, Adidas, buy online, South Africa, RAKOTEE, fashion, apparel" />
   <meta name="author" content="RAKOTEE Store" />
   <link rel="canonical" href="https://rakotee.com/products.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Open Graph / Facebook -->
   <meta property="og:title" content="RAKOTEE Products" />
   <meta property="og:description" content="Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more." />
@@ -47,50 +50,98 @@
     </button>
   </nav>
 
+  <header class="products-hero" aria-label="Products Intro">
+    <div class="products-hero-overlay"></div>
+    <div class="products-hero-content">
+      <p class="hero-kicker">Streetwear Curated</p>
+      <h1>Shop The Drop</h1>
+      <p class="hero-subtitle">Premium sneaker rotation, updated constantly. Built for everyday flex and comfort.</p>
+      <a href="#products-heading" class="btn hero-cta">Browse Collection</a>
+    </div>
+  </header>
+
+  <section class="products-highlights" aria-label="Store highlights">
+    <article class="highlight-pill">
+      <span class="highlight-title">Fast Delivery</span>
+      <span class="highlight-copy">Nationwide dispatch in 24-48 hours</span>
+    </article>
+    <article class="highlight-pill">
+      <span class="highlight-title">Curated Brands</span>
+      <span class="highlight-copy">Classic silhouettes and limited releases</span>
+    </article>
+    <article class="highlight-pill">
+      <span class="highlight-title">Secure Checkout</span>
+      <span class="highlight-copy">Trusted payments with instant confirmation</span>
+    </article>
+  </section>
+
   <!-- Products Section -->
   <section class="products" aria-labelledby="products-heading">
-    <h2 id="products-heading">Our Products</h2>
+    <div class="products-header-wrap">
+      <p class="products-overline">Catalog</p>
+      <h2 id="products-heading">Our Products</h2>
+      <p class="products-subline">Find your size, filter by style, and discover your next daily pair.</p>
+    </div>
 
     <!-- Search and Sort Toolbar -->
     <div class="products-toolbar">
-      <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products">
-      <select id="categoryFilter" aria-label="Filter by category">
-        <option value="">All Categories</option>
-        <option value="Shoes">Shoes</option>
-        <option value="Phones">Phones</option>
-        <option value="Hubbly">Hubbly</option>
-        <option value="Accessories">Accessories</option>
-        <option value="Sale">Sale</option>
-      </select>
-      <select id="colorFilter" aria-label="Filter by color">
-        <option value="">All Colors</option>
-        <option value="White">White</option>
-        <option value="BLACK">Black</option>
-        <option value="Red">Red</option>
-        <option value="Blue">Blue</option>
-        <option value="iPhone">iPhones</option>
-        <!-- Add more colors as needed -->
-      </select>
-      <select id="sizeFilter" aria-label="Filter by size">
-        <option value="">All Sizes</option>
-        <option value="2UK">2UK</option>
-        <option value="3UK">3UK</option>
-        <option value="4UK">4UK</option>
-        <option value="5UK">5UK</option>
-        <option value="6UK">6UK</option>
-        <option value="7UK">7UK</option>
-        <option value="8UK">8UK</option>
-        <option value="9UK">9UK</option>
-        <option value="10UK">10UK</option>
-        <option value="11UK">11UK</option>
-        <option value="12UK">12UK</option>
-        <!-- Add more sizes as needed -->
-      </select>
-      <select id="sortSelect" aria-label="Sort products">
-        <option value="default">Sort By</option>
-        <option value="name">Name</option>
-        <option value="price">Price</option>
-      </select>
+      <div class="toolbar-search-wrap">
+        <label for="searchInput">Search</label>
+        <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products">
+      </div>
+
+      <div class="toolbar-filter-grid">
+        <div class="toolbar-filter-item">
+          <label for="categoryFilter">Category</label>
+          <select id="categoryFilter" aria-label="Filter by category">
+            <option value="">All Categories</option>
+            <option value="Shoes">Shoes</option>
+            <option value="Phones">Phones</option>
+            <option value="Hubbly">Hubbly</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Sale">Sale</option>
+          </select>
+        </div>
+
+        <div class="toolbar-filter-item">
+          <label for="colorFilter">Color</label>
+          <select id="colorFilter" aria-label="Filter by color">
+            <option value="">All Colors</option>
+            <option value="White">White</option>
+            <option value="BLACK">Black</option>
+            <option value="Red">Red</option>
+            <option value="Blue">Blue</option>
+            <option value="iPhone">iPhones</option>
+          </select>
+        </div>
+
+        <div class="toolbar-filter-item">
+          <label for="sizeFilter">Size</label>
+          <select id="sizeFilter" aria-label="Filter by size">
+            <option value="">All Sizes</option>
+            <option value="2UK">2UK</option>
+            <option value="3UK">3UK</option>
+            <option value="4UK">4UK</option>
+            <option value="5UK">5UK</option>
+            <option value="6UK">6UK</option>
+            <option value="7UK">7UK</option>
+            <option value="8UK">8UK</option>
+            <option value="9UK">9UK</option>
+            <option value="10UK">10UK</option>
+            <option value="11UK">11UK</option>
+            <option value="12UK">12UK</option>
+          </select>
+        </div>
+
+        <div class="toolbar-filter-item">
+          <label for="sortSelect">Sort</label>
+          <select id="sortSelect" aria-label="Sort products">
+            <option value="default">Sort By</option>
+            <option value="name">Name</option>
+            <option value="price">Price</option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <!-- Product Grid -->
@@ -243,27 +294,262 @@ function updateCartCountAndSidebar() {
 renderCartSidebar();
 </script>
 
-  <!-- Inline Styling (temporary – move to style.css for production) -->
+  <!-- Page styling -->
   <style>
-   .product-card {
-      background: #565558; /* Match the page background */
+    body {
+      font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(255, 210, 90, 0.12), transparent 30%),
+        radial-gradient(circle at 85% 0%, rgba(0, 214, 255, 0.12), transparent 35%),
+        #0b1120;
+    }
+
+    .products-hero {
+      position: relative;
+      min-height: 48vh;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(120deg, rgba(7, 10, 18, 0.9), rgba(22, 29, 50, 0.88)),
+        url('images/products/airforce/air-force-black.png') center/cover no-repeat;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .products-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(11, 17, 32, 0.95), rgba(11, 17, 32, 0.2));
+      pointer-events: none;
+    }
+
+    .products-hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 920px;
+      text-align: center;
+      padding: 2.5rem 1.25rem;
+      animation: heroLift 0.7s ease;
+    }
+
+    .hero-kicker {
+      margin: 0;
+      color: #ffd25a;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+    }
+
+    .products-hero-content h1 {
+      margin: 0.45rem 0;
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      font-size: clamp(2.6rem, 7vw, 5.4rem);
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      line-height: 0.92;
+      text-transform: uppercase;
+    }
+
+    .hero-subtitle {
+      max-width: 680px;
+      margin: 0 auto;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: clamp(1rem, 2.2vw, 1.16rem);
+      line-height: 1.6;
+    }
+
+    .hero-cta {
+      margin-top: 1.25rem;
+      background: linear-gradient(125deg, #ffd25a, #ff7a18);
+      color: #111827;
+      border-radius: 999px;
+      padding: 0.8rem 1.6rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      box-shadow: 0 14px 28px rgba(255, 122, 24, 0.3);
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 34px rgba(255, 122, 24, 0.38);
+    }
+
+    .products-highlights {
+      width: min(1180px, calc(100% - 2rem));
+      margin: -1.8rem auto 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      gap: 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .highlight-pill {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      background: linear-gradient(140deg, rgba(17, 24, 39, 0.95), rgba(13, 19, 33, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    .highlight-title {
+      color: #ffd25a;
+      font-weight: 800;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .highlight-copy {
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .products {
+      width: min(1200px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1rem 0 2.5rem;
+    }
+
+    .products-header-wrap {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    .products-overline {
+      margin: 0;
+      color: #ffb84d;
+      font-size: 0.84rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .products-subline {
+      margin: 0.4rem 0 0;
+      color: rgba(240, 235, 216, 0.78);
+      font-size: 0.98rem;
+    }
+
+    .products-toolbar {
+      background: linear-gradient(160deg, rgba(12, 18, 30, 0.86), rgba(22, 28, 45, 0.86));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 1rem;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+      margin-bottom: 1.5rem;
+    }
+
+    .toolbar-search-wrap,
+    .toolbar-filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      text-align: left;
+    }
+
+    .toolbar-search-wrap label,
+    .toolbar-filter-item label {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.8);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .toolbar-search-wrap {
+      margin-bottom: 0.75rem;
+    }
+
+    .toolbar-search-wrap input,
+    .toolbar-filter-item select {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(10, 15, 27, 0.95);
+      color: #ffffff;
+      padding: 0.75rem 0.85rem;
+      font-size: 0.95rem;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .toolbar-search-wrap input:focus,
+    .toolbar-filter-item select:focus {
+      outline: none;
+      border-color: rgba(255, 210, 90, 0.82);
+      box-shadow: 0 0 0 3px rgba(255, 210, 90, 0.2);
+    }
+
+    .toolbar-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(140px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .product-card {
+      background: linear-gradient(165deg, #121b2d, #10192a);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 1rem;
       padding: 1rem;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      transition: transform 0.2s ease;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
       text-align: center;
     }
+
     .product-card:hover {
-      transform: scale(1.02);
+      transform: translateY(-8px);
+      border-color: rgba(255, 210, 90, 0.46);
+      box-shadow: 0 20px 36px rgba(0, 0, 0, 0.34);
     }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.18);
+      border-top: 4px solid #ffd25a;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+
     @media (max-width: 768px) {
+      .products-hero {
+        min-height: 42vh;
+      }
+
+      .products-highlights {
+        grid-template-columns: 1fr;
+        margin-top: -1.1rem;
+      }
+
+      .toolbar-filter-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
       .cart-sidebar.open {
         width: 100vw;
       }
     }
+
+    @media (max-width: 540px) {
+      .toolbar-filter-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+
+    @keyframes heroLift {
+      0% { opacity: 0; transform: translateY(22px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
   </style>
 
