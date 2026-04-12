@@ -439,6 +439,17 @@
   min-width: 240px;
 }
 
+.premium-home #footwear .product-carousel.is-marquee .marquee-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: footwearMarquee 36s linear infinite;
+}
+
+.premium-home #footwear .product-carousel.is-marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
 .premium-home .product-carousel .product-card img {
   width: 100%;
   height: 190px;
@@ -511,6 +522,15 @@
     width: 38px;
     height: 38px;
     font-size: 1.4rem;
+  }
+}
+
+@keyframes footwearMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--footwear-marquee-distance, -3600px));
   }
 }
 
@@ -733,12 +753,13 @@
 </div>
 <div class="cart-overlay" id="cartOverlay" tabindex="-1"></div>
 
+<script src="products.js"></script>
 <script>
 // Render homepage carousels with a resilient data source.
 document.addEventListener('DOMContentLoaded', async () => {
   const loadCatalog = async () => {
-    if (Array.isArray(window.products) && window.products.length) {
-      return window.products;
+    if (typeof products !== 'undefined' && Array.isArray(products) && products.length) {
+      return products;
     }
 
     try {
@@ -753,25 +774,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   const catalog = await loadCatalog();
-
-  // Guaranteed image set from the real products folder for the footwear marquee.
-  const footwearImageFiles = [
-    'WHITE AIR01.jpg',
-    'WHITE AIR02.jpg',
-    'luxe1.jpg',
-    'luxe2.jpg',
-    'Panda 1.jpg',
-    'Panda 2.jpg',
-    'Triple Black1.jpg',
-    'University Red1.jpg',
-    'Safari 1.jpg',
-    'jarritos1.jpg',
-    'syracuse1.jpg',
-    'royal1.jpg',
-    'cacao1.jpg',
-    'spacejam1.png',
-    'wolf1.png'
-  ];
+  if (!catalog.length) {
+    console.error('No products available to render on homepage.');
+    return;
+  }
 
   const renderCardHTML = (product, fallbackName = 'Product') => {
     const name = product && product.name ? product.name : fallbackName;
@@ -800,63 +806,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     let cardsHTML = '';
 
     if (id === 'footwear') {
-      const footwearCards = footwearImageFiles.map((fileName, index) => {
-        const shoeName = fileName.replace(/\.[^.]+$/, '').replace(/\s+/g, ' ').trim();
-        return renderCardHTML(
-          { image: `products/${fileName}`, name: shoeName, price: 0 },
-          shoeName
-        );
-      }).join('');
+      const footwearProducts = catalog
+        .filter(item => item && item.name && Array.isArray(item.images) && item.images.length)
+        .slice(0, 15);
 
-      // Duplicate footwear cards for seamless across-page marquee movement.
+      const footwearCards = footwearProducts
+        .map(item => renderCardHTML(item, item.name))
+        .join('');
+
+      // Duplicate cards in a track for seamless marquee motion.
       carousel.classList.add('is-marquee');
-      carousel.innerHTML = footwearCards + footwearCards;
+      carousel.innerHTML = `<div class="marquee-track">${footwearCards}${footwearCards}</div>`;
+
+      const track = carousel.querySelector('.marquee-track');
+      if (track) {
+        requestAnimationFrame(() => {
+          const singleSetWidth = track.scrollWidth / 2;
+          track.style.setProperty('--footwear-marquee-distance', `-${singleSetWidth}px`);
+        });
+      }
       return;
     }
 
-    const productsToShow = (Array.isArray(catalog) && catalog.length)
-      ? catalog.slice(0, 15)
-      : footwearImageFiles.map((fileName, index) => ({ image: `products/${fileName}`, name: `Product ${index + 1}`, price: 0 }));
-
+    const productsToShow = catalog.slice(0, 15);
     cardsHTML = productsToShow.map((item, index) => renderCardHTML(item, `Product ${index + 1}`)).join('');
     carousel.innerHTML = cardsHTML;
   });
-
-  // Continuous across-page motion for footwear section.
-  const footwearCarousel = document.querySelector('[data-carousel="footwear"]');
-  if (footwearCarousel) {
-    let marqueeFrame;
-    let lastTimestamp = 0;
-    const speedPxPerSecond = 55;
-
-    const tickMarquee = (timestamp) => {
-      if (!lastTimestamp) lastTimestamp = timestamp;
-      const delta = timestamp - lastTimestamp;
-      lastTimestamp = timestamp;
-
-      footwearCarousel.scrollLeft += (speedPxPerSecond * delta) / 1000;
-      if (footwearCarousel.scrollLeft >= footwearCarousel.scrollWidth / 2) {
-        footwearCarousel.scrollLeft = 0;
-      }
-
-      marqueeFrame = requestAnimationFrame(tickMarquee);
-    };
-
-    const startMarquee = () => {
-      if (marqueeFrame) cancelAnimationFrame(marqueeFrame);
-      lastTimestamp = 0;
-      marqueeFrame = requestAnimationFrame(tickMarquee);
-    };
-
-    const stopMarquee = () => {
-      if (marqueeFrame) cancelAnimationFrame(marqueeFrame);
-      marqueeFrame = null;
-    };
-
-    footwearCarousel.addEventListener('mouseenter', stopMarquee);
-    footwearCarousel.addEventListener('mouseleave', startMarquee);
-    startMarquee();
-  }
 
   // Initialize carousel functionality
   const carousels = document.querySelectorAll('.product-carousel');
