@@ -17,13 +17,37 @@ function resetMobileMenuState() {
   }
 }
 
+function syncMobileLayoutState() {
+  const isPhoneWidth = window.matchMedia('(max-width: 768px)').matches;
+
+  if (menuToggle) {
+    // Keep menu control visible after refresh on Android viewport restore.
+    menuToggle.style.display = 'inline-flex';
+    menuToggle.style.visibility = 'visible';
+    menuToggle.style.opacity = '1';
+  }
+
+  // Never leave drawer state hanging when viewport changes.
+  if (!isPhoneWidth) {
+    resetMobileMenuState();
+  }
+}
+
 // Ensure side menu never stays open from cached/bfcache state on mobile browsers.
 resetMobileMenuState();
+syncMobileLayoutState();
 window.addEventListener("pageshow", resetMobileMenuState);
+window.addEventListener("pageshow", syncMobileLayoutState);
 window.addEventListener("orientationchange", resetMobileMenuState);
+window.addEventListener("orientationchange", syncMobileLayoutState);
 window.addEventListener("resize", () => {
+  syncMobileLayoutState();
   if (window.innerWidth > 1024) resetMobileMenuState();
 });
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', syncMobileLayoutState);
+}
 
 if (menuToggle && mobileMenu && mobileOverlay) {
   menuToggle.addEventListener("click", () => {
