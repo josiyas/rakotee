@@ -130,6 +130,13 @@
 			flex-wrap: wrap;
 		}
 
+		.hint-edit {
+			display: none;
+			margin: 0.4rem 0 0;
+			font-size: 0.85rem;
+			color: rgba(240, 235, 216, 0.8);
+		}
+
 		button {
 			border: 1px solid rgba(116, 140, 171, 0.6);
 			background: rgba(116, 140, 171, 0.25);
@@ -215,8 +222,10 @@
 		<section class="card">
 			<h2>Add Product Easily</h2>
 			<p class="help">Add products in the same structure used by the store page. You can add multiple images for one product.</p>
+			<p class="hint-edit" id="editHint">Editing product mode is active.</p>
 
 			<form id="productForm">
+				<input type="hidden" id="editProductId" name="editProductId" />
 				<div>
 					<label for="name">Name</label>
 					<input id="name" name="name" required placeholder="Nike Dunk Low New" />
@@ -247,7 +256,8 @@
 					<textarea id="description" name="description" placeholder="Optional product description..."></textarea>
 				</div>
 				<div class="full actions">
-					<button type="submit">Save Product</button>
+					<button type="submit" id="saveBtn">Save Product</button>
+					<button type="button" id="cancelEditBtn">Cancel Edit</button>
 					<button class="danger" type="button" id="clearAllBtn">Clear All Added Products</button>
 				</div>
 			</form>
@@ -255,7 +265,7 @@
 
 		<section class="card">
 			<h2>Products Already In Store</h2>
-			<p class="help">Read-only list from the current store catalog.</p>
+			<p class="help">Edit any existing store product and save. Changes apply on your storefront without code edits.</p>
 			<div id="storeProductList" class="list"></div>
 		</section>
 

@@ -2407,8 +2407,20 @@ const products = [
     if (!raw) return;
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed) || !parsed.length) return;
+
     parsed.forEach((item) => {
-      if (item && typeof item === 'object') products.push(item);
+      if (!item || typeof item !== 'object') return;
+
+      const itemId = Number(item.id);
+      if (Number.isFinite(itemId)) {
+        const existingIndex = products.findIndex((p) => Number(p && p.id) === itemId);
+        if (existingIndex >= 0) {
+          products[existingIndex] = { ...products[existingIndex], ...item };
+          return;
+        }
+      }
+
+      products.push(item);
     });
   } catch (err) {
     console.warn('Could not load custom products from localStorage.', err);

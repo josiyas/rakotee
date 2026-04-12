@@ -4,6 +4,10 @@ const form = document.getElementById('productForm');
 const listEl = document.getElementById('customProductList');
 const storeListEl = document.getElementById('storeProductList');
 const clearAllBtn = document.getElementById('clearAllBtn');
+const editHint = document.getElementById('editHint');
+const saveBtn = document.getElementById('saveBtn');
+const cancelEditBtn = document.getElementById('cancelEditBtn');
+const editProductIdInput = document.getElementById('editProductId');
 
 const DEFAULT_SIZES = ['2UK', '3UK', '4UK', '5UK', '6UK', '7UK', '8UK', '9UK', '10UK', '11UK', '12UK'];
 
@@ -28,13 +32,17 @@ async function getStoreProducts() {
 		const jsText = await response.text();
 
 		const parsed = [];
-		const rx = /name:\s*"([^"]+)"[\s\S]*?price:\s*([0-9]+(?:\.[0-9]+)?)[\s\S]*?images:\s*\[\s*"([^"]+)"/g;
+		const rx = /id:\s*([0-9]+)[\s\S]*?name:\s*"([^"]+)"[\s\S]*?price:\s*([0-9]+(?:\.[0-9]+)?)[\s\S]*?images:\s*\[\s*"([^"]+)"/g;
 		let match;
 		while ((match = rx.exec(jsText)) !== null) {
 			parsed.push({
-				name: match[1],
-				price: Number(match[2]) || 0,
-				images: [match[3]]
+				id: Number(match[1]),
+				name: match[2],
+				price: Number(match[3]) || 0,
+				images: [match[4]],
+				colors: ['Default'],
+				sizes: [...DEFAULT_SIZES],
+				category: 'Shoes'
 			});
 		}
 		return parsed;
@@ -65,20 +73,66 @@ function cardTemplate(product, idx, canDelete) {
 				<div class="sub">Sizes: ${sizes}</div>
 			</div>
 			<div class="item-actions">
+				<button type="button" data-edit="${idx}" class="edit-btn">Edit</button>
 				${canDelete ? `<button type="button" data-remove="${idx}" class="danger">Delete</button>` : ''}
 			</div>
 		</article>
 	`;
 }
 
+function setEditMode(isEditing) {
+	if (editHint) editHint.style.display = isEditing ? 'block' : 'none';
+	if (saveBtn) saveBtn.textContent = isEditing ? 'Update Product' : 'Save Product';
+	if (cancelEditBtn) cancelEditBtn.style.display = isEditing ? 'inline-block' : 'none';
+}
+
+function fillForm(product) {
+	form.elements.name.value = product.name || '';
+	form.elements.price.value = Number(product.price) || 0;
+	form.elements.images.value = Array.isArray(product.images) ? product.images.join('\n') : '';
+	form.elements.colors.value = Array.isArray(product.colors) ? product.colors.join(', ') : '';
+	form.elements.sizes.value = Array.isArray(product.sizes) ? product.sizes.join(', ') : '';
+	form.elements.category.value = product.category || '';
+	form.elements.description.value = Array.isArray(product.description)
+		? product.description.join(' ')
+		: (product.description || '');
+}
+
+function resetFormMode() {
+	form.reset();
+	if (editProductIdInput) editProductIdInput.value = '';
+	setEditMode(false);
+}
+
 async function renderStoreList() {
 	if (!storeListEl) return;
-	const products = await getStoreProducts();
+	const baseProducts = await getStoreProducts();
+	const custom = getStoredProducts();
+	const overridesById = new Map(
+		custom
+			.filter((p) => Number.isFinite(Number(p && p.id)))
+			.map((p) => [Number(p.id), p])
+	);
+
+	const products = baseProducts.map((p) => (overridesById.has(Number(p.id)) ? { ...p, ...overridesById.get(Number(p.id)) } : p));
+
 	if (!products.length) {
 		storeListEl.innerHTML = '<p class="help">Could not load store products.</p>';
 		return;
 	}
 	storeListEl.innerHTML = products.slice(0, 120).map((p, idx) => cardTemplate(p, idx, false)).join('');
+
+	storeListEl.querySelectorAll('[data-edit]').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			const idx = Number(btn.getAttribute('data-edit'));
+			const product = products[idx];
+			if (!product) return;
+			fillForm(product);
+			if (editProductIdInput) editProductIdInput.value = String(product.id);
+			setEditMode(true);
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		});
+	});
 }
 
 function renderList() {
@@ -99,6 +153,19 @@ function renderList() {
 			items.splice(idx, 1);
 			saveStoredProducts(items);
 			renderList();
+		});
+	});
+
+	listEl.querySelectorAll('[data-edit]').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			const idx = Number(btn.getAttribute('data-edit'));
+			const items = getStoredProducts();
+			const product = items[idx];
+			if (!product) return;
+			fillForm(product);
+			if (editProductIdInput) editProductIdInput.value = String(product.id || '');
+			setEditMode(true);
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		});
 	});
 }
@@ -136,8 +203,9 @@ form.addEventListener('submit', (event) => {
 	}
 
 	const products = getStoredProducts();
-	products.push({
-		id: Date.now(),
+	const editId = Number((formData.get('editProductId') || '').toString().trim());
+	const payload = {
+		id: Number.isFinite(editId) ? editId : Date.now(),
 		name,
 		price,
 		images,
@@ -145,11 +213,19 @@ form.addEventListener('submit', (event) => {
 		colors: colors.length ? colors : ['Default'],
 		sizes: sizes.length ? sizes : [...DEFAULT_SIZES],
 		category: category || 'Shoes'
-	});
+	};
+
+	const existingIndex = products.findIndex((item) => Number(item.id) === Number(payload.id));
+	if (existingIndex >= 0) {
+		products[existingIndex] = payload;
+	} else {
+		products.push(payload);
+	}
 
 	saveStoredProducts(products);
-	form.reset();
+	resetFormMode();
 	renderList();
+	renderStoreList();
 	alert('Product saved. Open products page to see it.');
 });
 
@@ -157,7 +233,13 @@ clearAllBtn.addEventListener('click', () => {
 	const ok = confirm('Delete all custom products from this browser?');
 	if (!ok) return;
 	localStorage.removeItem(STORAGE_KEY);
+	resetFormMode();
 	renderList();
+	renderStoreList();
+});
+
+cancelEditBtn.addEventListener('click', () => {
+	resetFormMode();
 });
 
 renderList();
