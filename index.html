@@ -75,16 +75,20 @@
       <p>Featured Collection</p>
       <h2>Footwear</h2>
     </div>
-    <div class="product-grid">
-      <div class="product-card">
-  <img src="products/white-jordan3.jpg" alt="White Jordan 3 Sneaker - classic white and grey colorway" loading="lazy" />
+    <div class="carousel-wrapper">
+      <div class="product-carousel" data-carousel="footwear">
+        <div class="product-card">
+          <img src="products/white-jordan3.jpg" alt="White Jordan 3 Sneaker - classic white and grey colorway" loading="lazy" />
+        </div>
+        <div class="product-card">
+          <img src="products/blue-dunk2.jpg" alt="Blue Dunk 2 Sneaker - vibrant blue and white" loading="lazy" />
+        </div>
+        <div class="product-card">
+          <img src="products/grey-(3).webp" alt="Grey Sneaker - modern grey design" loading="lazy" />
+        </div>
       </div>
-      <div class="product-card">
-  <img src="products/blue-dunk2.jpg" alt="Blue Dunk 2 Sneaker - vibrant blue and white" loading="lazy" />
-      </div>
-      <div class="product-card">
-  <img src="products/grey-(3).webp" alt="Grey Sneaker - modern grey design" loading="lazy" />
-      </div>
+      <button class="carousel-nav prev" data-carousel="footwear" aria-label="Previous product">‹</button>
+      <button class="carousel-nav next" data-carousel="footwear" aria-label="Next product">›</button>
     </div>
     <a href="products.html?category=footwear" class="btn view-all">View All Footwear</a>
   </section>
@@ -95,16 +99,20 @@
       <p>Latest Devices</p>
       <h2>Phones</h2>
     </div>
-    <div class="product-grid">
-      <div class="product-card">
-  <img src="products/12-pro2.png" alt="iPhone 12 Pro 2 - silver" loading="lazy" />
+    <div class="carousel-wrapper">
+      <div class="product-carousel" data-carousel="phones">
+        <div class="product-card">
+          <img src="products/12-pro2.png" alt="iPhone 12 Pro 2 - silver" loading="lazy" />
+        </div>
+        <div class="product-card">
+          <img src="products/114.jpg" alt="iPhone 11 Pro - black" loading="lazy" />
+        </div>
+        <div class="product-card">
+          <img src="products/121.png" alt="iPhone 12 Pro Max - gold" loading="lazy" />
+        </div>
       </div>
-      <div class="product-card">
-        <img src="products/114.jpg" alt="iPhone 11 Pro - black" loading="lazy" />
-      </div>
-      <div class="product-card">
-        <img src="products/121.png" alt="iPhone 12 Pro Max - gold" loading="lazy" />
-      </div>
+      <button class="carousel-nav prev" data-carousel="phones" aria-label="Previous product">‹</button>
+      <button class="carousel-nav next" data-carousel="phones" aria-label="Next product">›</button>
     </div>
     <a href="products.html?category=phones" class="btn view-all">View All Phones</a>
   </section>
@@ -115,16 +123,20 @@
       <p>Deals Running</p>
       <h2>Sale Section</h2>
     </div>
-    <div class="product-grid">
-      <div class="product-card">
-        <img src="images/newdrop1.jpg" alt="New Drop Sneaker - red and white" loading="lazy" />
+    <div class="carousel-wrapper">
+      <div class="product-carousel" data-carousel="sale">
+        <div class="product-card">
+          <img src="images/newdrop1.jpg" alt="New Drop Sneaker - red and white" loading="lazy" />
+        </div>
+        <div class="product-card">
+          <img src="products/airforcew2.jpeg" alt="Air Force White Sneaker - on sale" loading="lazy" />
+        </div>
+        <div class="product-card">
+          <img src="products/black-air2.jpg" alt="Black Air Sneaker - discounted" loading="lazy" />
+        </div>
       </div>
-      <div class="product-card">
-        <img src="products/airforcew2.jpeg" alt="Air Force White Sneaker - on sale" loading="lazy" />
-      </div>
-      <div class="product-card">
-  <img src="products/black-air2.jpg" alt="Black Air Sneaker - discounted" loading="lazy" />
-      </div>
+      <button class="carousel-nav prev" data-carousel="sale" aria-label="Previous product">‹</button>
+      <button class="carousel-nav next" data-carousel="sale" aria-label="Next product">›</button>
     </div>
     <a href="products.html?category=sale" class="btn view-all">View All Sale Items</a>
   </section>
@@ -401,6 +413,79 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Carousel Styling */
+.premium-home .carousel-wrapper {
+  position: relative;
+  margin: 1rem 0;
+}
+
+.premium-home .product-carousel {
+  display: flex;
+  gap: 1rem;
+  overflow: hidden;
+  scroll-behavior: smooth;
+}
+
+.premium-home .product-carousel .product-card {
+  flex: 0 0 calc(33.333% - 0.67rem);
+  min-width: calc(33.333% - 0.67rem);
+}
+
+.premium-home .carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(116, 140, 171, 0.2);
+  border: 1px solid rgba(116, 140, 171, 0.5);
+  color: var(--light-beige);
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.premium-home .carousel-nav:hover {
+  background: rgba(116, 140, 171, 0.45);
+  border-color: rgba(116, 140, 171, 0.75);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.premium-home .carousel-nav.prev {
+  left: -60px;
+}
+
+.premium-home .carousel-nav.next {
+  right: -60px;
+}
+
+@media (max-width: 1024px) {
+  .premium-home .product-carousel .product-card {
+    flex: 0 0 calc(50% - 0.5rem);
+    min-width: calc(50% - 0.5rem);
+  }
+
+  .premium-home .carousel-nav.prev {
+    left: 8px;
+  }
+
+  .premium-home .carousel-nav.next {
+    right: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .premium-home .product-carousel .product-card {
+    flex: 0 0 100%;
+    min-width: 100%;
+  }
+}
+
 .premium-home .main-footer {
   background: linear-gradient(165deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.94));
   border-top: 1px solid rgba(116, 140, 171, 0.3);
@@ -619,5 +704,66 @@
   </div>
 </div>
 <div class="cart-overlay" id="cartOverlay" tabindex="-1"></div>
+
+<script>
+// Auto-scrolling carousel functionality
+document.addEventListener('DOMContentLoaded', () => {
+  const carousels = document.querySelectorAll('.product-carousel');
+  const autoScrollInterval = 5000; // 5 seconds per rotation
+  
+  carousels.forEach(carousel => {
+    const carouselId = carousel.dataset.carousel;
+    const cards = carousel.querySelectorAll('.product-card');
+    let currentIndex = 0;
+    let autoScrollTimer;
+    
+    const scrollToCard = (index) => {
+      const cardWidth = carousel.querySelector('.product-card').offsetWidth;
+      const gap = 16; // gap between cards
+      const scrollPos = index * (cardWidth + gap);
+      carousel.scrollLeft = scrollPos;
+      currentIndex = index;
+    };
+    
+    const nextCard = () => {
+      currentIndex = (currentIndex + 1) % cards.length;
+      scrollToCard(currentIndex);
+    };
+    
+    const prevCard = () => {
+      currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+      scrollToCard(currentIndex);
+    };
+    
+    const startAutoScroll = () => {
+      autoScrollTimer = setInterval(nextCard, autoScrollInterval);
+    };
+    
+    const stopAutoScroll = () => {
+      clearInterval(autoScrollTimer);
+    };
+    
+    // Attach nav button listeners
+    document.querySelectorAll(`.carousel-nav[data-carousel="${carouselId}"]`).forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        stopAutoScroll();
+        if (btn.classList.contains('next')) {
+          nextCard();
+        } else {
+          prevCard();
+        }
+        startAutoScroll();
+      });
+    });
+    
+    // Stop auto-scroll on mouse hover
+    carousel.addEventListener('mouseenter', stopAutoScroll);
+    carousel.addEventListener('mouseleave', startAutoScroll);
+    
+    // Start auto-scroll on load
+    startAutoScroll();
+  });
+});
+</script>
 </body>
 </html>
