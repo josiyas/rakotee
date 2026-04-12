@@ -1130,7 +1130,6 @@
     border-radius: 12px;
     padding: 0.85rem;
     min-height: var(--mobile-section-height);
-    height: var(--mobile-section-height);
   }
 
   .premium-home .product-carousel .product-card {
@@ -1146,7 +1145,6 @@
     margin: 1rem 0;
     padding: 1.15rem 0.75rem;
     min-height: var(--mobile-section-height);
-    height: var(--mobile-section-height);
   }
 
   .premium-home .contact-list {
@@ -1162,33 +1160,63 @@
 /* Final Android layout lock (must stay last to override earlier rules) */
 @media (max-width: 768px) {
   .premium-home {
-    --android-section-h: clamp(300px, 58svh, 460px);
+    --android-section-h: clamp(340px, 58svh, 460px);
   }
 
-  .premium-home .shop-now-banner,
+  .premium-home .shop-now-banner {
+    min-height: var(--android-section-h) !important;
+  }
+
   .premium-home .product-section,
   .premium-home .contact-section {
-    height: var(--android-section-h) !important;
     min-height: var(--android-section-h) !important;
-    max-height: var(--android-section-h) !important;
+    width: 100% !important;
+    max-width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important;
-    overflow: hidden !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    overflow: visible !important;
+  }
+
+  .premium-home .section-head h2,
+  .premium-home .contact-section h2 {
+    font-size: clamp(1.45rem, 5.5vw, 2rem) !important;
+    line-height: 1.15 !important;
+    margin: 0.3rem 0 0.75rem !important;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+
+  .premium-home .section-head p,
+  .premium-home .home-kicker {
+    font-size: 0.78rem !important;
+    letter-spacing: 0.1em !important;
   }
 }
 
 @media (max-width: 480px) {
   .premium-home {
-    --android-section-h: clamp(260px, 52svh, 380px);
+    --android-section-h: clamp(300px, 52svh, 380px);
   }
 
-  .premium-home .shop-now-banner,
+  .premium-home .shop-now-banner {
+    min-height: var(--android-section-h) !important;
+  }
+
   .premium-home .product-section,
   .premium-home .contact-section {
-    height: var(--android-section-h) !important;
     min-height: var(--android-section-h) !important;
-    max-height: var(--android-section-h) !important;
+  }
+
+  .premium-home .section-head h2,
+  .premium-home .contact-section h2 {
+    font-size: clamp(1.32rem, 6.2vw, 1.7rem) !important;
+  }
+
+  .premium-home .section-head,
+  .premium-home .contact-section {
+    text-align: center;
   }
 }
 
