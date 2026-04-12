@@ -148,6 +148,11 @@ function resetFormMode() {
 async function renderStoreList() {
 	if (!storeListEl) return;
 	const baseProducts = await getStoreProducts();
+	const baseById = new Map(
+		baseProducts
+			.filter((p) => Number.isFinite(Number(p && p.id)))
+			.map((p) => [Number(p.id), p])
+	);
 	const custom = getStoredProducts();
 	const overridesById = new Map(
 		custom
@@ -160,6 +165,7 @@ async function renderStoreList() {
 	// Preserve store description when an override contains old placeholder text.
 	products.forEach((p, idx) => {
 		const override = overridesById.get(Number(p.id));
+		const baseProduct = baseById.get(Number(p.id));
 		if (!override) return;
 
 		const desc = Array.isArray(override.description)
@@ -169,7 +175,7 @@ async function renderStoreList() {
 		const isPlaceholder = desc.length === 1 && desc[0].toLowerCase() === name;
 
 		if (isPlaceholder || !desc.length) {
-			products[idx].description = p.description;
+			products[idx].description = baseProduct ? baseProduct.description : p.description;
 		}
 	});
 
