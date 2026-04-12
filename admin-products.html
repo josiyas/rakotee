@@ -82,6 +82,12 @@
 			font-size: 0.92rem;
 		}
 
+		.help.small {
+			font-size: 0.82rem;
+			margin-top: 0.35rem;
+			color: rgba(240, 235, 216, 0.68);
+		}
+
 		form {
 			display: grid;
 			grid-template-columns: repeat(2, minmax(180px, 1fr));
@@ -142,7 +148,7 @@
 		.list {
 			margin-top: 0.8rem;
 			display: grid;
-			grid-template-columns: 1fr;
+			grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 			gap: 0.7rem;
 		}
 
@@ -150,38 +156,43 @@
 			border: 1px solid rgba(116, 140, 171, 0.3);
 			background: rgba(13, 19, 33, 0.62);
 			border-radius: 12px;
-			padding: 0.65rem;
+			padding: 0.75rem;
 			display: flex;
-			gap: 0.7rem;
-			align-items: center;
-			justify-content: space-between;
+			flex-direction: column;
+			gap: 0.6rem;
 		}
 
 		.meta {
 			min-width: 0;
+			width: 100%;
 		}
 
 		.name {
 			font-weight: 800;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
+			font-size: 0.95rem;
+			line-height: 1.35;
 		}
 
 		.sub {
 			color: rgba(240, 235, 216, 0.72);
-			font-size: 0.87rem;
+			font-size: 0.84rem;
 			margin-top: 0.2rem;
 		}
 
 		.thumb {
-			width: 56px;
-			height: 56px;
+			width: 100%;
+			height: 190px;
 			border-radius: 10px;
 			object-fit: cover;
 			border: 1px solid rgba(116, 140, 171, 0.5);
 			background: rgba(13, 19, 33, 0.5);
 			flex-shrink: 0;
+		}
+
+		.item-actions {
+			display: flex;
+			justify-content: flex-end;
+			width: 100%;
 		}
 
 		@media (max-width: 700px) {
@@ -203,7 +214,7 @@
 
 		<section class="card">
 			<h2>Add Product Easily</h2>
-			<p class="help">Fill only name, price, and image path. Example image path: products/new-shoe-1.jpg</p>
+			<p class="help">Add products in the same structure used by the store page. You can add multiple images for one product.</p>
 
 			<form id="productForm">
 				<div>
@@ -215,8 +226,21 @@
 					<input id="price" name="price" type="number" step="0.01" min="0" required placeholder="1999.00" />
 				</div>
 				<div class="full">
-					<label for="image">Image Path</label>
-					<input id="image" name="image" required placeholder="products/new-shoe-1.jpg" />
+					<label for="images">Image Paths (multiple)</label>
+					<textarea id="images" name="images" required placeholder="products/new-shoe-1.jpg&#10;products/new-shoe-2.jpg&#10;products/new-shoe-3.jpg"></textarea>
+					<p class="help small">Use one image path per line or separate with commas.</p>
+				</div>
+				<div>
+					<label for="colors">Colors (optional)</label>
+					<input id="colors" name="colors" placeholder="Black, White" />
+				</div>
+				<div>
+					<label for="sizes">Sizes (optional)</label>
+					<input id="sizes" name="sizes" placeholder="6UK, 7UK, 8UK" />
+				</div>
+				<div class="full">
+					<label for="category">Category (optional)</label>
+					<input id="category" name="category" placeholder="Shoes" />
 				</div>
 				<div class="full">
 					<label for="description">Description (optional)</label>
@@ -230,8 +254,8 @@
 		</section>
 
 		<section class="card">
-			<h2>Saved Custom Products</h2>
-			<p class="help">These products are stored in your browser and appear automatically on the store pages.</p>
+			<h2>Added Products Preview</h2>
+			<p class="help">These are shown in the same card style (image, name, price) used on the products page.</p>
 			<div id="productList" class="list"></div>
 		</section>
 	</div>

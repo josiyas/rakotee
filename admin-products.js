@@ -4,6 +4,8 @@ const form = document.getElementById('productForm');
 const listEl = document.getElementById('productList');
 const clearAllBtn = document.getElementById('clearAllBtn');
 
+const DEFAULT_SIZES = ['2UK', '3UK', '4UK', '5UK', '6UK', '7UK', '8UK', '9UK', '10UK', '11UK', '12UK'];
+
 function getStoredProducts() {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY);
@@ -27,17 +29,24 @@ function renderList() {
 
 	listEl.innerHTML = products
 		.map((p, idx) => {
-			const image = (p.image || (Array.isArray(p.images) ? p.images[0] : '') || 'products/fallback.png').toString();
+			const image = ((Array.isArray(p.images) ? p.images[0] : p.image) || 'products/fallback.png').toString();
 			const name = (p.name || 'Product').toString();
 			const price = Number(p.price) || 0;
+			const imageCount = Array.isArray(p.images) ? p.images.length : 1;
+			const colors = Array.isArray(p.colors) ? p.colors.join(', ') : 'Default';
+			const sizes = Array.isArray(p.sizes) ? p.sizes.join(', ') : DEFAULT_SIZES.join(', ');
 			return `
 				<article class="item">
 					<img class="thumb" src="${image}" alt="${name}" onerror="this.onerror=null;this.src='products/fallback.png';">
 					<div class="meta">
 						<div class="name">${name}</div>
-						<div class="sub">R ${price.toFixed(2)} · ${image}</div>
+						<div class="sub">R ${price.toFixed(2)} · ${imageCount} image(s)</div>
+						<div class="sub">Colors: ${colors}</div>
+						<div class="sub">Sizes: ${sizes}</div>
 					</div>
-					<button type="button" data-remove="${idx}" class="danger">Delete</button>
+					<div class="item-actions">
+						<button type="button" data-remove="${idx}" class="danger">Delete</button>
+					</div>
 				</article>
 			`;
 		})
@@ -60,21 +69,42 @@ form.addEventListener('submit', (event) => {
 	const formData = new FormData(form);
 	const name = (formData.get('name') || '').toString().trim();
 	const price = Number(formData.get('price'));
-	const image = (formData.get('image') || '').toString().trim();
+	const imagesRaw = (formData.get('images') || '').toString().trim();
+	const colorsRaw = (formData.get('colors') || '').toString().trim();
+	const sizesRaw = (formData.get('sizes') || '').toString().trim();
+	const category = (formData.get('category') || '').toString().trim();
 	const descriptionText = (formData.get('description') || '').toString().trim();
 
-	if (!name || !image || !Number.isFinite(price)) {
-		alert('Please fill name, price, and image path.');
+	const images = imagesRaw
+		.split(/\r?\n|,/)
+		.map((path) => path.trim())
+		.filter(Boolean);
+
+	const colors = colorsRaw
+		.split(',')
+		.map((item) => item.trim())
+		.filter(Boolean);
+
+	const sizes = sizesRaw
+		.split(',')
+		.map((item) => item.trim())
+		.filter(Boolean);
+
+	if (!name || !images.length || !Number.isFinite(price)) {
+		alert('Please fill name, price, and at least one image path.');
 		return;
 	}
 
 	const products = getStoredProducts();
 	products.push({
+		id: Date.now(),
 		name,
 		price,
-		image,
-		description: descriptionText ? [descriptionText] : undefined,
-		colors: ['Default']
+		images,
+		description: descriptionText ? [descriptionText] : [name],
+		colors: colors.length ? colors : ['Default'],
+		sizes: sizes.length ? sizes : [...DEFAULT_SIZES],
+		category: category || 'Shoes'
 	});
 
 	saveStoredProducts(products);
