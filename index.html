@@ -392,6 +392,10 @@
   gap: 1rem;
 }
 
+.premium-home #footwear .carousel-wrapper {
+  gap: 0;
+}
+
 .premium-home .product-carousel {
   display: flex;
   gap: 1rem;
@@ -418,6 +422,24 @@
 .premium-home .product-carousel .product-card {
   flex: 0 0 calc(33.333% - 0.67rem);
   min-width: calc(33.333% - 0.67rem);
+}
+
+.premium-home .product-carousel.is-marquee {
+  overflow: hidden;
+  scrollbar-width: none;
+}
+
+.premium-home .product-carousel.is-marquee::-webkit-scrollbar {
+  display: none;
+}
+
+.premium-home #footwear .product-carousel.is-marquee .product-card {
+  flex: 0 0 240px;
+  min-width: 240px;
+}
+
+.premium-home #footwear .carousel-nav {
+  display: none;
 }
 
 .premium-home .carousel-nav {
@@ -453,6 +475,11 @@
   .premium-home .product-carousel .product-card {
     flex: 0 0 100%;
     min-width: 100%;
+  }
+
+  .premium-home #footwear .product-carousel.is-marquee .product-card {
+    flex: 0 0 72vw;
+    min-width: 72vw;
   }
   
   .premium-home .carousel-nav {
@@ -718,13 +745,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     carousel.appendChild(fragment);
+
+    if (id === 'footwear') {
+      // Duplicate cards to create a seamless marquee loop for footwear.
+      carousel.classList.add('is-marquee');
+      carousel.appendChild(fragment.cloneNode(true));
+    }
   });
+
+  // Continuous across-page motion for footwear section.
+  const footwearCarousel = document.querySelector('[data-carousel="footwear"]');
+  if (footwearCarousel) {
+    let marqueeTimer;
+    const startMarquee = () => {
+      if (marqueeTimer) clearInterval(marqueeTimer);
+      marqueeTimer = setInterval(() => {
+        footwearCarousel.scrollLeft += 1;
+        if (footwearCarousel.scrollLeft >= footwearCarousel.scrollWidth / 2) {
+          footwearCarousel.scrollLeft = 0;
+        }
+      }, 20);
+    };
+    const stopMarquee = () => {
+      if (marqueeTimer) clearInterval(marqueeTimer);
+    };
+
+    footwearCarousel.addEventListener('mouseenter', stopMarquee);
+    footwearCarousel.addEventListener('mouseleave', startMarquee);
+    startMarquee();
+  }
 
   // Initialize carousel functionality
   const carousels = document.querySelectorAll('.product-carousel');
   const autoScrollInterval = 5000;
   
   carousels.forEach(carousel => {
+    if (carousel.classList.contains('is-marquee')) return;
+
     const carouselId = carousel.dataset.carousel;
     const cards = carousel.querySelectorAll('.product-card');
     const wrapper = carousel.parentElement;
