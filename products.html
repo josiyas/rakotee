@@ -43,15 +43,14 @@
 
   <!-- Navbar -->
   <nav class="navbar products-navbar" role="navigation" aria-label="Main Navigation">
-    <div class="products-nav-brand">
+    <a href="index.html" class="products-nav-brand" aria-label="Go to home page">
       <img src="rakotee.png.png" alt="RAKOTEE Store Logo" class="products-logo-nav"/>
       <div class="products-nav-copy">
         <strong>RAKOTEE</strong>
         <span>Products</span>
       </div>
-    </div>
+    </a>
     <div class="products-nav-actions">
-      <a href="index.html" class="btn nav-btn">Home</a>
       <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open Cart">
         🛒 <span id="cartCount" class="cart-count">0</span>
       </button>
@@ -302,6 +301,12 @@ renderCartSidebar();
       display: flex;
       align-items: center;
       gap: 0.7rem;
+      text-decoration: none;
+      transition: transform 0.25s ease;
+    }
+
+    .products-nav-brand:hover {
+      transform: translateY(-1px);
     }
 
     .products-nav-copy {
@@ -341,23 +346,6 @@ renderCartSidebar();
       display: flex;
       align-items: center;
       gap: 0.7rem;
-    }
-
-    .products-navbar .nav-btn {
-      background: rgba(116, 140, 171, 0.18) !important;
-      border: 1px solid rgba(116, 140, 171, 0.5) !important;
-      color: var(--light-beige) !important;
-      padding: 0.55rem 1rem !important;
-      border-radius: 999px !important;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
-    }
-
-    .products-navbar .nav-btn:hover {
-      transform: translateY(-1px);
-      background: rgba(116, 140, 171, 0.35) !important;
-      border-color: rgba(116, 140, 171, 0.75) !important;
     }
 
     .products-navbar .cart-icon-btn {
@@ -543,10 +531,6 @@ renderCartSidebar();
 
       .products-nav-copy strong {
         font-size: 1.2rem;
-      }
-
-      .products-navbar .nav-btn {
-        padding: 0.5rem 0.85rem !important;
       }
 
       .products-navbar .cart-icon-btn {
