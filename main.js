@@ -20,6 +20,10 @@ function resetMobileMenuState() {
 // Ensure side menu never stays open from cached/bfcache state on mobile browsers.
 resetMobileMenuState();
 window.addEventListener("pageshow", resetMobileMenuState);
+window.addEventListener("orientationchange", resetMobileMenuState);
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 1024) resetMobileMenuState();
+});
 
 if (menuToggle && mobileMenu && mobileOverlay) {
   menuToggle.addEventListener("click", () => {
@@ -42,6 +46,13 @@ if (menuToggle && mobileMenu && mobileOverlay) {
       menuToggle.innerHTML = `<i class="fas fa-bars"></i>`;
       menuToggle.setAttribute("aria-expanded", false);
     });
+  });
+  document.addEventListener("click", (e) => {
+    const target = e.target;
+    if (!target) return;
+    const clickedInsideMenu = mobileMenu.contains(target);
+    const clickedToggle = menuToggle.contains(target);
+    if (!clickedInsideMenu && !clickedToggle) resetMobileMenuState();
   });
   // Keyboard navigation for menu
   menuToggle.addEventListener("keydown", e => {
@@ -206,6 +217,16 @@ if (cartSidebar && closeCartBtn) {
     if (e.key === 'Enter' || e.key === ' ') closeCart();
   });
   trapFocus(cartSidebar);
+}
+if (cartSidebar) {
+  document.addEventListener('click', (e) => {
+    const target = e.target;
+    if (!target) return;
+    const cartBtn = document.getElementById('cartIconBtn');
+    const clickedInsideCart = cartSidebar.contains(target);
+    const clickedCartBtn = cartBtn ? cartBtn.contains(target) : false;
+    if (!clickedInsideCart && !clickedCartBtn) closeCart();
+  });
 }
 
 // --- Focus styles for accessibility ---

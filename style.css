@@ -2184,3 +2184,27 @@ button {
     overflow-wrap: anywhere;
   }
 }
+
+/* --- Stuck-Open Guard (Android) --- */
+.mobile-menu:not(.active) {
+  right: -110vw !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.mobile-menu.active {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.cart-sidebar:not(.open) {
+  right: -110vw !important;
+  transform: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.cart-sidebar.open {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
