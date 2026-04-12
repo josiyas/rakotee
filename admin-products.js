@@ -15,7 +15,26 @@ function getStoredProducts() {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY);
 		const data = raw ? JSON.parse(raw) : [];
-		return Array.isArray(data) ? data : [];
+		if (!Array.isArray(data)) return [];
+
+		const cleaned = data.map((item) => {
+			if (!item || typeof item !== 'object') return item;
+			const clone = { ...item };
+			const desc = Array.isArray(clone.description)
+				? clone.description.map((d) => (d || '').toString().trim()).filter(Boolean)
+				: [];
+			const name = (clone.name || '').toString().trim().toLowerCase();
+			if (desc.length === 1 && desc[0].toLowerCase() === name) {
+				delete clone.description;
+			}
+			return clone;
+		});
+
+		if (JSON.stringify(cleaned) !== JSON.stringify(data)) {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(cleaned));
+		}
+
+		return cleaned;
 	} catch {
 		return [];
 	}
@@ -137,6 +156,22 @@ async function renderStoreList() {
 	);
 
 	const products = baseProducts.map((p) => (overridesById.has(Number(p.id)) ? { ...p, ...overridesById.get(Number(p.id)) } : p));
+
+	// Preserve store description when an override contains old placeholder text.
+	products.forEach((p, idx) => {
+		const override = overridesById.get(Number(p.id));
+		if (!override) return;
+
+		const desc = Array.isArray(override.description)
+			? override.description.map((d) => (d || '').toString().trim()).filter(Boolean)
+			: [];
+		const name = (override.name || p.name || '').toString().trim().toLowerCase();
+		const isPlaceholder = desc.length === 1 && desc[0].toLowerCase() === name;
+
+		if (isPlaceholder || !desc.length) {
+			products[idx].description = p.description;
+		}
+	});
 
 	if (!products.length) {
 		storeListEl.innerHTML = '<p class="help">Could not load store products.</p>';
