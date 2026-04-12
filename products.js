@@ -2398,6 +2398,23 @@ const products = [
 
 ];
 
+// Merge products added via admin page (stored in localStorage) so they appear
+// on the storefront without editing code manually.
+;(function mergeCustomProducts() {
+  if (typeof window === 'undefined' || !window.localStorage) return;
+  try {
+    const raw = window.localStorage.getItem('rakotee_custom_products');
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || !parsed.length) return;
+    parsed.forEach((item) => {
+      if (item && typeof item === 'object') products.push(item);
+    });
+  } catch (err) {
+    console.warn('Could not load custom products from localStorage.', err);
+  }
+})();
+
 // Auto-tag categories for any products that don't have an explicit category.
 // This uses name-based heuristics so the category filter works immediately
 // without modifying every product object manually.
