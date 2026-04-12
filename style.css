@@ -1668,6 +1668,11 @@ a {
   box-shadow: 0 0 10px rgba(255, 221, 87, 0.3);
 }
 
+.modal-right select option {
+  background: #1a1a2e;
+  color: #ffffff;
+}
+
 #addToCartBtn {
   padding: 1rem 2rem;
   background: linear-gradient(135deg, #ffdd57, #ffc107);
