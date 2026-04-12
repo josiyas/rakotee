@@ -50,38 +50,81 @@ async function getStoreProducts() {
 		if (!response.ok) return [];
 		const jsText = await response.text();
 
-		const parsed = [];
-		const rx = /\{[\s\S]*?id:\s*([0-9]+)[\s\S]*?name:\s*"([^"]+)"[\s\S]*?price:\s*([0-9]+(?:\.[0-9]+)?)[\s\S]*?images:\s*\[([\s\S]*?)\][\s\S]*?(?:description:\s*\[([\s\S]*?)\])?[\s\S]*?\}/g;
-		let match;
-		while ((match = rx.exec(jsText)) !== null) {
-			const images = [];
-			const imageRx = /"([^"]+)"/g;
-			let imageMatch;
-			while ((imageMatch = imageRx.exec(match[4])) !== null) {
-				images.push(imageMatch[1]);
+		const startToken = 'const products = [';
+		const start = jsText.indexOf(startToken);
+		if (start < 0) return [];
+
+		const arrayStart = jsText.indexOf('[', start);
+		if (arrayStart < 0) return [];
+
+		let i = arrayStart;
+		let depth = 0;
+		let inString = false;
+		let escaped = false;
+		let quote = '';
+
+		for (; i < jsText.length; i++) {
+			const ch = jsText[i];
+
+			if (inString) {
+				if (escaped) {
+					escaped = false;
+					continue;
+				}
+				if (ch === '\\') {
+					escaped = true;
+					continue;
+				}
+				if (ch === quote) {
+					inString = false;
+					quote = '';
+				}
+				continue;
 			}
 
-			const descriptions = [];
-			if (match[5]) {
-				const descRx = /"([^"]+)"/g;
-				let descMatch;
-				while ((descMatch = descRx.exec(match[5])) !== null) {
-					descriptions.push(descMatch[1]);
+			if (ch === '"' || ch === "'" || ch === '`') {
+				inString = true;
+				quote = ch;
+				continue;
+			}
+
+			if (ch === '[') depth++;
+			if (ch === ']') {
+				depth--;
+				if (depth === 0) {
+					i++;
+					break;
 				}
 			}
-
-			parsed.push({
-				id: Number(match[1]),
-				name: match[2],
-				price: Number(match[3]) || 0,
-				images: images.length ? images : ['products/fallback.png'],
-				description: descriptions,
-				colors: ['Default'],
-				sizes: [...DEFAULT_SIZES],
-				category: 'Shoes'
-			});
 		}
-		return parsed;
+
+		const arrayLiteral = jsText.slice(arrayStart, i).trim();
+		if (!arrayLiteral || !arrayLiteral.startsWith('[') || !arrayLiteral.endsWith(']')) return [];
+
+		const sourceProducts = Function(`"use strict"; return (${arrayLiteral});`)();
+		if (!Array.isArray(sourceProducts)) return [];
+
+		return sourceProducts
+			.filter((p) => p && typeof p === 'object')
+			.map((p) => {
+				const images = Array.isArray(p.images)
+					? p.images.map((img) => (img || '').toString().trim()).filter(Boolean)
+					: [];
+				const description = Array.isArray(p.description)
+					? p.description.map((d) => (d || '').toString().trim()).filter(Boolean)
+					: (p.description ? [(p.description || '').toString().trim()] : []);
+
+				return {
+					id: Number(p.id),
+					name: (p.name || '').toString(),
+					price: Number(p.price) || 0,
+					images: images.length ? images : ['products/fallback.png'],
+					description,
+					colors: Array.isArray(p.colors) && p.colors.length ? p.colors : ['Default'],
+					sizes: Array.isArray(p.sizes) && p.sizes.length ? p.sizes : [...DEFAULT_SIZES],
+					category: (p.category || 'Shoes').toString()
+				};
+			});
 	} catch {
 		return [];
 	}
