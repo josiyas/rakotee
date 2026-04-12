@@ -32,7 +32,7 @@ async function getStoreProducts() {
 		const jsText = await response.text();
 
 		const parsed = [];
-		const rx = /\{[\s\S]*?id:\s*([0-9]+)[\s\S]*?name:\s*"([^"]+)"[\s\S]*?price:\s*([0-9]+(?:\.[0-9]+)?)[\s\S]*?images:\s*\[([\s\S]*?)\][\s\S]*?\}/g;
+		const rx = /\{[\s\S]*?id:\s*([0-9]+)[\s\S]*?name:\s*"([^"]+)"[\s\S]*?price:\s*([0-9]+(?:\.[0-9]+)?)[\s\S]*?images:\s*\[([\s\S]*?)\][\s\S]*?(?:description:\s*\[([\s\S]*?)\])?[\s\S]*?\}/g;
 		let match;
 		while ((match = rx.exec(jsText)) !== null) {
 			const images = [];
@@ -42,11 +42,21 @@ async function getStoreProducts() {
 				images.push(imageMatch[1]);
 			}
 
+			const descriptions = [];
+			if (match[5]) {
+				const descRx = /"([^"]+)"/g;
+				let descMatch;
+				while ((descMatch = descRx.exec(match[5])) !== null) {
+					descriptions.push(descMatch[1]);
+				}
+			}
+
 			parsed.push({
 				id: Number(match[1]),
 				name: match[2],
 				price: Number(match[3]) || 0,
 				images: images.length ? images : ['products/fallback.png'],
+				description: descriptions.length ? descriptions : [match[2]],
 				colors: ['Default'],
 				sizes: [...DEFAULT_SIZES],
 				category: 'Shoes'
@@ -70,6 +80,9 @@ function cardTemplate(product, idx, canDelete) {
 	const imageCount = Array.isArray(product.images) ? product.images.length : 1;
 	const colors = Array.isArray(product.colors) ? product.colors.join(', ') : 'Default';
 	const sizes = Array.isArray(product.sizes) ? product.sizes.join(', ') : DEFAULT_SIZES.join(', ');
+	const description = Array.isArray(product.description)
+		? product.description.join(' ')
+		: (product.description || '').toString();
 	return `
 		<article class="item">
 			<img class="thumb" src="${image}" alt="${name}" onerror="this.onerror=null;this.src='products/fallback.png';">
@@ -78,6 +91,7 @@ function cardTemplate(product, idx, canDelete) {
 				<div class="sub">R ${price.toFixed(2)} · ${imageCount} image(s)</div>
 				<div class="sub">Colors: ${colors}</div>
 				<div class="sub">Sizes: ${sizes}</div>
+				<div class="sub">${description ? description.slice(0, 140) : ''}</div>
 			</div>
 			<div class="item-actions">
 				<button type="button" data-edit="${idx}" class="edit-btn">Edit</button>
