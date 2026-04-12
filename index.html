@@ -76,17 +76,7 @@
       <h2>Footwear</h2>
     </div>
     <div class="carousel-wrapper">
-      <div class="product-carousel" data-carousel="footwear">
-        <div class="product-card">
-          <img src="products/white-jordan3.jpg" alt="White Jordan 3 Sneaker - classic white and grey colorway" loading="lazy" />
-        </div>
-        <div class="product-card">
-          <img src="products/blue-dunk2.jpg" alt="Blue Dunk 2 Sneaker - vibrant blue and white" loading="lazy" />
-        </div>
-        <div class="product-card">
-          <img src="products/grey-(3).webp" alt="Grey Sneaker - modern grey design" loading="lazy" />
-        </div>
-      </div>
+      <div class="product-carousel" data-carousel="footwear"></div>
       <button class="carousel-nav prev" data-carousel="footwear" aria-label="Previous product">‹</button>
       <button class="carousel-nav next" data-carousel="footwear" aria-label="Next product">›</button>
     </div>
@@ -100,17 +90,7 @@
       <h2>Phones</h2>
     </div>
     <div class="carousel-wrapper">
-      <div class="product-carousel" data-carousel="phones">
-        <div class="product-card">
-          <img src="products/12-pro2.png" alt="iPhone 12 Pro 2 - silver" loading="lazy" />
-        </div>
-        <div class="product-card">
-          <img src="products/114.jpg" alt="iPhone 11 Pro - black" loading="lazy" />
-        </div>
-        <div class="product-card">
-          <img src="products/121.png" alt="iPhone 12 Pro Max - gold" loading="lazy" />
-        </div>
-      </div>
+      <div class="product-carousel" data-carousel="phones"></div>
       <button class="carousel-nav prev" data-carousel="phones" aria-label="Previous product">‹</button>
       <button class="carousel-nav next" data-carousel="phones" aria-label="Next product">›</button>
     </div>
@@ -124,17 +104,7 @@
       <h2>Sale Section</h2>
     </div>
     <div class="carousel-wrapper">
-      <div class="product-carousel" data-carousel="sale">
-        <div class="product-card">
-          <img src="images/newdrop1.jpg" alt="New Drop Sneaker - red and white" loading="lazy" />
-        </div>
-        <div class="product-card">
-          <img src="products/airforcew2.jpeg" alt="Air Force White Sneaker - on sale" loading="lazy" />
-        </div>
-        <div class="product-card">
-          <img src="products/black-air2.jpg" alt="Black Air Sneaker - discounted" loading="lazy" />
-        </div>
-      </div>
+      <div class="product-carousel" data-carousel="sale"></div>
       <button class="carousel-nav prev" data-carousel="sale" aria-label="Previous product">‹</button>
       <button class="carousel-nav next" data-carousel="sale" aria-label="Next product">›</button>
     </div>
@@ -711,11 +681,48 @@
 </div>
 <div class="cart-overlay" id="cartOverlay" tabindex="-1"></div>
 
+<script src="products.js"></script>
 <script>
-// Auto-scrolling carousel functionality
+// Render carousel products dynamically from products.js
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof products === 'undefined' || !Array.isArray(products)) {
+    console.error('Products array not loaded');
+    return;
+  }
+
+  // Populate each carousel with 15 products
+  const carouselIds = ['footwear', 'phones', 'sale'];
+  
+  carouselIds.forEach(id => {
+    const carousel = document.querySelector(`[data-carousel="${id}"]`);
+    if (!carousel || products.length === 0) return;
+
+    // Render up to 15 product cards
+    const fragment = document.createDocumentFragment();
+    const productsToShow = products.slice(0, 15);
+    
+    productsToShow.forEach(product => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.style.cursor = 'pointer';
+      const imgUrl = product.images && product.images[0] 
+        ? (product.images[0].startsWith('/') ? product.images[0] : '/' + product.images[0])
+        : '/products/fallback.png';
+      
+      card.innerHTML = `
+        <img src="${imgUrl}" alt="${product.name}" loading="lazy" onerror="this.onerror=null;this.src='/products/fallback.png';">
+        <h3>${product.name}</h3>
+        <p>R ${product.price.toFixed(2)}</p>
+      `;
+      fragment.appendChild(card);
+    });
+    
+    carousel.appendChild(fragment);
+  });
+
+  // Initialize carousel functionality
   const carousels = document.querySelectorAll('.product-carousel');
-  const autoScrollInterval = 5000; // 5 seconds per rotation
+  const autoScrollInterval = 5000;
   
   carousels.forEach(carousel => {
     const carouselId = carousel.dataset.carousel;
@@ -723,6 +730,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const wrapper = carousel.parentElement;
     let currentIndex = 0;
     let autoScrollTimer;
+    
+    if (cards.length === 0) return;
     
     const scrollToCard = (index) => {
       currentIndex = (index + cards.length) % cards.length;
@@ -750,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // Attach nav button listeners
-    wrapper.querySelectorAll(`.carousel-nav`).forEach(btn => {
+    wrapper.querySelectorAll('.carousel-nav').forEach(btn => {
       if (btn.dataset.carousel === carouselId) {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
