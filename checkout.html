@@ -110,163 +110,205 @@
       <input type="text" id="name" placeholder="Full Name" required>
       <input type="email" id="email" placeholder="Email" required>
       <input type="text" id="address" placeholder="Shipping Address" required>
+      <button id="placeOrderBtn" type="submit" class="payment-btn peach">Place Order (Manual)</button>
       <div id="form-error" style="color:red;margin-top:10px;"></div>
     </form>
     <div id="order-success" style="display:none;color:green;margin-top:20px;font-weight:bold;"></div>
     <h2>Choose Payment Method</h2>
     <div id="payment-options" style="margin-bottom:2rem;width:100%;">
-      <button id="payfastBtn" class="payment-btn payfast">PayFast</button>
+      <button id="payfastBtn" type="button" class="payment-btn payfast">PayFast</button>
     </div>
   </div>
   <script>
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  let total = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
-  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:5000'
-    : 'https://rakotee-back.onrender.com';
-  // parse query params early so capture logic below can use it
-  const urlParams = new URLSearchParams(window.location.search);
-    document.getElementById('checkout-summary').innerHTML =
-      cart.length
-        ? `<h2>Order Summary</h2>${cart.map(item => `<div>${item.name} x${item.quantity} - R${(item.price * item.quantity).toFixed(2)}</div>`).join('')}<hr><div><strong>Total: R${total.toFixed(2)}</strong></div>`
-        : '<p>Your cart is empty.</p>';
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:5000'
+      : 'https://rakotee-back.onrender.com';
+    const urlParams = new URLSearchParams(window.location.search);
 
-    document.getElementById('checkout-form').onsubmit = async function(e) {
-      e.preventDefault();
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const errorDiv = document.getElementById('form-error');
-      errorDiv.textContent = '';
-      // Simple validation
+    const formEl = document.getElementById('checkout-form');
+    const summaryEl = document.getElementById('checkout-summary');
+    const errorEl = document.getElementById('form-error');
+    const successEl = document.getElementById('order-success');
+    const payfastBtn = document.getElementById('payfastBtn');
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const addressInput = document.getElementById('address');
+
+    function getCart() {
+      const raw = localStorage.getItem('cart');
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    }
+
+    function getTotal(cart) {
+      return cart.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1), 0);
+    }
+
+    function showError(message) {
+      errorEl.textContent = message || '';
+    }
+
+    function showSuccess(message) {
+      successEl.textContent = message;
+      successEl.style.display = 'block';
+      showError('');
+    }
+
+    function setButtonsDisabled(disabled) {
+      payfastBtn.disabled = disabled;
+      placeOrderBtn.disabled = disabled;
+    }
+
+    function validateCustomer() {
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const address = addressInput.value.trim();
+
       if (!name || !email || !address) {
-        errorDiv.textContent = 'Please fill in all fields.';
-        return;
+        showError('Please fill in all fields.');
+        return null;
       }
       if (!/^\S+@\S+\.\S+$/.test(email)) {
-        errorDiv.textContent = 'Please enter a valid email address.';
-        return;
+        showError('Please enter a valid email address.');
+        return null;
       }
       if (address.length < 5) {
-        errorDiv.textContent = 'Please enter a valid shipping address.';
-        return;
+        showError('Please enter a valid shipping address.');
+        return null;
       }
-      if (!cart.length) {
-        errorDiv.textContent = 'Your cart is empty.';
-        return;
+
+      return { name, email, address };
+    }
+
+    function renderSummary() {
+      const cart = getCart();
+      const total = getTotal(cart);
+
+      summaryEl.innerHTML = cart.length
+        ? `<h2>Order Summary</h2>${cart.map((item) => `<div>${item.name} x${item.quantity} - R${((Number(item.price) || 0) * (Number(item.quantity) || 1)).toFixed(2)}</div>`).join('')}<hr><div><strong>Total: R${total.toFixed(2)}</strong></div>`
+        : '<p>Your cart is empty.</p>';
+
+      const empty = cart.length === 0;
+      setButtonsDisabled(empty);
+      if (empty) {
+        showError('Your cart is empty. Add items before checking out.');
       }
-      // Send order to backend
+      return { cart, total };
+    }
+
+    function persistCheckoutDetails() {
+      const details = {
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim(),
+        address: addressInput.value.trim()
+      };
+      localStorage.setItem('rakotee_checkout_details', JSON.stringify(details));
+    }
+
+    function loadCheckoutDetails() {
+      try {
+        const raw = localStorage.getItem('rakotee_checkout_details');
+        if (!raw) return;
+        const details = JSON.parse(raw);
+        if (!details || typeof details !== 'object') return;
+        if (details.name) nameInput.value = details.name;
+        if (details.email) emailInput.value = details.email;
+        if (details.address) addressInput.value = details.address;
+      } catch {
+        // ignore bad stored checkout details
+      }
+    }
+
+    loadCheckoutDetails();
+    const initial = renderSummary();
+
+    [nameInput, emailInput, addressInput].forEach((input) => {
+      input.addEventListener('input', persistCheckoutDetails);
+    });
+
+    formEl.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      showError('');
+
+      const { cart } = renderSummary();
+      const customer = validateCustomer();
+      if (!customer) return;
+      if (!cart.length) return;
+
+      setButtonsDisabled(true);
+      placeOrderBtn.textContent = 'Placing Order...';
+
       try {
         const response = await fetch(`${API_BASE}/api/order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, address, cart })
+          body: JSON.stringify({ ...customer, cart })
         });
         if (!response.ok) throw new Error('Order failed.');
-        document.getElementById('order-success').textContent = 'Order placed! Thank you for shopping with us.';
-        document.getElementById('order-success').style.display = 'block';
+
+        showSuccess('Order placed! Thank you for shopping with us.');
         localStorage.removeItem('cart');
-        setTimeout(() => { window.location.href = 'index.html'; }, 2500);
-      } catch (err) {
-        errorDiv.textContent = 'Could not place order. Please try again.';
+        setTimeout(() => { window.location.href = 'order-success.html'; }, 2000);
+      } catch {
+        showError('Could not place order. Please try again.');
+        setButtonsDisabled(false);
+      } finally {
+        placeOrderBtn.textContent = 'Place Order (Manual)';
       }
-    };
-  // Set payment amounts dynamically (used when posting to server)
-    // Note: paypal-amount input was removed from the markup; keep total in JS only
-    // Set return URL for PayFast
-    const payfastReturn = window.location.origin + '/checkout.html?payfast=success';
-    document.getElementById('payfastBtn').addEventListener('click', async function (e) {
-      e.preventDefault();
-      if (!cart.length) {
-        document.getElementById('form-error').textContent = 'Your cart is empty.';
-        return;
-      }
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const errorDiv = document.getElementById('form-error');
-      errorDiv.textContent = '';
-      if (!name || !email || !address) {
-        errorDiv.textContent = 'Please fill in your name, email and address before paying.';
-        return;
-      }
-      // POST order to backend which will emit an HTML form to PayFast
+    });
+
+    payfastBtn.addEventListener('click', async function () {
+      showError('');
+
+      const { cart } = renderSummary();
+      const customer = validateCustomer();
+      if (!customer) return;
+      if (!cart.length) return;
+
+      const payfastReturn = `${window.location.origin}/checkout.html?payfast=success`;
+      setButtonsDisabled(true);
+      payfastBtn.textContent = 'Opening PayFast...';
+
       try {
         const resp = await fetch(`${API_BASE}/api/order/payfast`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, address, cart, return_url: payfastReturn })
+          body: JSON.stringify({ ...customer, cart, return_url: payfastReturn })
         });
         if (!resp.ok) throw new Error('Failed to initiate payment');
+
         const html = await resp.text();
         const win = window.open('', '_blank');
         if (!win) {
-          errorDiv.textContent = 'Popup blocked. Please allow popups for this site.';
+          showError('Popup blocked. Please allow popups for this site.');
+          setButtonsDisabled(false);
           return;
         }
         win.document.open();
         win.document.write(html);
         win.document.close();
-      } catch (err) {
-        errorDiv.textContent = 'Could not initiate PayFast payment. Please try again.';
+      } catch {
+        showError('Could not initiate PayFast payment. Please try again.');
+        setButtonsDisabled(false);
+      } finally {
+        payfastBtn.textContent = 'PayFast';
       }
     });
-    // Yoco and Peach Payments demo (guard for optional buttons)
-    const yocoBtn = document.getElementById('yocoPayBtn');
-    if (yocoBtn) yocoBtn.onclick = function() { placeOrderAfterPayment('Yoco'); };
-    const peachBtn = document.getElementById('peachPayBtn');
-    if (peachBtn) peachBtn.onclick = function() { placeOrderAfterPayment('Peach Payments'); };
-    // Place order only after payment
-    function placeOrderAfterPayment(method) {
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const errorDiv = document.getElementById('form-error');
-      errorDiv.textContent = '';
-      if (!name || !email || !address) {
-        errorDiv.textContent = 'Please fill in all fields.';
-        return;
-      }
-      if (!/^\S+@\S+\.\S+$/.test(email)) {
-        errorDiv.textContent = 'Please enter a valid email address.';
-        return;
-      }
-      if (address.length < 5) {
-        errorDiv.textContent = 'Please enter a valid shipping address.';
-        return;
-      }
-      if (!cart.length) {
-        errorDiv.textContent = 'Your cart is empty.';
-        return;
-      }
-      fetch('http://localhost:5000/api/order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, address, cart, paymentMethod: method })
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('order-success').textContent = 'Order placed after payment! Thank you.';
-        document.getElementById('order-success').style.display = 'block';
-        localStorage.removeItem('cart');
-        setTimeout(() => { window.location.href = 'index.html'; }, 2500);
-      })
-      .catch(() => {
-        errorDiv.textContent = 'Could not place order. Please try again.';
-      });
-    }
-  // Check for payment provider return (PayFast/PayPal)
-  if (urlParams.get('payfast') === 'success') {
+
+    if (urlParams.get('payfast') === 'success') {
       const id = urlParams.get('orderId');
-      document.getElementById('order-success').textContent = id ? `Payment initiated. Order ID: ${id}. We'll update status once payment is confirmed.` : 'Payment initiated. We will confirm once payment is received.';
-      document.getElementById('order-success').style.display = 'block';
-      // clear local cart (user already paid on PayFast side)
+      showSuccess(id
+        ? `Payment initiated. Order ID: ${id}. We'll confirm status shortly.`
+        : 'Payment initiated. We will confirm once payment is received.');
       localStorage.removeItem('cart');
+      renderSummary();
     }
+
     if (urlParams.get('paypal') === 'success') {
-      document.getElementById('order-success').textContent = 'Payment initiated via PayPal. We will confirm once payment is received.';
-      document.getElementById('order-success').style.display = 'block';
+      showSuccess('Payment initiated via PayPal. We will confirm once payment is received.');
       localStorage.removeItem('cart');
+      renderSummary();
     }
   </script>
 </body>
