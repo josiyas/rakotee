@@ -2645,12 +2645,11 @@ function openModal(product) {
   }
 
   // Sizes
-  // Update label to 'Storage:' for shoes with storage sizes (GB), otherwise 'Size:'
+  // Update label to always show 'Size:'
   try {
     const sizeLabelEl = document.getElementById('sizeLabel');
     if (sizeLabelEl) {
-      const hasStorageSizes = (product.sizes && product.sizes.some(s => /gb$/i.test(s)));
-      sizeLabelEl.textContent = hasStorageSizes ? 'Storage:' : 'Size:';
+      sizeLabelEl.textContent = 'Size:';
     }
   } catch (e) {
     // ignore DOM errors in environments without the element
