@@ -425,6 +425,7 @@
 }
 
 .premium-home .product-carousel.is-marquee {
+  display: block;
   overflow: hidden;
   scroll-behavior: auto;
   scrollbar-width: none;
@@ -432,6 +433,17 @@
 
 .premium-home .product-carousel.is-marquee::-webkit-scrollbar {
   display: none;
+}
+
+.premium-home .product-carousel.is-marquee .marquee-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: footwearMarquee 35s linear infinite;
+}
+
+.premium-home .product-carousel.is-marquee:hover .marquee-track {
+  animation-play-state: paused;
 }
 
 .premium-home #footwear .product-carousel.is-marquee .product-card {
@@ -511,6 +523,11 @@
     height: 38px;
     font-size: 1.4rem;
   }
+}
+
+@keyframes footwearMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 .premium-home .main-footer {
@@ -836,7 +853,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Duplicate footwear cards for seamless across-page marquee movement.
       carousel.classList.add('is-marquee');
-      carousel.innerHTML = footwearCards + footwearCards;
+      carousel.innerHTML = `<div class="marquee-track">${footwearCards}${footwearCards}</div>`;
       return;
     }
 
@@ -847,42 +864,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     cardsHTML = productsToShow.map((item, index) => renderCardHTML(item, `Product ${index + 1}`)).join('');
     carousel.innerHTML = cardsHTML;
   });
-
-  // Continuous across-page motion for footwear section.
-  const footwearCarousel = document.querySelector('[data-carousel="footwear"]');
-  if (footwearCarousel) {
-    let marqueeFrame;
-    let lastTimestamp = 0;
-    const speedPxPerSecond = 95;
-
-    const tickMarquee = (timestamp) => {
-      if (!lastTimestamp) lastTimestamp = timestamp;
-      const delta = timestamp - lastTimestamp;
-      lastTimestamp = timestamp;
-
-      footwearCarousel.scrollLeft += (speedPxPerSecond * delta) / 1000;
-      if (footwearCarousel.scrollLeft >= footwearCarousel.scrollWidth / 2) {
-        footwearCarousel.scrollLeft = 0;
-      }
-
-      marqueeFrame = requestAnimationFrame(tickMarquee);
-    };
-
-    const startMarquee = () => {
-      if (marqueeFrame) cancelAnimationFrame(marqueeFrame);
-      lastTimestamp = 0;
-      marqueeFrame = requestAnimationFrame(tickMarquee);
-    };
-
-    const stopMarquee = () => {
-      if (marqueeFrame) cancelAnimationFrame(marqueeFrame);
-      marqueeFrame = null;
-    };
-
-    footwearCarousel.addEventListener('mouseenter', stopMarquee);
-    footwearCarousel.addEventListener('mouseleave', startMarquee);
-    startMarquee();
-  }
 
   // Initialize carousel functionality
   const carousels = document.querySelectorAll('.product-carousel');
