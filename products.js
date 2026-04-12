@@ -2424,15 +2424,13 @@ const products = [
   });
 })();
 
-  // Ensure phone products have storage options instead of shoe sizes
-  ;(function ensurePhoneStorage() {
-    const storageOptions = ["64GB", "128GB", "256GB", "512GB"];
+  // All products are shoes - ensure they all have UK sizes
+  ;(function ensureAllShoesSizes() {
+    const ukSizes = ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"];
     products.forEach(p => {
-      if ((p.category && p.category.toLowerCase() === 'phones')) {
-        // only replace if sizes looks like shoe sizes (contains 'UK') or is missing
-        if (!Array.isArray(p.sizes) || p.sizes.some(s => /UK$/i.test(s))) {
-          p.sizes = [...storageOptions];
-        }
+      // Replace any GB sizes with UK shoe sizes
+      if (!Array.isArray(p.sizes) || p.sizes.length === 0 || p.sizes.some(s => /gb$/i.test(s))) {
+        p.sizes = [...ukSizes];
       }
     });
   })();
