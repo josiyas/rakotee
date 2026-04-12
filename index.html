@@ -539,8 +539,12 @@
 
   .premium-home .mobile-menu {
     top: 64px;
-    right: 0.75rem;
     width: min(280px, calc(100vw - 1.5rem));
+    right: calc(-1 * min(280px, calc(100vw - 1.5rem)));
+  }
+
+  .premium-home .mobile-menu.active {
+    right: 0.75rem !important;
   }
 
   .premium-home .shop-now-banner {

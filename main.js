@@ -6,6 +6,21 @@
 const menuToggle = document.querySelector(".menu-toggle");
 const mobileMenu = document.getElementById("mobileMenu");
 const mobileOverlay = document.getElementById("mobileOverlay");
+
+function resetMobileMenuState() {
+  if (!mobileMenu) return;
+  mobileMenu.classList.remove("active");
+  if (mobileOverlay) mobileOverlay.classList.remove("active");
+  if (menuToggle) {
+    menuToggle.innerHTML = `<i class="fas fa-bars"></i>`;
+    menuToggle.setAttribute("aria-expanded", false);
+  }
+}
+
+// Ensure side menu never stays open from cached/bfcache state on mobile browsers.
+resetMobileMenuState();
+window.addEventListener("pageshow", resetMobileMenuState);
+
 if (menuToggle && mobileMenu && mobileOverlay) {
   menuToggle.addEventListener("click", () => {
     const isOpen = mobileMenu.classList.toggle("active");
@@ -175,12 +190,16 @@ if (productModal && closeModalBtn) {
 // Cart sidebar logic
 const cartSidebar = document.getElementById('cartSidebar');
 const closeCartBtn = document.getElementById('closeCartBtn');
+const cartOverlay = document.getElementById('cartOverlay');
 function closeCart() {
   if (cartSidebar) {
+    cartSidebar.classList.remove('open');
     cartSidebar.style.display = 'none';
     document.body.classList.remove('cart-open');
   }
+  if (cartOverlay) cartOverlay.classList.remove('active');
 }
+closeCart();
 if (cartSidebar && closeCartBtn) {
   closeCartBtn.addEventListener('click', closeCart);
   closeCartBtn.addEventListener('keydown', e => {
