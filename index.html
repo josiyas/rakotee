@@ -538,6 +538,72 @@
   font-size: 0.88rem;
 }
 
+.premium-home .contact-section {
+  background: linear-gradient(160deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.82));
+  border: 1px solid rgba(116, 140, 171, 0.25);
+  border-radius: 18px;
+  padding: 2rem 1rem;
+  margin: 2rem 1rem;
+}
+
+.premium-home .contact-section h2 {
+  text-align: center;
+  color: var(--light-beige);
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.premium-home .contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: min(800px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.2rem;
+}
+
+.premium-home .contact-list li {
+  background: rgba(13, 19, 33, 0.7);
+  border: 1px solid rgba(116, 140, 171, 0.35);
+  border-radius: 14px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+}
+
+.premium-home .contact-list li:hover {
+  transform: translateY(-4px);
+  border-color: rgba(116, 140, 171, 0.65);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.premium-home .contact-list li i {
+  font-size: 1.8rem;
+  color: var(--steel-blue);
+}
+
+.premium-home .contact-list li strong {
+  color: var(--light-beige);
+  font-size: 0.95rem;
+}
+
+.premium-home .contact-list li a {
+  color: rgba(240, 235, 216, 0.85);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.25s ease;
+}
+
+.premium-home .contact-list li a:hover {
+  color: var(--steel-blue);
+}
+
 </style>
 
 <script src="main.js"></script>
