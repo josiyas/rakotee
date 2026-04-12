@@ -2561,12 +2561,15 @@ function displayProducts(filteredProducts) {
   filteredProducts.forEach(product => {
     const card = document.createElement('div');
     card.className = 'product-card';
+    card.style.cursor = 'pointer';
     card.innerHTML = `
   <img src="${product.images[0].startsWith('/') ? product.images[0] : '/' + product.images[0]}" alt="${product.name}" class="product-img" loading="lazy" onerror="this.onerror=null;this.src='/products/fallback.png';">
         <h3>${product.name}</h3>
         <p>R ${product.price.toFixed(2)}</p>
         <button class="btn open-modal" data-id="${product.id}">View</button>
       `;
+    // Make entire card clickable to open modal
+    card.addEventListener('click', () => openModal(product));
     fragment.appendChild(card);
   });
   
