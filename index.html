@@ -588,7 +588,18 @@
   }
 
   .premium-home .product-section {
-    padding: 1rem;
+    padding: 0.95rem;
+    min-height: clamp(300px, 58svh, 460px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .premium-home .contact-section {
+    min-height: clamp(300px, 58svh, 460px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 }
 
@@ -1104,6 +1115,7 @@
   .premium-home .product-section {
     border-radius: 12px;
     padding: 0.85rem;
+    min-height: clamp(260px, 52svh, 380px);
   }
 
   .premium-home .product-carousel .product-card {
@@ -1118,6 +1130,7 @@
   .premium-home .contact-section {
     margin: 1rem 0;
     padding: 1.15rem 0.75rem;
+    min-height: clamp(260px, 52svh, 380px);
   }
 
   .premium-home .contact-list {
