@@ -728,17 +728,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   const catalog = await loadCatalog();
-  if (!catalog.length) {
-    console.error('No products available to render on homepage.');
-    return;
-  }
 
-  const renderCardHTML = (product) => {
-    const name = product && product.name ? product.name : 'Product';
+  // Guaranteed image set from the real products folder for the footwear marquee.
+  const footwearImageFiles = [
+    'WHITE AIR01.jpg',
+    'WHITE AIR02.jpg',
+    'luxe1.jpg',
+    'luxe2.jpg',
+    'Panda 1.jpg',
+    'Panda 2.jpg',
+    'Triple Black1.jpg',
+    'University Red1.jpg',
+    'Safari 1.jpg',
+    'jarritos1.jpg',
+    'syracuse1.jpg',
+    'royal1.jpg',
+    'cacao1.jpg',
+    'spacejam1.png',
+    'wolf1.png'
+  ];
+
+  const renderCardHTML = (product, fallbackName = 'Product') => {
+    const name = product && product.name ? product.name : fallbackName;
     const price = Number(product && product.price) || 0;
     const firstImage = product && Array.isArray(product.images) && product.images[0]
       ? product.images[0]
-      : 'products/fallback.png';
+      : (product && typeof product.image === 'string' ? product.image : 'products/fallback.png');
     const imgUrl = firstImage.startsWith('/') ? firstImage.slice(1) : firstImage;
 
     return `
@@ -750,23 +765,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
   };
 
-  // Populate each carousel with 15 products.
+  // Populate each carousel with 15 items.
   const carouselIds = ['footwear', 'phones', 'sale'];
 
   carouselIds.forEach(id => {
     const carousel = document.querySelector(`[data-carousel="${id}"]`);
     if (!carousel) return;
 
-    const productsToShow = catalog.slice(0, 15);
-    const cardsHTML = productsToShow.map(renderCardHTML).join('');
+    let cardsHTML = '';
 
     if (id === 'footwear') {
+      const footwearCards = footwearImageFiles.map((fileName, index) => {
+        return renderCardHTML(
+          { image: `products/${fileName}`, name: `Footwear ${index + 1}`, price: 0 },
+          `Footwear ${index + 1}`
+        );
+      }).join('');
+
       // Duplicate footwear cards for seamless across-page marquee movement.
       carousel.classList.add('is-marquee');
-      carousel.innerHTML = cardsHTML + cardsHTML;
+      carousel.innerHTML = footwearCards + footwearCards;
       return;
     }
 
+    const productsToShow = (Array.isArray(catalog) && catalog.length)
+      ? catalog.slice(0, 15)
+      : footwearImageFiles.map((fileName, index) => ({ image: `products/${fileName}`, name: `Product ${index + 1}`, price: 0 }));
+
+    cardsHTML = productsToShow.map((item, index) => renderCardHTML(item, `Product ${index + 1}`)).join('');
     carousel.innerHTML = cardsHTML;
   });
 
