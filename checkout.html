@@ -2,121 +2,288 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout | RAKOTEE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
+    :root {
+      --checkout-bg-1: #0d1321;
+      --checkout-bg-2: #1d2d44;
+      --checkout-card: rgba(17, 28, 45, 0.88);
+      --checkout-border: rgba(116, 140, 171, 0.35);
+      --checkout-text: #f0ebd8;
+      --checkout-muted: #c4d0e3;
+      --checkout-accent: #748cab;
+      --checkout-accent-strong: #3e5c76;
+      --checkout-success: #26a269;
+      --checkout-danger: #ff7b72;
+      --checkout-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
+    }
     body {
-      background: #181d2a;
-      color: #fff;
-      font-family: 'Segoe UI', Arial, sans-serif;
+      background:
+        radial-gradient(1200px 700px at 80% -10%, rgba(116, 140, 171, 0.25), transparent 60%),
+        radial-gradient(1000px 500px at -10% 20%, rgba(62, 92, 118, 0.4), transparent 60%),
+        linear-gradient(160deg, var(--checkout-bg-1), var(--checkout-bg-2));
+      color: var(--checkout-text);
+      font-family: 'Manrope', 'Segoe UI', Arial, sans-serif;
       margin: 0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+    .checkout-shell {
+      width: min(100%, 780px);
+      margin-top: 1rem;
+    }
+    .checkout-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 1rem;
+      background: rgba(16, 26, 41, 0.6);
+      border: 1px solid var(--checkout-border);
+      border-radius: 14px;
+      padding: 0.8rem 1rem;
+      backdrop-filter: blur(6px);
+    }
+    .checkout-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--checkout-text);
+    }
+    .rakotee-logo {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.15rem;
+      margin: 0;
+      display: block;
+    }
+    .brand-copy strong {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.08em;
+      font-size: 1.55rem;
+      line-height: 1;
+      display: block;
+    }
+    .brand-copy span {
+      color: var(--checkout-muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.03em;
+    }
+    .back-link {
+      border: 1px solid var(--checkout-border);
+      color: var(--checkout-text);
+      padding: 0.45rem 0.85rem;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .back-link:hover {
+      background: rgba(116, 140, 171, 0.18);
+      border-color: rgba(116, 140, 171, 0.65);
     }
     .checkout-container {
-      background: #23283b;
-      border-radius: 1rem;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      background: var(--checkout-card);
+      border: 1px solid var(--checkout-border);
+      border-radius: 1.15rem;
+      box-shadow: var(--checkout-shadow);
       padding: 2rem 2.5rem;
-      margin-top: 2rem;
-      max-width: 420px;
+      margin-top: 0;
+      max-width: 100%;
       width: 100%;
       display: flex;
       flex-direction: column;
-      align-items: center;
-    }
-    .rakotee-logo {
-      width: 120px;
-      margin: 2rem auto 1rem auto;
-      display: block;
+      align-items: stretch;
+      box-sizing: border-box;
     }
     h1, h2, h3 {
-      color: #fff;
+      color: var(--checkout-text);
       margin-bottom: 1rem;
+    }
+    h1 {
+      margin-top: 0;
+      margin-bottom: 0.25rem;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.06em;
+      font-size: 2.1rem;
+      font-weight: 400;
+    }
+    .checkout-subtitle {
+      color: var(--checkout-muted);
+      margin-top: 0;
+      margin-bottom: 1.2rem;
+      font-size: 0.96rem;
     }
     input, button {
       font-size: 1rem;
-      border-radius: 0.5rem;
-      border: none;
-      margin-bottom: 1rem;
-      padding: 0.7rem 1rem;
+      border-radius: 0.7rem;
+      border: 1px solid transparent;
+      margin-bottom: 0.85rem;
+      padding: 0.78rem 0.95rem;
       width: 100%;
       box-sizing: border-box;
     }
     input {
-      background: #181d2a;
-      color: #fff;
-      border: 1px solid #23283b;
+      background: rgba(13, 19, 33, 0.72);
+      color: var(--checkout-text);
+      border-color: rgba(116, 140, 171, 0.32);
+    }
+    input::placeholder {
+      color: rgba(240, 235, 216, 0.58);
     }
     input:focus {
-      outline: 2px solid #1e90ff;
+      outline: none;
+      border-color: rgba(116, 140, 171, 0.8);
+      box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.22);
     }
     .payment-btn {
       width: 100%;
-      margin-bottom: 1rem;
-      font-weight: bold;
-      transition: background 0.2s;
+      margin-bottom: 0.7rem;
+      font-weight: 700;
+      transition: transform 0.2s, background 0.2s, border-color 0.2s;
       cursor: pointer;
     }
-    .payment-btn.payfast { background: #ff9900; color: #fff; }
-    .payment-btn.payfast:hover { background: #e68a00; }
-    .payment-btn.yoco { background: #1a7f37; color: #fff; }
-    .payment-btn.yoco:hover { background: #145c27; }
-    .payment-btn.peach { background: #23283b; color: #fff; border: 1px solid #fff; }
-    .payment-btn.peach:hover { background: #181d2a; }
-    .payment-btn.paypal { background: #0070ba; color: #fff; }
-    .payment-btn.paypal:hover { background: #005c99; }
+    .payment-btn:hover {
+      transform: translateY(-1px);
+    }
+    .payment-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .payment-btn.payfast {
+      background: linear-gradient(135deg, #f4a53e, #df7f16);
+      color: #fff;
+      border-color: rgba(255, 198, 122, 0.65);
+    }
+    .payment-btn.payfast:hover {
+      background: linear-gradient(135deg, #f0a03a, #cc7415);
+    }
+    .payment-btn.peach {
+      background: linear-gradient(135deg, var(--checkout-accent), var(--checkout-accent-strong));
+      color: #fff;
+      border-color: rgba(177, 196, 223, 0.55);
+    }
+    .payment-btn.peach:hover {
+      background: linear-gradient(135deg, #6f88aa, #334f6a);
+    }
     #checkout-summary {
-      background: #181d2a;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      margin-bottom: 1rem;
+      background: rgba(8, 14, 26, 0.52);
+      border: 1px solid rgba(116, 140, 171, 0.28);
+      border-radius: 0.85rem;
+      padding: 1rem 1rem 0.8rem;
+      margin-bottom: 1.2rem;
       width: 100%;
       box-sizing: border-box;
+      color: var(--checkout-text);
+      font-size: 0.98rem;
+    }
+    #checkout-summary h2 {
+      margin-top: 0;
+      margin-bottom: 0.6rem;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+    }
+    #checkout-summary .summary-item {
+      padding: 0.45rem 0;
+      border-bottom: 1px dashed rgba(116, 140, 171, 0.24);
+      color: var(--checkout-muted);
+    }
+    #checkout-summary .summary-item:last-of-type {
+      border-bottom: none;
+      padding-bottom: 0.25rem;
+    }
+    #checkout-summary .summary-total {
+      margin-top: 0.7rem;
+      font-size: 1.08rem;
       color: #fff;
-      font-size: 1rem;
     }
     #order-success {
-      color: #1a7f37;
+      color: var(--checkout-success);
       font-weight: bold;
       margin-top: 1rem;
       text-align: center;
+      background: rgba(38, 162, 105, 0.14);
+      border: 1px solid rgba(38, 162, 105, 0.42);
+      border-radius: 0.7rem;
+      padding: 0.75rem;
     }
     #form-error {
-      color: #e74c3c;
-      margin-bottom: 1rem;
-      text-align: center;
+      color: var(--checkout-danger);
+      margin: 0.15rem 0 0.6rem;
+      text-align: left;
+      min-height: 1.2rem;
+      font-size: 0.92rem;
+    }
+    #payment-options {
+      margin-bottom: 0;
+      width: 100%;
     }
     @media (max-width: 600px) {
+      body {
+        padding: 0.7rem;
+      }
+      .checkout-shell {
+        margin-top: 0.4rem;
+      }
+      .checkout-topbar {
+        padding: 0.7rem 0.75rem;
+      }
       .checkout-container {
-        padding: 1rem;
-        max-width: 98vw;
+        padding: 1.1rem;
       }
       .rakotee-logo {
-        width: 80px;
+        width: 42px;
+        height: 42px;
+      }
+      .brand-copy strong {
+        font-size: 1.25rem;
       }
     }
   </style>
 </head>
 <body>
-  <img src="rakotee.png.png" alt="Rakotee Logo" class="rakotee-logo" />
-  <div class="checkout-container">
+  <div class="checkout-shell">
+    <div class="checkout-topbar">
+      <a href="index.html" class="checkout-brand" aria-label="Go to home page">
+        <img src="rakotee.png.png" alt="Rakotee Logo" class="rakotee-logo" />
+        <div class="brand-copy">
+          <strong>RAKOTEE</strong>
+          <span>Secure Checkout</span>
+        </div>
+      </a>
+      <a href="products.html" class="back-link">Back to shopping</a>
+    </div>
+
+    <div class="checkout-container">
     <h1>Checkout</h1>
+    <p class="checkout-subtitle">Confirm your order details and complete payment securely.</p>
     <div id="checkout-summary"></div>
     <form id="checkout-form">
       <input type="text" id="name" placeholder="Full Name" required>
       <input type="email" id="email" placeholder="Email" required>
       <input type="text" id="address" placeholder="Shipping Address" required>
       <button id="placeOrderBtn" type="submit" class="payment-btn peach">Place Order (Manual)</button>
-      <div id="form-error" style="color:red;margin-top:10px;"></div>
+      <div id="form-error"></div>
     </form>
-    <div id="order-success" style="display:none;color:green;margin-top:20px;font-weight:bold;"></div>
+    <div id="order-success" style="display:none;"></div>
     <h2>Choose Payment Method</h2>
-    <div id="payment-options" style="margin-bottom:2rem;width:100%;">
+    <div id="payment-options">
       <button id="payfastBtn" type="button" class="payment-btn payfast">PayFast</button>
+    </div>
     </div>
   </div>
   <script>
@@ -186,7 +353,7 @@
       const total = getTotal(cart);
 
       summaryEl.innerHTML = cart.length
-        ? `<h2>Order Summary</h2>${cart.map((item) => `<div>${item.name} x${item.quantity} - R${((Number(item.price) || 0) * (Number(item.quantity) || 1)).toFixed(2)}</div>`).join('')}<hr><div><strong>Total: R${total.toFixed(2)}</strong></div>`
+        ? `<h2>Order Summary</h2>${cart.map((item) => `<div class="summary-item">${item.name} x${item.quantity} - R${((Number(item.price) || 0) * (Number(item.quantity) || 1)).toFixed(2)}</div>`).join('')}<div class="summary-total"><strong>Total: R${total.toFixed(2)}</strong></div>`
         : '<p>Your cart is empty.</p>';
 
       const empty = cart.length === 0;
