@@ -8,8 +8,32 @@ const editHint = document.getElementById('editHint');
 const saveBtn = document.getElementById('saveBtn');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
 const editProductIdInput = document.getElementById('editProductId');
+const categorySelect = document.getElementById('category');
+const sizesInput = document.getElementById('sizes');
 
-const DEFAULT_SIZES = ['2UK', '3UK', '4UK', '5UK', '6UK', '7UK', '8UK', '9UK', '10UK', '11UK', '12UK'];
+const DEFAULT_SHOE_SIZES = ['2UK', '3UK', '4UK', '5UK', '6UK', '7UK', '8UK', '9UK', '10UK', '11UK', '12UK'];
+const DEFAULT_PHONE_SIZES = ['64GB', '128GB', '256GB', '512GB'];
+// Keep backward-compat alias used in payload construction
+const DEFAULT_SIZES = DEFAULT_SHOE_SIZES;
+
+// --- Auto-fill sizes when category changes ---
+function getDefaultSizesForCategory(cat) {
+	return (cat || '').toLowerCase() === 'phones' ? DEFAULT_PHONE_SIZES : DEFAULT_SHOE_SIZES;
+}
+
+if (categorySelect && sizesInput) {
+	categorySelect.addEventListener('change', () => {
+		// Only auto-fill if the user hasn't typed custom sizes
+		const current = sizesInput.value.trim();
+		const prevDefaults = [...DEFAULT_SHOE_SIZES, ...DEFAULT_PHONE_SIZES].map(s => s.toLowerCase());
+		const isEmpty = !current;
+		const isDefault = isEmpty || prevDefaults.some(d => current.toLowerCase() === d) ||
+			current.split(',').map(s => s.trim()).every(s => prevDefaults.includes(s.toLowerCase()));
+		if (isEmpty || isDefault) {
+			sizesInput.value = getDefaultSizesForCategory(categorySelect.value).join(', ');
+		}
+	});
+}
 
 function getStoredProducts() {
 	try {
@@ -121,7 +145,7 @@ async function getStoreProducts() {
 					images: images.length ? images : ['products/fallback.png'],
 					description,
 					colors: Array.isArray(p.colors) && p.colors.length ? p.colors : ['Default'],
-					sizes: Array.isArray(p.sizes) && p.sizes.length ? p.sizes : [...DEFAULT_SIZES],
+					sizes: Array.isArray(p.sizes) && p.sizes.length ? p.sizes : getDefaultSizesForCategory(p.category),
 					category: (p.category || 'Shoes').toString()
 				};
 			});
@@ -141,7 +165,7 @@ function cardTemplate(product, idx, canDelete) {
 	const price = Number(product.price) || 0;
 	const imageCount = Array.isArray(product.images) ? product.images.length : 1;
 	const colors = Array.isArray(product.colors) ? product.colors.join(', ') : 'Default';
-	const sizes = Array.isArray(product.sizes) ? product.sizes.join(', ') : DEFAULT_SIZES.join(', ');
+	const sizes = Array.isArray(product.sizes) ? product.sizes.join(', ') : getDefaultSizesForCategory(product.category).join(', ');
 	const description = Array.isArray(product.description)
 		? product.description.join(' ')
 		: (product.description || '').toString();
@@ -188,6 +212,45 @@ function resetFormMode() {
 	setEditMode(false);
 }
 
+// All merged store products — kept at module scope so cat-tabs can re-filter without re-fetching
+let allStoreProducts = [];
+
+function renderStoreCards(products) {
+	if (!storeListEl) return;
+	if (!products.length) {
+		storeListEl.innerHTML = '<p class="help">No products in this category.</p>';
+		return;
+	}
+	storeListEl.innerHTML = products.slice(0, 120).map((p, idx) => cardTemplate(p, idx, false)).join('');
+	storeListEl.querySelectorAll('[data-edit]').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			const idx = Number(btn.getAttribute('data-edit'));
+			const product = products[idx];
+			if (!product) return;
+			fillForm(product);
+			if (editProductIdInput) editProductIdInput.value = String(product.id);
+			setEditMode(true);
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		});
+	});
+}
+
+function initCatTabs() {
+	const catTabs = document.getElementById('catTabs');
+	if (!catTabs) return;
+	catTabs.querySelectorAll('.cat-tab').forEach((tab) => {
+		tab.addEventListener('click', () => {
+			catTabs.querySelectorAll('.cat-tab').forEach((t) => t.classList.remove('active'));
+			tab.classList.add('active');
+			const cat = tab.dataset.cat;
+			const filtered = cat
+				? allStoreProducts.filter((p) => (p.category || '').toLowerCase() === cat.toLowerCase())
+				: allStoreProducts;
+			renderStoreCards(filtered);
+		});
+	});
+}
+
 async function renderStoreList() {
 	if (!storeListEl) return;
 	const baseProducts = await getStoreProducts();
@@ -226,19 +289,10 @@ async function renderStoreList() {
 		storeListEl.innerHTML = '<p class="help">Could not load store products.</p>';
 		return;
 	}
-	storeListEl.innerHTML = products.slice(0, 120).map((p, idx) => cardTemplate(p, idx, false)).join('');
 
-	storeListEl.querySelectorAll('[data-edit]').forEach((btn) => {
-		btn.addEventListener('click', () => {
-			const idx = Number(btn.getAttribute('data-edit'));
-			const product = products[idx];
-			if (!product) return;
-			fillForm(product);
-			if (editProductIdInput) editProductIdInput.value = String(product.id);
-			setEditMode(true);
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-		});
-	});
+	allStoreProducts = products;
+	renderStoreCards(allStoreProducts);
+	initCatTabs();
 }
 
 function renderList() {
@@ -316,7 +370,7 @@ form.addEventListener('submit', (event) => {
 		price,
 		images,
 		colors: colors.length ? colors : ['Default'],
-		sizes: sizes.length ? sizes : [...DEFAULT_SIZES],
+		sizes: sizes.length ? sizes : getDefaultSizesForCategory(category),
 		category: category || 'Shoes'
 	};
 

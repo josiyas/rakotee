@@ -202,6 +202,42 @@
 			width: 100%;
 		}
 
+		select {
+			width: 100%;
+			box-sizing: border-box;
+			border: 1px solid rgba(116, 140, 171, 0.45);
+			background: rgba(13, 19, 33, 0.75);
+			color: var(--light-beige);
+			border-radius: 10px;
+			padding: 0.68rem 0.75rem;
+			font-size: 0.93rem;
+			cursor: pointer;
+		}
+
+		.cat-tabs {
+			display: flex;
+			gap: 0.4rem;
+			flex-wrap: wrap;
+			margin-bottom: 0.8rem;
+		}
+
+		.cat-tab {
+			border: 1px solid rgba(116, 140, 171, 0.45);
+			background: rgba(13, 19, 33, 0.55);
+			color: var(--light-beige);
+			border-radius: 999px;
+			padding: 0.38rem 0.85rem;
+			font-size: 0.84rem;
+			font-weight: 700;
+			cursor: pointer;
+			transition: background 0.2s;
+		}
+
+		.cat-tab.active {
+			background: rgba(116, 140, 171, 0.45);
+			border-color: rgba(116, 140, 171, 0.85);
+		}
+
 		@media (max-width: 700px) {
 			form {
 				grid-template-columns: 1fr;
@@ -245,12 +281,19 @@
 					<input id="colors" name="colors" placeholder="Black, White" />
 				</div>
 				<div>
-					<label for="sizes">Sizes (optional)</label>
+					<label for="sizes">Sizes</label>
 					<input id="sizes" name="sizes" placeholder="6UK, 7UK, 8UK" />
 				</div>
 				<div class="full">
-					<label for="category">Category (optional)</label>
-					<input id="category" name="category" placeholder="Shoes" />
+					<label for="category">Category</label>
+					<select id="category" name="category">
+						<option value="Shoes">Shoes / Footwear</option>
+						<option value="Phones">Phones</option>
+						<option value="Hubbly">Hubbly</option>
+						<option value="Accessories">Accessories</option>
+						<option value="Sale">Sale</option>
+					</select>
+					<p class="help small" id="sizesHint">For shoes use UK sizes e.g. 6UK, 7UK. For phones use storage e.g. 64GB, 128GB, 256GB.</p>
 				</div>
 				<div class="full">
 					<label for="description">Description (optional)</label>
@@ -267,6 +310,14 @@
 		<section class="card">
 			<h2>Products Already In Store</h2>
 			<p class="help">Edit any existing store product and save. Changes apply on your storefront without code edits.</p>
+			<div class="cat-tabs" id="catTabs">
+				<button class="cat-tab active" data-cat="">All</button>
+				<button class="cat-tab" data-cat="Shoes">Shoes</button>
+				<button class="cat-tab" data-cat="Phones">Phones</button>
+				<button class="cat-tab" data-cat="Hubbly">Hubbly</button>
+				<button class="cat-tab" data-cat="Accessories">Accessories</button>
+				<button class="cat-tab" data-cat="Sale">Sale</button>
+			</div>
 			<div id="storeProductList" class="list"></div>
 		</section>
 
