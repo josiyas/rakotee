@@ -90,9 +90,17 @@ app.use('/api/admin', adminRouter);
 // Health check
 app.get('/health', (req, res) => {
   const mongoReady = mongoose.connection.readyState === 1;
+  const smtpConfigured = !!(process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS);
   res.json({ 
     status: 'ok', 
     mongo: mongoReady ? 'connected' : 'disconnected',
+    email: {
+      mode: smtpConfigured ? 'smtp' : 'ethereal-fallback',
+      host: process.env.EMAIL_HOST || 'not set',
+      port: process.env.EMAIL_PORT || '587',
+      secure: process.env.EMAIL_SECURE || 'false',
+      from: process.env.EMAIL_FROM || 'not set'
+    },
     payfast: {
       merchant_id: process.env.PAYFAST_MERCHANT_ID ? 'configured' : 'missing',
       merchant_key: process.env.PAYFAST_MERCHANT_KEY ? 'configured' : 'missing',
