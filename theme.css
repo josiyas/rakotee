@@ -1,0 +1,75 @@
+/* Shared site theme layer: loaded by all pages to keep visual consistency. */
+:root {
+  --brand-dark: #0d1321;
+  --brand-mid: #1d2d44;
+  --brand-accent: #3e5c76;
+  --brand-accent-soft: #748cab;
+  --brand-text: #f0ebd8;
+  --brand-border: rgba(116, 140, 171, 0.35);
+}
+
+html,
+body {
+  background: linear-gradient(160deg, var(--brand-dark), var(--brand-mid));
+  color: var(--brand-text);
+}
+
+a {
+  color: var(--brand-text);
+}
+
+a:hover {
+  color: var(--brand-accent-soft);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--brand-text);
+}
+
+.card,
+.modal-content,
+.container,
+main {
+  border-color: var(--brand-border);
+}
+
+input,
+select,
+textarea {
+  background: rgba(13, 19, 33, 0.72);
+  color: var(--brand-text);
+  border: 1px solid var(--brand-border);
+}
+
+button:not(.icon-btn):not(.menu-toggle):not(.cart-icon-btn):not(.close-cart-btn),
+.btn,
+.btn-primary,
+#checkout-btn {
+  background: var(--brand-accent);
+  color: var(--brand-text);
+  border: 1px solid rgba(116, 140, 171, 0.55);
+}
+
+button:not(.icon-btn):not(.menu-toggle):not(.cart-icon-btn):not(.close-cart-btn):hover,
+.btn:hover,
+.btn-primary:hover,
+#checkout-btn:hover {
+  background: var(--brand-accent-soft);
+}
+
+table,
+th,
+td {
+  border-color: rgba(116, 140, 171, 0.3);
+}
+
+th {
+  background: rgba(13, 19, 33, 0.72);
+}
+
+td {
+  background: rgba(13, 19, 33, 0.45);
+}

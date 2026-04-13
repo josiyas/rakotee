@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rakotee Admin</title>
   <link rel="stylesheet" href="admin-style.css" />
+  <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
   <div class="admin-container">
@@ -249,15 +250,15 @@
         });
           const data = await res.json();
         if (res.ok) {
-          status.textContent = "✅ Product uploaded!";
+          status.textContent = "âœ… Product uploaded!";
           form.reset();
           loadProducts();
         } else {
-          status.textContent = data.error || "❌ Failed to upload product.";
+          status.textContent = data.error || "âŒ Failed to upload product.";
         }
       } catch (err) {
         console.error(err);
-        status.textContent = "❌ Failed to upload product.";
+        status.textContent = "âŒ Failed to upload product.";
       }
     };
 
@@ -485,3 +486,4 @@
   </script>
 </body>
 </html>
+
