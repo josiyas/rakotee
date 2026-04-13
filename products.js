@@ -3026,33 +3026,53 @@ function getQueryParam(param) {
   return urlParams.get(param);
 }
 
-// Category mapping (add more as needed)
+// Category mapping — explicit category field always wins; name heuristics are fallback only.
 function getCategoryProducts(category) {
   if (!category) return products;
   const cat = category.toLowerCase();
-  // Footwear: match by keywords in name
-  if (cat === 'footwear') {
+
+  // 1. Try exact match on the explicit category field first
+  const byField = products.filter(p =>
+    (p.category || '').toString().toLowerCase() === cat
+  );
+  if (byField.length) return byField;
+
+  // 2. Name-based fallbacks (avoid overly broad tokens like "max" or "pro"
+  //    which appear in shoe names)
+  if (cat === 'footwear' || cat === 'shoes') {
     return products.filter(p =>
-      /nike|adidas|jordan|dunk|puma|vans|shox/i.test(p.name)
+      /nike|adidas|jordan|dunk|puma|vans|shox|air force|air max/i.test(p.name) &&
+      !/iphone|samsung|huawei/i.test(p.name)
     );
   }
-  // Phones: match by keywords in name
   if (cat === 'phones' || cat === 'phone') {
     return products.filter(p =>
-      /iphone|samsung|huawei|xr|pro|max/i.test(p.name)
+      /iphone|samsung|huawei|apple phone|xr phone/i.test(p.name)
     );
   }
-  // Sale: match by 'sale' in name (case-insensitive)
   if (cat === 'sale') {
     return products.filter(p => /sale/i.test(p.name));
   }
-  // Add more categories as needed
+
   return products;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   refreshFilterOptions();
   const category = getQueryParam('category');
+  if (category) {
+    // Sync the category dropdown so the filter UI matches the URL param
+    if (categoryFilter) {
+      const norm = category.toLowerCase();
+      const matchingOption = Array.from(categoryFilter.options).find(
+        o => o.value.toLowerCase() === norm
+      );
+      if (matchingOption) {
+        categoryFilter.value = matchingOption.value;
+        refreshFilterOptions();
+      }
+    }
+  }
   const filtered = getCategoryProducts(category);
   displayProducts(filtered);
 });
