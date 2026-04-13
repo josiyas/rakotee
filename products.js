@@ -2502,6 +2502,62 @@ const products = [
   }
 })();
 
+// Merge products saved in backend DB so admin edits become live for all visitors.
+// Backend rows can map to existing static products by externalId/id, or be appended.
+async function mergeLiveProductsFromApi() {
+  if (typeof window === 'undefined' || typeof fetch !== 'function') return;
+
+  const candidates = [
+    window.location.origin,
+    'http://localhost:5000',
+    'https://rakotee.site'
+  ];
+
+  for (const base of candidates) {
+    try {
+      const res = await fetch(`${base}/api/products`, { credentials: 'include' });
+      if (!res.ok) continue;
+      const remote = await res.json();
+      if (!Array.isArray(remote) || !remote.length) continue;
+
+      remote.forEach((item) => {
+        if (!item || typeof item !== 'object') return;
+
+        const extId = Number(item.externalId);
+        const fallbackId = Number(item.id);
+        const targetId = Number.isFinite(extId) ? extId : fallbackId;
+
+        const normalized = {
+          ...item,
+          id: Number.isFinite(targetId) ? targetId : Date.now() + Math.floor(Math.random() * 10000),
+          name: (item.name || '').toString(),
+          price: Number(item.price) || 0,
+          images: Array.isArray(item.images) && item.images.length
+            ? item.images
+            : (item.image ? [item.image] : ['products/fallback.png']),
+          colors: Array.isArray(item.colors) && item.colors.length ? item.colors : ['Default'],
+          sizes: Array.isArray(item.sizes) && item.sizes.length ? item.sizes : [],
+          category: (item.category || '').toString(),
+          description: Array.isArray(item.description)
+            ? item.description
+            : (item.description ? [item.description] : [])
+        };
+
+        const existingIndex = products.findIndex((p) => Number(p && p.id) === Number(normalized.id));
+        if (existingIndex >= 0) {
+          products[existingIndex] = { ...products[existingIndex], ...normalized };
+        } else {
+          products.push(normalized);
+        }
+      });
+
+      return;
+    } catch (err) {
+      // Try next candidate silently.
+    }
+  }
+}
+
 // Auto-tag categories for any products that don't have an explicit category.
 // This uses name-based heuristics so the category filter works immediately
 // without modifying every product object manually.
@@ -3060,21 +3116,24 @@ function getCategoryProducts(category) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  refreshFilterOptions();
-  const category = getQueryParam('category');
-  if (category) {
-    // Sync the category dropdown so the filter UI matches the URL param
-    if (categoryFilter) {
-      const norm = category.toLowerCase();
-      const matchingOption = Array.from(categoryFilter.options).find(
-        o => o.value.toLowerCase() === norm
-      );
-      if (matchingOption) {
-        categoryFilter.value = matchingOption.value;
-        refreshFilterOptions();
+  (async () => {
+    await mergeLiveProductsFromApi();
+    refreshFilterOptions();
+    const category = getQueryParam('category');
+    if (category) {
+      // Sync the category dropdown so the filter UI matches the URL param
+      if (categoryFilter) {
+        const norm = category.toLowerCase();
+        const matchingOption = Array.from(categoryFilter.options).find(
+          o => o.value.toLowerCase() === norm
+        );
+        if (matchingOption) {
+          categoryFilter.value = matchingOption.value;
+          refreshFilterOptions();
+        }
       }
     }
-  }
-  const filtered = getCategoryProducts(category);
-  displayProducts(filtered);
+    const filtered = getCategoryProducts(category);
+    displayProducts(filtered);
+  })();
 });

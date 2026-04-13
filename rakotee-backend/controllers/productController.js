@@ -1,4 +1,10 @@
 const Product = require('../models/Product');
+const mongoose = require('mongoose');
+
+function hasAdminRole(user) {
+  const role = (user && user.role) || '';
+  return ['admin', 'superadmin', 'editor'].includes(role);
+}
 
 // Get all products (public)
 exports.getAllProducts = async (req, res) => {
@@ -24,11 +30,51 @@ exports.getProductById = async (req, res) => {
 // Create a new product (admin only)
 exports.createProduct = async (req, res) => {
   try {
-    if (!req.user || req.user.role !== 'admin') {
+    if (!hasAdminRole(req.user)) {
       return res.status(403).json({ message: 'Admin access required.' });
     }
-    const { name, description, price, image, stock, category } = req.body;
-    const product = new Product({ name, description, price, image, stock, category });
+    const {
+      id,
+      externalId,
+      name,
+      description,
+      price,
+      image,
+      images,
+      colors,
+      sizes,
+      variants,
+      stock,
+      category
+    } = req.body;
+
+    const extId = Number.isFinite(Number(externalId))
+      ? Number(externalId)
+      : (Number.isFinite(Number(id)) ? Number(id) : undefined);
+
+    if (Number.isFinite(extId)) {
+      const updated = await Product.findOneAndUpdate(
+        { externalId: extId },
+        {
+          externalId: extId,
+          name,
+          description,
+          price,
+          image,
+          images,
+          colors,
+          sizes,
+          variants,
+          stock,
+          category,
+          updatedAt: new Date()
+        },
+        { new: true, upsert: true, setDefaultsOnInsert: true }
+      );
+      return res.status(201).json(updated);
+    }
+
+    const product = new Product({ name, description, price, image, images, colors, sizes, variants, stock, category });
     await product.save();
     res.status(201).json(product);
   } catch (err) {
@@ -39,10 +85,26 @@ exports.createProduct = async (req, res) => {
 // Update a product (admin only)
 exports.updateProduct = async (req, res) => {
   try {
-    if (!req.user || req.user.role !== 'admin') {
+    if (!hasAdminRole(req.user)) {
       return res.status(403).json({ message: 'Admin access required.' });
     }
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+    const maybeId = req.params.id;
+    let product = null;
+
+    if (mongoose.Types.ObjectId.isValid(maybeId)) {
+      product = await Product.findByIdAndUpdate(maybeId, { ...req.body, updatedAt: new Date() }, { new: true });
+    } else {
+      const extId = Number(maybeId);
+      if (Number.isFinite(extId)) {
+        product = await Product.findOneAndUpdate(
+          { externalId: extId },
+          { ...req.body, externalId: extId, updatedAt: new Date() },
+          { new: true }
+        );
+      }
+    }
+
     if (!product) return res.status(404).json({ message: 'Product not found.' });
     res.json(product);
   } catch (err) {
@@ -53,10 +115,19 @@ exports.updateProduct = async (req, res) => {
 // Delete a product (admin only)
 exports.deleteProduct = async (req, res) => {
   try {
-    if (!req.user || req.user.role !== 'admin') {
+    if (!hasAdminRole(req.user)) {
       return res.status(403).json({ message: 'Admin access required.' });
     }
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const maybeId = req.params.id;
+    let product = null;
+    if (mongoose.Types.ObjectId.isValid(maybeId)) {
+      product = await Product.findByIdAndDelete(maybeId);
+    } else {
+      const extId = Number(maybeId);
+      if (Number.isFinite(extId)) {
+        product = await Product.findOneAndDelete({ externalId: extId });
+      }
+    }
     if (!product) return res.status(404).json({ message: 'Product not found.' });
     res.json({ message: 'Product deleted.' });
   } catch (err) {

@@ -1,10 +1,24 @@
 const jwt = require('jsonwebtoken');
+const cookie = require('cookie');
 
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ message: 'No token provided' });
+  let token = '';
+  if (authHeader) {
+    token = authHeader.split(' ')[1] || '';
+  }
 
-  const token = authHeader.split(' ')[1];
+  // Fallback to admin_token cookie so browser-based admin tools can auth
+  // without exposing token in localStorage.
+  if (!token && req.headers.cookie) {
+    try {
+      const parsed = cookie.parse(req.headers.cookie);
+      token = parsed.admin_token || '';
+    } catch {
+      token = '';
+    }
+  }
+
   if (!token) return res.status(401).json({ message: 'Invalid token format' });
 
   try {

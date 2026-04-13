@@ -54,6 +54,20 @@ router.post('/login', async (req, res) => {
     if (!isMatch) return res.status(401).json({ error: 'Invalid credentials.' });
     // Create JWT token
     const token = jwt.sign({ adminId: admin._id, email: admin.email, role: admin.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const cookieOpts = {
+      httpOnly: true,
+      secure: process.env.COOKIE_SECURE === 'true',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000
+    };
+    try {
+      const serialized = res.cookie('admin_token', token, cookieOpts);
+      res.setHeader('Set-Cookie', serialized);
+    } catch (err) {
+      console.warn('Failed to set cookie via res.cookie helper, attempting manual serialization', err);
+      const cookie = require('cookie');
+      res.setHeader('Set-Cookie', cookie.serialize('admin_token', token, cookieOpts));
+    }
     res.json({ token, role: admin.role });
   } catch (err) {
     res.status(500).json({ error: 'Login failed.' });
