@@ -31,10 +31,27 @@ exports.register = async (req, res) => {
     const emailVerificationToken = crypto.randomBytes(32).toString('hex');
     const user = new User({ username, email, password: hashedPassword, emailVerificationToken });
     await user.save();
-  const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${emailVerificationToken}&email=${email}`;
-  const { preview } = await sendMail({ to: email, subject: 'Verify your email', html: `<p>Click <a href="${verifyUrl}">here</a> to verify your email.</p>` });
-  if (preview) console.log('Ethereal preview URL (registration):', preview);
-    res.status(201).json({ message: 'User registered. Please check your email to verify your account.' });
+    const clientUrl = process.env.CLIENT_URL || 'https://rakotee.site';
+    const verifyUrl = `${clientUrl}/verify-email?token=${emailVerificationToken}&email=${encodeURIComponent(email)}`;
+    let emailDelivered = true;
+    try {
+      const { preview } = await sendMail({
+        to: email,
+        subject: 'Verify your email',
+        html: `<p>Click <a href="${verifyUrl}">here</a> to verify your email.</p>`
+      });
+      if (preview) console.log('Ethereal preview URL (registration):', preview);
+    } catch (mailErr) {
+      emailDelivered = false;
+      console.error('Registration verification email failed:', mailErr.message);
+    }
+
+    res.status(201).json({
+      message: emailDelivered
+        ? 'User registered. Please check your email to verify your account.'
+        : 'User registered, but email delivery is unavailable right now. Continue with the verification link below.',
+      verificationUrl: emailDelivered ? undefined : verifyUrl
+    });
   } catch (err) {
     console.error('Registration error:', err);
     res.status(500).json({ message: 'Server error.' });
@@ -97,6 +114,7 @@ exports.forgotPassword = async (req, res) => {
     const resetUrl = `${clientUrl}/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
 
     // Do not block the API response indefinitely on SMTP provider latency.
+    let emailDelivered = true;
     try {
       const mailPromise = sendMail({
         to: email,
@@ -109,10 +127,16 @@ exports.forgotPassword = async (req, res) => {
       const { preview } = await Promise.race([mailPromise, timeoutPromise]);
       if (preview) console.log('Ethereal preview URL (reset request):', preview);
     } catch (mailErr) {
+      emailDelivered = false;
       console.error('Forgot-password mail send failed:', mailErr.message);
     }
 
-    res.json({ message: 'If that email exists, a reset link has been sent.' });
+    res.json({
+      message: emailDelivered
+        ? 'If that email exists, a reset link has been sent.'
+        : 'Email delivery is unavailable right now. Use the secure reset link below to continue.',
+      resetUrl: emailDelivered ? undefined : resetUrl
+    });
   } catch (err) {
     console.error('forgotPassword error:', err.message);
     res.status(500).json({ message: 'Server error.' });
