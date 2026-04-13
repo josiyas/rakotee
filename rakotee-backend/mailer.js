@@ -1,4 +1,23 @@
 const nodemailer = require('nodemailer');
+const axios = require('axios');
+
+function getMailProvider() {
+  if (process.env.BREVO_API_KEY) return 'brevo';
+  if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS) return 'smtp';
+  return 'ethereal-fallback';
+}
+
+function parseFromAddress(fromValue) {
+  const raw = String(fromValue || '').trim();
+  const match = raw.match(/^(.*)<([^>]+)>$/);
+  if (match) {
+    return {
+      name: match[1].trim().replace(/^"|"$/g, ''),
+      email: match[2].trim()
+    };
+  }
+  return { name: '', email: raw };
+}
 
 async function createTransporter() {
   // If explicit SMTP credentials are provided, use them
@@ -47,9 +66,9 @@ async function createTransporter() {
 }
 
 function getMailConfigSummary() {
-  const smtpConfigured = !!(process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS);
+  const provider = getMailProvider();
   return {
-    mode: smtpConfigured ? 'smtp' : 'ethereal-fallback',
+    mode: provider,
     host: process.env.EMAIL_HOST || 'not set',
     port: process.env.EMAIL_PORT || '587',
     secure: process.env.EMAIL_SECURE || 'false',
@@ -59,12 +78,61 @@ function getMailConfigSummary() {
 }
 
 async function verifyMailTransport() {
+  if (getMailProvider() === 'brevo') {
+    await axios.get('https://api.brevo.com/v3/account', {
+      headers: {
+        'api-key': process.env.BREVO_API_KEY,
+        Accept: 'application/json'
+      },
+      timeout: 12000
+    });
+    return true;
+  }
+
   const transporter = await createTransporter();
   await transporter.verify();
   return true;
 }
 
 async function sendMail({ to, subject, text, html, from }) {
+  if (getMailProvider() === 'brevo') {
+    const sender = parseFromAddress(from || process.env.EMAIL_FROM || process.env.EMAIL_USER || 'no-reply@rakotee.local');
+    const recipients = String(to)
+      .split(',')
+      .map((email) => email.trim())
+      .filter(Boolean)
+      .map((email) => ({ email }));
+
+    const response = await axios.post(
+      'https://api.brevo.com/v3/smtp/email',
+      {
+        sender,
+        to: recipients,
+        subject,
+        textContent: text,
+        htmlContent: html
+      },
+      {
+        headers: {
+          'api-key': process.env.BREVO_API_KEY,
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        timeout: 15000
+      }
+    );
+
+    return {
+      info: {
+        messageId: response.data?.messageId || null,
+        accepted: recipients.map((recipient) => recipient.email),
+        rejected: [],
+        response: 'brevo accepted'
+      },
+      preview: null
+    };
+  }
+
   const transporter = await createTransporter();
   const info = await transporter.sendMail({
     from: from || process.env.EMAIL_FROM || 'no-reply@rakotee.local',
