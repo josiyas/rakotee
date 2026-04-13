@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260413g" />
+  <link rel="stylesheet" href="style.css?v=20260413h" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="premium-home">
@@ -48,7 +48,7 @@
     <p class="home-subtitle">Premium drops, timeless silhouettes, and everyday essentials built for your lane.</p>
     <div class="home-cta-row">
       <a href="products.html" class="shop-now-btn">Shop Now</a>
-      <a href="#footwear" class="shop-now-btn secondary">Explore Cataloge</a>
+      <a href="#newdrops" class="shop-now-btn secondary">Explore Catalog</a>
     </div>
   </div>
 </section>
@@ -72,7 +72,7 @@
 
   <section class="product-section footwear-section" id="footwear">
     <div class="section-head">
-      <p>Featured Collection</p>
+      <p id="newdrops">Featured Collection</p>
       <h2>Footwear</h2>
     </div>
     <div class="carousel-wrapper">
@@ -101,7 +101,7 @@
   <section class="product-section sale-section" id="sale">
     <div class="section-head">
       <p>Deals Running</p>
-      <h2>Sale Section</h2>
+      <h2>Sale Items</h2>
     </div>
     <div class="carousel-wrapper">
       <div class="product-carousel" data-carousel="sale"></div>
@@ -1176,15 +1176,22 @@
 
 @media (max-width: 768px) {
   .premium-home {
-    --android-section-h: 340px;
+    --android-banner-h: clamp(300px, 56svh, 420px);
   }
 
-  .premium-home .shop-now-banner,
+  .premium-home .shop-now-banner {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: var(--android-banner-h) !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
   .premium-home .product-section,
   .premium-home .contact-section {
     width: 100% !important;
     max-width: 100% !important;
-    min-height: var(--android-section-h) !important;
+    min-height: unset !important;
     box-sizing: border-box !important;
     overflow: visible !important;
   }
@@ -1209,6 +1216,11 @@
     margin: 0.75rem 0 0.95rem !important;
   }
 
+  .premium-home .product-carousel .product-card {
+    flex: 0 0 80vw !important;
+    min-width: 80vw !important;
+  }
+
   .premium-home .product-section .view-all {
     display: inline-flex !important;
     justify-content: center !important;
@@ -1223,13 +1235,11 @@
 
 @media (max-width: 480px) {
   .premium-home {
-    --android-section-h: 300px;
+    --android-banner-h: clamp(260px, 48svh, 340px);
   }
 
-  .premium-home .shop-now-banner,
-  .premium-home .product-section,
-  .premium-home .contact-section {
-    min-height: var(--android-section-h) !important;
+  .premium-home .shop-now-banner {
+    min-height: var(--android-banner-h) !important;
   }
 
   .premium-home .shop-now-content h1,
@@ -1247,14 +1257,19 @@
   }
 
   .premium-home .product-section .view-all {
-    width: min(88vw, 280px) !important;
+    width: min(84vw, 280px) !important;
+  }
+
+  .premium-home .product-carousel .product-card {
+    flex: 0 0 86vw !important;
+    min-width: 86vw !important;
   }
 }
 
 </style>
 
-<script src="main.js?v=20260413g"></script>
-<script src="cart.js?v=20260413g"></script>
+<script src="main.js?v=20260413h"></script>
+<script src="cart.js?v=20260413h"></script>
 <!-- Cart Sidebar -->
 <div id="cartSidebar" class="cart-sidebar" role="complementary" aria-label="Shopping Cart Sidebar" tabindex="-1">
   <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart" tabindex="0">&times;</button>
