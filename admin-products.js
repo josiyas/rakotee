@@ -221,7 +221,7 @@ function renderStoreCards(products) {
 		storeListEl.innerHTML = '<p class="help">No products in this category.</p>';
 		return;
 	}
-	storeListEl.innerHTML = products.slice(0, 120).map((p, idx) => cardTemplate(p, idx, false)).join('');
+	storeListEl.innerHTML = products.map((p, idx) => cardTemplate(p, idx, false)).join('');
 	storeListEl.querySelectorAll('[data-edit]').forEach((btn) => {
 		btn.addEventListener('click', () => {
 			const idx = Number(btn.getAttribute('data-edit'));
