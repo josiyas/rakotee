@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260413e" />
+  <link rel="stylesheet" href="style.css?v=20260413f" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="premium-home">
@@ -1160,70 +1160,7 @@
   }
 }
 
-/* Final Android layout lock (must stay last to override earlier rules) */
-@media (max-width: 768px) {
-  .premium-home {
-    --android-section-h: clamp(340px, 58svh, 460px);
-  }
-
-  .premium-home .shop-now-banner {
-    min-height: var(--android-section-h) !important;
-  }
-
-  .premium-home .product-section,
-  .premium-home .contact-section {
-    min-height: var(--android-section-h) !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    align-items: stretch !important;
-    overflow: visible !important;
-  }
-
-  .premium-home .section-head h2,
-  .premium-home .contact-section h2 {
-    font-size: clamp(1.45rem, 5.5vw, 2rem) !important;
-    line-height: 1.15 !important;
-    margin: 0.3rem 0 0.75rem !important;
-    text-wrap: balance;
-    overflow-wrap: anywhere;
-  }
-
-  .premium-home .section-head p,
-  .premium-home .home-kicker {
-    font-size: 0.78rem !important;
-    letter-spacing: 0.1em !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .premium-home {
-    --android-section-h: clamp(300px, 52svh, 380px);
-  }
-
-  .premium-home .shop-now-banner {
-    min-height: var(--android-section-h) !important;
-  }
-
-  .premium-home .product-section,
-  .premium-home .contact-section {
-    min-height: var(--android-section-h) !important;
-  }
-
-  .premium-home .section-head h2,
-  .premium-home .contact-section h2 {
-    font-size: clamp(1.32rem, 6.2vw, 1.7rem) !important;
-  }
-
-  .premium-home .section-head,
-  .premium-home .contact-section {
-    text-align: center;
-  }
-}
-
-/* FINAL HARD LOCK: make all main section titles match KEEP MOVIN */
+/* FINAL ANDROID STABILIZATION LOCK: keep this block last */
 .premium-home .shop-now-content h1,
 .premium-home .section-head h2,
 .premium-home .contact-section h2 {
@@ -1238,21 +1175,26 @@
 }
 
 @media (max-width: 768px) {
+  .premium-home {
+    --android-section-h: 340px;
+  }
+
   .premium-home .shop-now-banner,
   .premium-home .product-section,
   .premium-home .contact-section {
     width: 100% !important;
     max-width: 100% !important;
-    min-height: 340px !important;
+    min-height: var(--android-section-h) !important;
     box-sizing: border-box !important;
     overflow: visible !important;
   }
 
-  .premium-home .product-section .view-all {
-    margin-top: auto !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    margin-bottom: 0.2rem !important;
+  .premium-home .product-section,
+  .premium-home .contact-section {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
   }
 
   .premium-home .shop-now-content h1,
@@ -1262,18 +1204,32 @@
     margin-top: 0 !important;
     margin-bottom: 0.7rem !important;
   }
-}
 
-@media (max-width: 480px) {
-  .premium-home .shop-now-banner,
-  .premium-home .product-section,
-  .premium-home .contact-section {
-    min-height: 300px !important;
+  .premium-home .carousel-wrapper {
+    margin: 0.75rem 0 0.95rem !important;
   }
 
   .premium-home .product-section .view-all {
-    width: min(88vw, 280px);
-    text-align: center;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-top: auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 0.2rem !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .premium-home {
+    --android-section-h: 300px;
+  }
+
+  .premium-home .shop-now-banner,
+  .premium-home .product-section,
+  .premium-home .contact-section {
+    min-height: var(--android-section-h) !important;
   }
 
   .premium-home .shop-now-content h1,
@@ -1281,12 +1237,24 @@
   .premium-home .contact-section h2 {
     font-size: 1.65rem !important;
   }
+
+  .premium-home .home-cta-row {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    gap: 0.45rem !important;
+  }
+
+  .premium-home .product-section .view-all {
+    width: min(88vw, 280px) !important;
+  }
 }
 
 </style>
 
-<script src="main.js?v=20260413e"></script>
-<script src="cart.js?v=20260413e"></script>
+<script src="main.js?v=20260413f"></script>
+<script src="cart.js?v=20260413f"></script>
 <!-- Cart Sidebar -->
 <div id="cartSidebar" class="cart-sidebar" role="complementary" aria-label="Shopping Cart Sidebar" tabindex="-1">
   <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart" tabindex="0">&times;</button>
