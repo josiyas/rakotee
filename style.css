@@ -435,7 +435,7 @@ a {
   .hero-section { height: 45vh; }
   .hero-section h1 { font-size: 1.6rem; }
   .product-card img { aspect-ratio: 1/1; }
-  .product-section { padding: 2rem 1rem; }
+  body:not(.premium-home) .product-section { padding: 2rem 1rem; }
   .main-header { padding: 0.6rem 0.8rem; }
   .icon-btn { padding: 4px !important; min-width: 28px !important; min-height: 28px !important; font-size: 0.9rem !important; }
   .btn, .btn-primary { padding: 0.6rem 1rem; }
@@ -443,8 +443,8 @@ a {
   table { width: 100%; display: block; overflow-x: auto; }
 }
 
-.product-section::before,
-.product-section::after {
+body:not(.premium-home) .product-section::before,
+body:not(.premium-home) .product-section::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -456,7 +456,7 @@ a {
 }
 
 /* Alternate second image by using ::after */
-.product-section::after {
+body:not(.premium-home) .product-section::after {
   animation-delay: 5s;
 }
 
@@ -470,7 +470,7 @@ a {
 
 
 /* Make each product section full screen height */
-.product-section {
+body:not(.premium-home) .product-section {
   min-height: 100vh; /* Full viewport height */
   display: flex;
   flex-direction: column;
@@ -484,7 +484,7 @@ a {
 }
 
 /* Make sure content like h2 + buttons are visible */
-.product-section h2 {
+body:not(.premium-home) .product-section h2 {
   font-size: 3rem;
   margin-bottom: 1rem;
 }
@@ -495,7 +495,7 @@ a {
 }
 
 /* Make buttons pop */
-.btn.view-all {
+body:not(.premium-home) .btn.view-all {
   margin-top: 2rem;
   padding: 0.75rem 2rem;
   font-size: 1.1rem;
@@ -505,7 +505,7 @@ a {
   transition: background 0.3s;
 }
 
-.btn.view-all:hover {
+body:not(.premium-home) .btn.view-all:hover {
   background-color: white;
   color: black;
 }
