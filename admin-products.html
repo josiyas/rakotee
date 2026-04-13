@@ -221,6 +221,31 @@
 			margin-bottom: 0.8rem;
 		}
 
+		.tools-row {
+			display: flex;
+			gap: 0.5rem;
+			flex-wrap: wrap;
+			margin-bottom: 0.75rem;
+			align-items: center;
+		}
+
+		.search-input {
+			flex: 1 1 280px;
+			min-width: 220px;
+		}
+
+		.status-badge {
+			display: inline-flex;
+			align-items: center;
+			border: 1px solid rgba(116, 140, 171, 0.55);
+			background: rgba(13, 19, 33, 0.58);
+			border-radius: 999px;
+			padding: 0.45rem 0.8rem;
+			font-size: 0.8rem;
+			font-weight: 700;
+			letter-spacing: 0.02em;
+		}
+
 		.cat-tab {
 			border: 1px solid rgba(116, 140, 171, 0.45);
 			background: rgba(13, 19, 33, 0.55);
@@ -309,15 +334,12 @@
 
 		<section class="card">
 			<h2>Products Already In Store</h2>
-			<p class="help">Edit any existing store product and save. Changes apply on your storefront without code edits.</p>
-			<div class="cat-tabs" id="catTabs">
-				<button class="cat-tab active" data-cat="">All</button>
-				<button class="cat-tab" data-cat="Shoes">Shoes</button>
-				<button class="cat-tab" data-cat="Phones">Phones</button>
-				<button class="cat-tab" data-cat="Hubbly">Hubbly</button>
-				<button class="cat-tab" data-cat="Accessories">Accessories</button>
-				<button class="cat-tab" data-cat="Sale">Sale</button>
+			<p class="help">Edit any existing store product and save. Categories are generated automatically so every section can be edited.</p>
+			<div class="tools-row">
+				<input id="storeSearch" class="search-input" placeholder="Search by name, id, color, size, category..." />
+				<span id="syncStatus" class="status-badge">Local-only persistence</span>
 			</div>
+			<div class="cat-tabs" id="catTabs"></div>
 			<div id="storeProductList" class="list"></div>
 		</section>
 

@@ -10,15 +10,95 @@ const cancelEditBtn = document.getElementById('cancelEditBtn');
 const editProductIdInput = document.getElementById('editProductId');
 const categorySelect = document.getElementById('category');
 const sizesInput = document.getElementById('sizes');
+const catTabs = document.getElementById('catTabs');
+const storeSearchInput = document.getElementById('storeSearch');
+const syncStatusEl = document.getElementById('syncStatus');
 
 const DEFAULT_SHOE_SIZES = ['2UK', '3UK', '4UK', '5UK', '6UK', '7UK', '8UK', '9UK', '10UK', '11UK', '12UK'];
 const DEFAULT_PHONE_SIZES = ['64GB', '128GB', '256GB', '512GB'];
 // Keep backward-compat alias used in payload construction
 const DEFAULT_SIZES = DEFAULT_SHOE_SIZES;
+const API_CANDIDATES = [
+	window.location.origin,
+	'http://localhost:5000',
+	'https://rakotee.site'
+];
+
+let activeCategoryFilter = '';
+let activeSearchTerm = '';
+let activeApiBase = '';
 
 // --- Auto-fill sizes when category changes ---
 function getDefaultSizesForCategory(cat) {
 	return (cat || '').toLowerCase() === 'phones' ? DEFAULT_PHONE_SIZES : DEFAULT_SHOE_SIZES;
+}
+
+function getLegacyAdminToken() {
+	try {
+		return localStorage.getItem('rakotee_admin_token') || '';
+	} catch {
+		return '';
+	}
+}
+
+function getAuthHeaders() {
+	const token = getLegacyAdminToken();
+	return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+function setSyncStatus(message, isGood) {
+	if (!syncStatusEl) return;
+	syncStatusEl.textContent = message;
+	syncStatusEl.style.borderColor = isGood ? 'rgba(86, 209, 137, 0.7)' : 'rgba(116, 140, 171, 0.55)';
+	syncStatusEl.style.background = isGood ? 'rgba(15, 82, 44, 0.35)' : 'rgba(13, 19, 33, 0.58)';
+}
+
+async function detectApiBase() {
+	for (const base of API_CANDIDATES) {
+		try {
+			const res = await fetch(`${base}/api/products`, { method: 'GET', credentials: 'include' });
+			if (res.ok) return base;
+		} catch {
+			// Continue with next candidate.
+		}
+	}
+	return '';
+}
+
+async function syncProductToServer(product) {
+	if (!activeApiBase) return { ok: false, reason: 'no-server' };
+	const headers = {
+		'Content-Type': 'application/json',
+		...getAuthHeaders()
+	};
+	try {
+		const putRes = await fetch(`${activeApiBase}/api/products/${product.id}`, {
+			method: 'PUT',
+			credentials: 'include',
+			headers,
+			body: JSON.stringify(product)
+		});
+		if (putRes.ok) return { ok: true };
+
+		if (putRes.status === 404) {
+			const postRes = await fetch(`${activeApiBase}/api/products`, {
+				method: 'POST',
+				credentials: 'include',
+				headers,
+				body: JSON.stringify(product)
+			});
+			if (postRes.ok) return { ok: true };
+			return { ok: false, reason: `post-${postRes.status}` };
+		}
+
+		if (putRes.status === 401 || putRes.status === 403) {
+			return { ok: false, reason: 'auth' };
+		}
+
+		return { ok: false, reason: `put-${putRes.status}` };
+	} catch {
+		return { ok: false, reason: 'network' };
+	}
 }
 
 if (categorySelect && sizesInput) {
@@ -188,6 +268,50 @@ function cardTemplate(product, idx, canDelete) {
 	`;
 }
 
+function productMatchesSearch(product, term) {
+	if (!term) return true;
+	const parts = [
+		product.id,
+		product.name,
+		product.category,
+		Array.isArray(product.colors) ? product.colors.join(' ') : '',
+		Array.isArray(product.sizes) ? product.sizes.join(' ') : '',
+		Array.isArray(product.description) ? product.description.join(' ') : product.description
+	]
+		.map((p) => (p || '').toString().toLowerCase());
+	return parts.some((p) => p.includes(term));
+}
+
+function getFilteredStoreProducts() {
+	const cat = activeCategoryFilter.toLowerCase();
+	const term = activeSearchTerm.toLowerCase().trim();
+	return allStoreProducts.filter((p) => {
+		const byCategory = !cat || (p.category || '').toLowerCase() === cat;
+		return byCategory && productMatchesSearch(p, term);
+	});
+}
+
+function renderCategoryTabs() {
+	if (!catTabs) return;
+	const categories = Array.from(new Set(allStoreProducts.map((p) => (p.category || 'Shoes').toString().trim()).filter(Boolean)))
+		.sort((a, b) => a.localeCompare(b));
+	const allCats = ['All', ...categories];
+	catTabs.innerHTML = allCats
+		.map((cat) => {
+			const value = cat === 'All' ? '' : cat;
+			const active = value.toLowerCase() === activeCategoryFilter.toLowerCase();
+			return `<button type="button" class="cat-tab${active ? ' active' : ''}" data-cat="${value}">${cat}</button>`;
+		})
+		.join('');
+	catTabs.querySelectorAll('.cat-tab').forEach((tab) => {
+		tab.addEventListener('click', () => {
+			activeCategoryFilter = (tab.dataset.cat || '').toString();
+			renderCategoryTabs();
+			renderStoreCards(getFilteredStoreProducts());
+		});
+	});
+}
+
 function setEditMode(isEditing) {
 	if (editHint) editHint.style.display = isEditing ? 'block' : 'none';
 	if (saveBtn) saveBtn.textContent = isEditing ? 'Update Product' : 'Save Product';
@@ -235,19 +359,11 @@ function renderStoreCards(products) {
 	});
 }
 
-function initCatTabs() {
-	const catTabs = document.getElementById('catTabs');
-	if (!catTabs) return;
-	catTabs.querySelectorAll('.cat-tab').forEach((tab) => {
-		tab.addEventListener('click', () => {
-			catTabs.querySelectorAll('.cat-tab').forEach((t) => t.classList.remove('active'));
-			tab.classList.add('active');
-			const cat = tab.dataset.cat;
-			const filtered = cat
-				? allStoreProducts.filter((p) => (p.category || '').toLowerCase() === cat.toLowerCase())
-				: allStoreProducts;
-			renderStoreCards(filtered);
-		});
+function initSearch() {
+	if (!storeSearchInput) return;
+	storeSearchInput.addEventListener('input', () => {
+		activeSearchTerm = storeSearchInput.value || '';
+		renderStoreCards(getFilteredStoreProducts());
 	});
 }
 
@@ -291,8 +407,8 @@ async function renderStoreList() {
 	}
 
 	allStoreProducts = products;
-	renderStoreCards(allStoreProducts);
-	initCatTabs();
+	renderCategoryTabs();
+	renderStoreCards(getFilteredStoreProducts());
 }
 
 function renderList() {
@@ -330,7 +446,7 @@ function renderList() {
 	});
 }
 
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => {
 	event.preventDefault();
 
 	const formData = new FormData(form);
@@ -386,10 +502,22 @@ form.addEventListener('submit', (event) => {
 	}
 
 	saveStoredProducts(products);
+	const syncResult = await syncProductToServer(payload);
 	resetFormMode();
 	renderList();
 	renderStoreList();
-	alert('Product saved. Open products page to see it.');
+	if (syncResult.ok) {
+		setSyncStatus('Synced with server + local backup', true);
+		alert('Product saved and synced to server.');
+		return;
+	}
+	if (syncResult.reason === 'auth') {
+		setSyncStatus('Saved locally (server auth required)', false);
+		alert('Saved locally. Server sync requires admin login.');
+		return;
+	}
+	setSyncStatus('Saved locally (server not reachable)', false);
+	alert('Product saved locally. Server sync is currently unavailable.');
 });
 
 clearAllBtn.addEventListener('click', () => {
@@ -406,4 +534,14 @@ cancelEditBtn.addEventListener('click', () => {
 });
 
 renderList();
+initSearch();
 renderStoreList();
+
+(async () => {
+	activeApiBase = await detectApiBase();
+	if (activeApiBase) {
+		setSyncStatus('Server sync available', true);
+	} else {
+		setSyncStatus('Local-only persistence', false);
+	}
+})();
