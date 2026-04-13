@@ -53,8 +53,12 @@
         return;
       }
 
+      const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:5000'
+        : 'https://rakotee-back.onrender.com';
+
       try {
-        const res = await fetch('http://localhost:5000/api/auth/register', {
+        const res = await fetch(apiBase + '/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, email, password }),
