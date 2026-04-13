@@ -2394,6 +2394,66 @@ const products = [
   colors: ["Black"],
   description: ["NIKE CUSHIONED CREW SOCKS X3 BLACK are a comfortable and practical addition to any footwear collection. These socks feature a black upper with distinctive design elements, creating a unique and eye-catching look. The socks also include cushioned sole for added comfort and a durable outsole for long-lasting wear."],
 
+  },{
+  id: 166,
+  name: "Apple iPhone 11 Pro",
+  category: "Phones",
+  price: 7999.00,
+  images: [
+    "images/products/11 pro1.png",
+    "images/products/11 pro2.png",
+    "images/products/11 pro3.png",
+    "images/products/11 pro4.png"
+  ],
+  sizes: ["64GB", "128GB", "256GB"],
+  colors: ["Space Gray", "Midnight Green", "Silver"],
+  description: ["The iPhone 11 Pro combines premium build quality, strong battery life, and a triple-camera setup for sharp everyday photos and video."],
+
+  },{
+  id: 167,
+  name: "Apple iPhone 12 Pro Max",
+  category: "Phones",
+  price: 9999.00,
+  images: [
+    "images/products/12 pro max1.png",
+    "images/products/12 pro max2.png",
+    "images/products/12 pro max3.png",
+    "images/products/12 pro max4.png"
+  ],
+  sizes: ["128GB", "256GB", "512GB"],
+  colors: ["Graphite", "Pacific Blue", "Silver"],
+  description: ["The iPhone 12 Pro Max offers a larger display, top-tier camera performance, and fast 5G connectivity for power users."],
+
+  },{
+  id: 168,
+  name: "Apple iPhone 13 Pro",
+  category: "Phones",
+  price: 10999.00,
+  images: [
+    "images/products/13 pro1.png",
+    "images/products/13 pro2.png",
+    "images/products/13 pro3.png",
+    "images/products/13 pro4.png"
+  ],
+  sizes: ["128GB", "256GB", "512GB"],
+  colors: ["Sierra Blue", "Graphite", "Gold"],
+  description: ["The iPhone 13 Pro delivers smooth performance, advanced cameras, and a bright ProMotion display for everyday premium use."],
+
+  },{
+  id: 169,
+  name: "Apple iPhone XR",
+  category: "Phones",
+  price: 5499.00,
+  images: [
+    "images/products/Xr1.jpg",
+    "images/products/Xr2.jpg",
+    "images/products/Xr3.jpg",
+    "images/products/Xr4.jpg"
+  ],
+  sizes: ["64GB", "128GB"],
+  colors: ["Black", "Blue", "Red"],
+  description: ["The iPhone XR remains a reliable daily smartphone with strong performance, a solid camera, and great value."],
+
   },
 
 ];
@@ -2472,8 +2532,9 @@ const products = [
   ;(function ensureAllShoesSizes() {
     const ukSizes = ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"];
     products.forEach(p => {
-      // Replace any GB sizes with UK shoe sizes
-      if (!Array.isArray(p.sizes) || p.sizes.length === 0 || p.sizes.some(s => /gb$/i.test(s))) {
+      const category = (p.category || '').toString().toLowerCase();
+      if (category !== 'shoes' && category !== 'footwear') return;
+      if (!Array.isArray(p.sizes) || p.sizes.length === 0) {
         p.sizes = [...ukSizes];
       }
     });

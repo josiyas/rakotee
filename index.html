@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="RAKOTEE â€“ Your go-to for streetwear, footwear, and accessories. KEEP MOVIN'. Shop the latest sneakers, phones, and more. Secure checkout and fast delivery." />
+  <meta name="description" content="RAKOTEE - Your go-to for streetwear, footwear, and accessories. KEEP MOVIN'. Shop the latest sneakers, phones, and more. Secure checkout and fast delivery." />
   <meta name="keywords" content="streetwear, sneakers, footwear, accessories, phones, sale, rakotee, online store, shop" />
   <title>RAKOTEE | KEEP MOVIN</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +27,7 @@
         <!-- Account menu will be rendered by JS -->
       </div>
       <button class="cart-icon-btn" id="cartIconBtn" aria-label="Open Cart" tabindex="0">
-        ðŸ›’
+        🛒
         <span id="cartCount" class="cart-count" aria-live="polite">0</span>
       </button>
       <button class="icon-btn menu-toggle" aria-label="Menu" tabindex="0">
@@ -78,8 +78,8 @@
     </div>
     <div class="carousel-wrapper">
       <div class="product-carousel" data-carousel="footwear"></div>
-      <button class="carousel-nav prev" data-carousel="footwear" aria-label="Previous product">â€¹</button>
-      <button class="carousel-nav next" data-carousel="footwear" aria-label="Next product">â€º</button>
+      <button class="carousel-nav prev" data-carousel="footwear" aria-label="Previous product">&#8249;</button>
+      <button class="carousel-nav next" data-carousel="footwear" aria-label="Next product">&#8250;</button>
     </div>
     <div class="section-cta">
       <a href="products.html?category=footwear" class="btn view-all">View All Footwear</a>
@@ -94,8 +94,8 @@
     </div>
     <div class="carousel-wrapper">
       <div class="product-carousel" data-carousel="phones"></div>
-      <button class="carousel-nav prev" data-carousel="phones" aria-label="Previous product">â€¹</button>
-      <button class="carousel-nav next" data-carousel="phones" aria-label="Next product">â€º</button>
+      <button class="carousel-nav prev" data-carousel="phones" aria-label="Previous product">&#8249;</button>
+      <button class="carousel-nav next" data-carousel="phones" aria-label="Next product">&#8250;</button>
     </div>
     <div class="section-cta">
       <a href="products.html?category=phones" class="btn view-all">View All Phones</a>
@@ -110,8 +110,8 @@
     </div>
     <div class="carousel-wrapper">
       <div class="product-carousel" data-carousel="sale"></div>
-      <button class="carousel-nav prev" data-carousel="sale" aria-label="Previous product">â€¹</button>
-      <button class="carousel-nav next" data-carousel="sale" aria-label="Next product">â€º</button>
+      <button class="carousel-nav prev" data-carousel="sale" aria-label="Previous product">&#8249;</button>
+      <button class="carousel-nav next" data-carousel="sale" aria-label="Next product">&#8250;</button>
     </div>
     <div class="section-cta">
       <a href="products.html?category=sale" class="btn view-all">View All Sale Items</a>
@@ -144,7 +144,7 @@
             <li>Durable rubber sole for long-lasting wear</li>
             <li>Breathable mesh upper keeps feet cool</li>
             <li>Cushioned insole for all-day comfort</li>
-            <li>True to size â€“ fits as expected</li>
+            <li>True to size - fits as expected</li>
             <li>Available in multiple colorways</li>
           </ul>
           <div class="modal-highlights">
@@ -166,7 +166,7 @@
       <li><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:rakoteeholdings@gmail.com">rakoteeholdings@gmail.com</a></li>
       <li><i class="fas fa-phone"></i> <strong>Phone:</strong> <a href="tel:0663963261">0663963261</a></li>
       <li><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> <a href="https://wa.me/27663963261" target="_blank" rel="noopener">0663963261</a></li>
-      <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> SOSHANGUVE BLOCK VV EXT 6</li>
+      <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> Online Store Only (No Walk-ins)</li>
     </ul>
   </div>
 </section>
@@ -1066,22 +1066,44 @@
 // Render homepage carousels with a resilient data source.
 document.addEventListener('DOMContentLoaded', async () => {
   const loadCatalog = async () => {
-    // Parse exact names and first images from products.js without executing it.
+    // Parse product objects from products.js so category-based carousels (phones/sale)
+    // can use the same source as products.html.
     try {
       const jsResponse = await fetch('products.js', { cache: 'no-store' });
       if (jsResponse.ok) {
         const jsText = await jsResponse.text();
-        const parsed = [];
-        const rx = /name:\s*"([^"]+)"[\s\S]*?price:\s*([0-9]+(?:\.[0-9]+)?)[\s\S]*?images:\s*\[\s*"([^"]+)"/g;
-        let match;
-        while ((match = rx.exec(jsText)) !== null) {
-          parsed.push({
-            name: match[1],
-            price: Number(match[2]) || 0,
-            images: [match[3]]
-          });
+        const startToken = 'const products = [';
+        const start = jsText.indexOf(startToken);
+        if (start !== -1) {
+          let depth = 0;
+          let end = -1;
+          for (let i = start + startToken.length - 1; i < jsText.length; i += 1) {
+            const ch = jsText[i];
+            if (ch === '[') depth += 1;
+            if (ch === ']') {
+              depth -= 1;
+              if (depth === 0) {
+                end = i;
+                break;
+              }
+            }
+          }
+
+          if (end !== -1) {
+            const arrayLiteral = jsText.slice(start + 'const products = '.length, end + 1);
+            const parsedProducts = Function(`"use strict"; return (${arrayLiteral});`)();
+            if (Array.isArray(parsedProducts) && parsedProducts.length) {
+              return parsedProducts
+                .filter((p) => p && typeof p === 'object')
+                .map((p) => ({
+                  name: p.name || 'Product',
+                  price: Number(p.price) || 0,
+                  images: Array.isArray(p.images) && p.images.length ? p.images : ['products/fallback.png'],
+                  category: (p.category || '').toString()
+                }));
+            }
+          }
         }
-        if (parsed.length) return parsed;
       }
     } catch (error) {
       console.warn('Could not parse products.js for homepage carousel.', error);
@@ -1095,7 +1117,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         ? data.map(item => ({
             name: item && item.name ? item.name : 'Product',
             price: Number(item && item.price) || 0,
-            images: [item && item.image ? item.image : 'products/fallback.png']
+            images: [item && item.image ? item.image : 'products/fallback.png'],
+            category: (item && item.category ? item.category : '').toString()
           }))
         : [];
     } catch (error) {
@@ -1146,35 +1169,69 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
   };
 
-  // Populate each carousel with 15 items.
+  const isPhoneProduct = (item) => /iphone|samsung|huawei|pixel|xr|11\s*pro|12\s*pro|13\s*pro|max/i.test((item && item.name) || '');
+  const isFootwearProduct = (item) => /nike|adidas|jordan|dunk|puma|vans|shox|air force|air max|slide|mule/i.test((item && item.name) || '');
+  const isSaleProduct = (item) => /sale|deal|discount/i.test((item && item.name) || '');
+
+  const byCategory = (categoryName) => {
+    const normalized = (categoryName || '').toLowerCase();
+    return catalog.filter((item) => ((item && item.category) || '').toString().toLowerCase() === normalized);
+  };
+
+  const footwearProducts = byCategory('shoes').length
+    ? byCategory('shoes')
+    : catalog.filter(isFootwearProduct);
+
+  const phoneProducts = byCategory('phones').length
+    ? byCategory('phones')
+    : catalog.filter(isPhoneProduct);
+
+  const saleProducts = byCategory('sale').length
+    ? byCategory('sale')
+    : catalog.filter(isSaleProduct);
+
+  // Populate each carousel with category-aware products.
   const carouselIds = ['footwear', 'phones', 'sale'];
 
   carouselIds.forEach(id => {
     const carousel = document.querySelector(`[data-carousel="${id}"]`);
     if (!carousel) return;
 
-    let cardsHTML = '';
+    let productsToShow = [];
 
     if (id === 'footwear') {
-      const footwearProducts = catalog
-        .filter(item => item && item.name && Array.isArray(item.images) && item.images.length)
-        .slice(0, 15);
+      productsToShow = footwearProducts.slice(0, 15);
+      const fallbackFootwear = footwearImageFiles.map((fileName, index) => ({
+        image: `products/${fileName}`,
+        images: [`products/${fileName}`],
+        name: `Footwear ${index + 1}`,
+        price: 0
+      }));
+      if (!productsToShow.length) productsToShow = fallbackFootwear;
 
-      const footwearCards = footwearProducts
-        .map(item => renderCardHTML(item, item.name))
+      const footwearCards = productsToShow
+        .map(item => renderCardHTML(item, item.name || 'Footwear'))
         .join('');
 
-      // Duplicate footwear cards for seamless across-page marquee movement.
       carousel.classList.add('is-marquee');
       carousel.innerHTML = `<div class="marquee-track">${footwearCards}${footwearCards}</div>`;
       return;
     }
 
-    const productsToShow = (Array.isArray(catalog) && catalog.length)
-      ? catalog.slice(0, 15)
-      : footwearImageFiles.map((fileName, index) => ({ image: `products/${fileName}`, name: `Product ${index + 1}`, price: 0 }));
+    if (id === 'phones') {
+      productsToShow = phoneProducts.slice(0, 15);
+      if (!productsToShow.length) productsToShow = footwearProducts.slice(0, 15);
+    }
 
-    cardsHTML = productsToShow.map((item, index) => renderCardHTML(item, `Product ${index + 1}`)).join('');
+    if (id === 'sale') {
+      productsToShow = saleProducts.slice(0, 15);
+      if (!productsToShow.length) productsToShow = catalog.slice(0, 15);
+    }
+
+    const cardsHTML = productsToShow
+      .map((item, index) => renderCardHTML(item, `Product ${index + 1}`))
+      .join('');
+
     carousel.innerHTML = cardsHTML;
   });
 
