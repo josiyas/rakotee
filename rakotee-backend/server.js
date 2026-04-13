@@ -22,18 +22,21 @@ const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
   : [
     'http://localhost:5000',
     'http://localhost:5001',
+    'http://localhost:5501',
+    'http://127.0.0.1:5501',
     'http://127.0.0.1:5000',
     'https://rakotee.site'
   ];
-app.use(cors({
+const corsOptions = {
   origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
-}));
+};
+app.use(cors(corsOptions));
 // Handle preflight requests for all routes
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 
 // Trust proxy for secure cookies and HTTPS (if behind a proxy like Heroku/Vercel)
 if (process.env.TRUST_PROXY === 'true') {
