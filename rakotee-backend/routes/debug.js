@@ -44,7 +44,12 @@ router.post('/send-test-email', async (req, res) => {
     });
   } catch (err) {
     console.error('Send test email error:', err);
-    res.status(500).json({ message: 'Failed to send test email', error: err.message });
+    const providerError = err.cause?.response?.data || null;
+    res.status(500).json({
+      message: 'Failed to send test email',
+      error: err.message,
+      providerError
+    });
   }
 });
 

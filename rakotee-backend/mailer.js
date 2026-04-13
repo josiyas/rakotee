@@ -103,24 +103,32 @@ async function sendMail({ to, subject, text, html, from }) {
       .filter(Boolean)
       .map((email) => ({ email }));
 
-    const response = await axios.post(
-      'https://api.brevo.com/v3/smtp/email',
-      {
-        sender,
-        to: recipients,
-        subject,
-        textContent: text,
-        htmlContent: html
-      },
-      {
-        headers: {
-          'api-key': process.env.BREVO_API_KEY,
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
+    let response;
+    try {
+      response = await axios.post(
+        'https://api.brevo.com/v3/smtp/email',
+        {
+          sender,
+          to: recipients,
+          subject,
+          textContent: text,
+          htmlContent: html
         },
-        timeout: 15000
-      }
-    );
+        {
+          headers: {
+            'api-key': process.env.BREVO_API_KEY,
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          timeout: 15000
+        }
+      );
+    } catch (err) {
+      const providerDetail = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+      const wrapped = new Error(`Brevo send failed: ${providerDetail}`);
+      wrapped.cause = err;
+      throw wrapped;
+    }
 
     return {
       info: {
