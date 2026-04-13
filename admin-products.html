@@ -229,6 +229,17 @@
 			align-items: center;
 		}
 
+		.tools-row .login-link {
+			text-decoration: none;
+			color: var(--light-beige);
+			border: 1px solid rgba(116, 140, 171, 0.55);
+			background: rgba(13, 19, 33, 0.58);
+			padding: 0.45rem 0.85rem;
+			border-radius: 999px;
+			font-size: 0.82rem;
+			font-weight: 700;
+		}
+
 		.search-input {
 			flex: 1 1 280px;
 			min-width: 220px;
@@ -338,6 +349,7 @@
 			<div class="tools-row">
 				<input id="storeSearch" class="search-input" placeholder="Search by name, id, color, size, category..." />
 				<span id="syncStatus" class="status-badge">Local-only persistence</span>
+				<a class="login-link" href="admin.html">Login as Admin</a>
 			</div>
 			<div class="cat-tabs" id="catTabs"></div>
 			<div id="storeProductList" class="list"></div>

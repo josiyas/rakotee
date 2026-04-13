@@ -2507,15 +2507,20 @@ const products = [
 async function mergeLiveProductsFromApi() {
   if (typeof window === 'undefined' || typeof fetch !== 'function') return;
 
+  const host = (window.location.hostname || '').toLowerCase();
+  const isLocal = host === 'localhost' || host === '127.0.0.1';
+  const officialApi = isLocal ? 'http://localhost:5000' : 'https://rakotee-back.onrender.com';
+
   const candidates = [
+    officialApi,
     window.location.origin,
     'http://localhost:5000',
-    'https://rakotee.site'
+    'https://rakotee-back.onrender.com'
   ];
 
   for (const base of candidates) {
     try {
-      const res = await fetch(`${base}/api/products`, { credentials: 'include' });
+      const res = await fetch(`${base}/api/products`);
       if (!res.ok) continue;
       const remote = await res.json();
       if (!Array.isArray(remote) || !remote.length) continue;

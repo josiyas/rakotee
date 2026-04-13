@@ -157,7 +157,8 @@
         const data = await res.json();
         if (res.ok && data.token) {
           // Server should set an HttpOnly cookie; do not persist token to localStorage for new logins.
-          // Keep token in response only for backward compatibility; we avoid storing it here.
+          // Keep a fallback token for cross-origin admin tools (e.g. admin-products on static host).
+          localStorage.setItem('rakotee_admin_token', data.token);
           showAdmin();
           loadProducts();
           loadOrders();
@@ -186,6 +187,7 @@
         const data = await res.json();
         if (res.ok) {
           // Server should set HttpOnly cookie; do not store token in localStorage for new logins.
+          if (data && data.token) localStorage.setItem('rakotee_admin_token', data.token);
           showAdmin();
           loadProducts();
           loadOrders();
@@ -250,15 +252,15 @@
         });
           const data = await res.json();
         if (res.ok) {
-          status.textContent = "âœ… Product uploaded!";
+          status.textContent = "Product uploaded successfully.";
           form.reset();
           loadProducts();
         } else {
-          status.textContent = data.error || "âŒ Failed to upload product.";
+          status.textContent = data.error || "Failed to upload product.";
         }
       } catch (err) {
         console.error(err);
-        status.textContent = "âŒ Failed to upload product.";
+        status.textContent = "Failed to upload product.";
       }
     };
 

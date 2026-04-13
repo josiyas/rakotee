@@ -18,10 +18,14 @@ const DEFAULT_SHOE_SIZES = ['2UK', '3UK', '4UK', '5UK', '6UK', '7UK', '8UK', '9U
 const DEFAULT_PHONE_SIZES = ['64GB', '128GB', '256GB', '512GB'];
 // Keep backward-compat alias used in payload construction
 const DEFAULT_SIZES = DEFAULT_SHOE_SIZES;
+const HOST = (window.location.hostname || '').toLowerCase();
+const IS_LOCAL = HOST === 'localhost' || HOST === '127.0.0.1';
+const OFFICIAL_API_BASE = IS_LOCAL ? 'http://localhost:5000' : 'https://rakotee-back.onrender.com';
 const API_CANDIDATES = [
+	OFFICIAL_API_BASE,
 	window.location.origin,
 	'http://localhost:5000',
-	'https://rakotee.site'
+	'https://rakotee-back.onrender.com'
 ];
 
 let activeCategoryFilter = '';
@@ -56,7 +60,7 @@ function setSyncStatus(message, isGood) {
 async function detectApiBase() {
 	for (const base of API_CANDIDATES) {
 		try {
-			const res = await fetch(`${base}/api/products`, { method: 'GET', credentials: 'include' });
+			const res = await fetch(`${base}/health`, { method: 'GET' });
 			if (res.ok) return base;
 		} catch {
 			// Continue with next candidate.
@@ -514,6 +518,11 @@ form.addEventListener('submit', async (event) => {
 	if (syncResult.reason === 'auth') {
 		setSyncStatus('Saved locally (server auth required)', false);
 		alert('Saved locally. Server sync requires admin login.');
+		return;
+	}
+	if (syncResult.reason === 'put-500' || syncResult.reason === 'post-500') {
+		setSyncStatus('Saved locally (server DB error)', false);
+		alert('Saved locally. Server is reachable but database is not ready.');
 		return;
 	}
 	setSyncStatus('Saved locally (server not reachable)', false);
