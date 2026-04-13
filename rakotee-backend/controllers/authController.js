@@ -93,11 +93,28 @@ exports.forgotPassword = async (req, res) => {
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
     await user.save();
-  const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}&email=${email}`;
-  const { preview } = await sendMail({ to: email, subject: 'Reset your password', html: `<p>Click <a href="${resetUrl}">here</a> to reset your password.</p>` });
-  if (preview) console.log('Ethereal preview URL (reset request):', preview);
+    const clientUrl = process.env.CLIENT_URL || 'https://rakotee.site';
+    const resetUrl = `${clientUrl}/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
+
+    // Do not block the API response indefinitely on SMTP provider latency.
+    try {
+      const mailPromise = sendMail({
+        to: email,
+        subject: 'Reset your password',
+        html: `<p>Click <a href="${resetUrl}">here</a> to reset your password.</p>`
+      });
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('SMTP timeout')), 12000);
+      });
+      const { preview } = await Promise.race([mailPromise, timeoutPromise]);
+      if (preview) console.log('Ethereal preview URL (reset request):', preview);
+    } catch (mailErr) {
+      console.error('Forgot-password mail send failed:', mailErr.message);
+    }
+
     res.json({ message: 'If that email exists, a reset link has been sent.' });
   } catch (err) {
+    console.error('forgotPassword error:', err.message);
     res.status(500).json({ message: 'Server error.' });
   }
 };
