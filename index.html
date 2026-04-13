@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260413i" />
+  <link rel="stylesheet" href="style.css?v=20260413j" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="premium-home">
@@ -80,7 +80,9 @@
       <button class="carousel-nav prev" data-carousel="footwear" aria-label="Previous product">‹</button>
       <button class="carousel-nav next" data-carousel="footwear" aria-label="Next product">›</button>
     </div>
-    <a href="products.html?category=footwear" class="btn view-all">View All Footwear</a>
+    <div class="section-cta">
+      <a href="products.html?category=footwear" class="btn view-all">View All Footwear</a>
+    </div>
   </section>
 
   <!-- Phones -->
@@ -94,7 +96,9 @@
       <button class="carousel-nav prev" data-carousel="phones" aria-label="Previous product">‹</button>
       <button class="carousel-nav next" data-carousel="phones" aria-label="Next product">›</button>
     </div>
-    <a href="products.html?category=phones" class="btn view-all">View All Phones</a>
+    <div class="section-cta">
+      <a href="products.html?category=phones" class="btn view-all">View All Phones</a>
+    </div>
   </section>
 
   <!-- Sale -->
@@ -108,7 +112,9 @@
       <button class="carousel-nav prev" data-carousel="sale" aria-label="Previous product">‹</button>
       <button class="carousel-nav next" data-carousel="sale" aria-label="Next product">›</button>
     </div>
-    <a href="products.html?category=sale" class="btn view-all">View All Sale Items</a>
+    <div class="section-cta">
+      <a href="products.html?category=sale" class="btn view-all">View All Sale Items</a>
+    </div>
   </section>
 
 </main>
@@ -502,6 +508,12 @@
   background: rgba(116, 140, 171, 0.22);
   border: 1px solid rgba(116, 140, 171, 0.5);
   color: var(--light-beige);
+}
+
+.premium-home .section-cta {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
@@ -1230,17 +1242,22 @@
     min-width: 80vw !important;
   }
 
-  .premium-home .product-section .view-all {
+  .premium-home .product-section .section-cta {
     order: 3 !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 0.9rem !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
+  }
+
+  .premium-home .product-section .view-all {
     position: static !important;
     clear: both !important;
     display: inline-flex !important;
     justify-content: center !important;
     align-items: center !important;
-    margin-top: 0.9rem !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    margin-bottom: 0 !important;
+    margin: 0 !important;
     text-align: center !important;
   }
 }
@@ -1281,8 +1298,8 @@
 
 </style>
 
-<script src="main.js?v=20260413i"></script>
-<script src="cart.js?v=20260413i"></script>
+<script src="main.js?v=20260413j"></script>
+<script src="cart.js?v=20260413j"></script>
 <!-- Cart Sidebar -->
 <div id="cartSidebar" class="cart-sidebar" role="complementary" aria-label="Shopping Cart Sidebar" tabindex="-1">
   <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart" tabindex="0">&times;</button>
