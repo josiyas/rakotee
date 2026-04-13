@@ -3,14 +3,31 @@ const nodemailer = require('nodemailer');
 async function createTransporter() {
   // If explicit SMTP credentials are provided, use them
   if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: parseInt(process.env.EMAIL_PORT) || 587,
-      secure: process.env.EMAIL_SECURE === 'true',
+    const host = String(process.env.EMAIL_HOST).trim().toLowerCase();
+    const secure = process.env.EMAIL_SECURE === 'true';
+    const pass = String(process.env.EMAIL_PASS).replace(/\s+/g, '');
+    const baseConfig = {
+      secure,
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        pass
       }
+    };
+
+    if (host === 'smtp.gmail.com') {
+      return nodemailer.createTransport({
+        ...baseConfig,
+        service: 'gmail'
+      });
+    }
+
+    return nodemailer.createTransport({
+      ...baseConfig,
+      host,
+      port: parseInt(process.env.EMAIL_PORT, 10) || (secure ? 465 : 587)
     });
   }
 
@@ -19,6 +36,9 @@ async function createTransporter() {
   return nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
     auth: {
       user: testAccount.user,
       pass: testAccount.pass
