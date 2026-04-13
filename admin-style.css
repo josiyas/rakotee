@@ -20,12 +20,27 @@ body {
 }
 
 .card input,
-.card button {
+.card button,
+.card select,
+.card textarea {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
   border: none;
   border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.card select,
+.card textarea,
+.card input {
+  background: #262626;
+  color: #eee;
+  border: 1px solid #3a3a3a;
+}
+
+.card textarea {
+  resize: vertical;
 }
 
 .card button {
@@ -37,6 +52,11 @@ body {
 
 .card button:hover {
   background: #00a383;
+}
+
+.card button:disabled {
+  background: #58736d;
+  cursor: not-allowed;
 }
 
 .top-bar {
@@ -67,6 +87,14 @@ body {
 
 .hidden {
   display: none;
+}
+
+table th,
+table td {
+  padding: 8px;
+  border-bottom: 1px solid #2f2f2f;
+  text-align: left;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 600px) {

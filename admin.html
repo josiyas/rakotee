@@ -12,10 +12,10 @@
     <!-- LOGIN SCREEN -->
     <div id="loginSection" class="card">
       <h2>Admin Login</h2>
-  <input type="email" id="loginEmail" placeholder="Email" required class="hidden" />
-  <input type="password" id="loginPassword" placeholder="Password" required class="hidden" />
-  <button id="loginBtn" class="hidden">Login</button>
-  <hr class="hidden" />
+  <input type="email" id="loginEmail" placeholder="Admin Email" />
+  <input type="password" id="loginPassword" placeholder="Admin Password" />
+  <button id="loginBtn">Login with Email</button>
+  <hr />
   <label for="pinInput">Or enter admin PIN</label>
       <input type="text" id="pinInput" placeholder="Admin PIN" />
       <button id="pinBtn">Enter PIN</button>
@@ -29,6 +29,7 @@
         <button id="logoutBtn">Logout</button>
       </div>
       <div id="adminBanner" style="display:none;padding:8px 12px;border-radius:8px;margin:12px 0;font-size:0.95rem"></div>
+      <div id="systemStatus" style="display:none;padding:8px 12px;border-radius:8px;margin:8px 0 14px 0;font-size:0.9rem"></div>
 
       <!-- Order List -->
       <div id="orderList" class="card">
@@ -132,6 +133,9 @@
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const loginError = document.getElementById("loginError");
+    const systemStatus = document.getElementById('systemStatus');
+    const pinBtn = document.getElementById('pinBtn');
+    const pinInput = document.getElementById('pinInput');
 
     // UI helpers
     function showAdmin() {
@@ -141,6 +145,35 @@
     function showLogin() {
       adminDashboard.classList.add('hidden');
       loginSection.classList.remove('hidden');
+    }
+
+    function setSystemStatus(message, kind = 'neutral') {
+      if (!systemStatus) return;
+      systemStatus.style.display = 'block';
+      systemStatus.textContent = message;
+      if (kind === 'ok') {
+        systemStatus.style.background = '#153e2b';
+        systemStatus.style.color = '#d4f8e8';
+        return;
+      }
+      if (kind === 'warn') {
+        systemStatus.style.background = '#4e3b10';
+        systemStatus.style.color = '#ffe9b0';
+        return;
+      }
+      if (kind === 'error') {
+        systemStatus.style.background = '#4a1f1f';
+        systemStatus.style.color = '#ffd8d8';
+        return;
+      }
+      systemStatus.style.background = '#2a2a2a';
+      systemStatus.style.color = '#efefef';
+    }
+
+    function setButtonBusy(btn, busy, busyLabel, normalLabel) {
+      if (!btn) return;
+      btn.disabled = !!busy;
+      btn.textContent = busy ? busyLabel : normalLabel;
     }
 
     // Auto-login only after server-side validation.
@@ -156,15 +189,18 @@
           clearAdminToken();
           showLogin();
           setAdminBanner();
+          setSystemStatus('Please login to manage orders and products.', 'warn');
           return;
         }
         showAdmin();
         loadProducts();
         loadOrders();
         setAdminBanner();
+        setSystemStatus('Connected to live admin session.', 'ok');
       } catch {
         showLogin();
         setAdminBanner();
+        setSystemStatus('Server is unreachable right now. Try again shortly.', 'error');
       }
     })();
 
@@ -192,6 +228,7 @@
       loginError.textContent = '';
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
+      setButtonBusy(loginBtn, true, 'Logging in...', 'Login with Email');
       try {
         const res = await fetch(`${API_BASE}/api/admin/login`, {
           method: 'POST',
@@ -204,23 +241,27 @@
           setAdminToken(data.token);
           showAdmin();
           setAdminBanner();
+          setSystemStatus('Logged in. Admin controls are enabled.', 'ok');
           loadProducts();
           loadOrders();
         } else {
           loginError.textContent = data.error || 'Login failed.';
+          setSystemStatus('Login failed. Please check credentials.', 'warn');
         }
       } catch (err) {
         loginError.textContent = "Login failed: " + (err.message || err);
+        setSystemStatus('Login request failed. Check backend status.', 'error');
+      } finally {
+        setButtonBusy(loginBtn, false, 'Logging in...', 'Login with Email');
       }
     };
 
   // PIN-based access (server-validated)
-    const pinBtn = document.getElementById('pinBtn');
-    const pinInput = document.getElementById('pinInput');
     pinBtn.onclick = async () => {
       const val = (pinInput.value || '').trim();
       if (!val) return;
       loginError.textContent = '';
+      setButtonBusy(pinBtn, true, 'Checking PIN...', 'Enter PIN');
       try {
         const res = await fetch(`${API_BASE}/api/admin/pin`, {
           method: 'POST',
@@ -233,15 +274,20 @@
           if (data && data.token) setAdminToken(data.token);
           showAdmin();
           setAdminBanner();
+          setSystemStatus('PIN verified. Admin controls are enabled.', 'ok');
           loadProducts();
           loadOrders();
           return;
         }
         // server responded but PIN invalid
         loginError.textContent = data.error || 'Invalid PIN.';
+        setSystemStatus('Invalid PIN. Try again.', 'warn');
       } catch (err) {
         console.error('PIN request failed', err);
         loginError.textContent = 'PIN request failed. Check server.';
+        setSystemStatus('PIN request failed. Backend may be offline.', 'error');
+      } finally {
+        setButtonBusy(pinBtn, false, 'Checking PIN...', 'Enter PIN');
       }
     };
 
@@ -250,6 +296,7 @@
       fetch(`${API_BASE}/api/admin/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
       showLogin();
       setAdminBanner();
+      setSystemStatus('Logged out.', 'neutral');
     };
 
     // Upload product
@@ -258,7 +305,7 @@
 
     form.onsubmit = async (e) => {
       e.preventDefault();
-      status.textContent = '';
+      status.textContent = 'Uploading product...';
       const name = document.getElementById("name").value;
       const price = parseFloat(document.getElementById("price").value);
       const files = Array.from(document.getElementById("imageFiles").files || []);
@@ -299,14 +346,17 @@
           const data = await res.json();
         if (res.ok) {
           status.textContent = "Product uploaded successfully.";
+          setSystemStatus('Product uploaded successfully.', 'ok');
           form.reset();
           loadProducts();
         } else {
           status.textContent = data.error || "Failed to upload product.";
+          setSystemStatus('Upload failed. Check input and permissions.', 'warn');
         }
       } catch (err) {
         console.error(err);
         status.textContent = "Failed to upload product.";
+        setSystemStatus('Upload request failed. Backend may be offline.', 'error');
       }
     };
 
@@ -344,7 +394,7 @@
     // Load and show products
     async function loadProducts() {
       const container = document.getElementById("productsContainer");
-      container.innerHTML = "";
+      container.innerHTML = '<p>Loading products...</p>';
       try {
         const legacyToken = getAdminToken();
         const res = await fetch(`${API_BASE}/api/admin/products`, {
@@ -366,6 +416,7 @@
             return;
           }
           // Render read-only cards (no update/delete)
+          setSystemStatus('Read-only mode: sign in to edit products.', 'warn');
           productsArr.forEach(product => {
             const productCard = document.createElement("div");
             productCard.className = "product-card";
@@ -392,6 +443,7 @@
         const products = data.products || [];
         if (!products.length) {
           container.innerHTML = '<p>No products found.</p>';
+          setSystemStatus('No products found yet.', 'neutral');
           return;
         }
         products.forEach(product => {
@@ -420,15 +472,20 @@
         container.querySelectorAll(".deleteBtn").forEach(btn => {
           btn.onclick = async () => {
             try {
+              setButtonBusy(btn, true, 'Deleting...', 'Delete');
               const legacyToken = getAdminToken();
               await fetch(`${API_BASE}/api/admin/products/${btn.dataset.id}`, {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
               });
+              setSystemStatus('Product deleted.', 'ok');
               loadProducts();
             } catch (err) {
               console.error('Delete failed', err);
+              setSystemStatus('Delete failed.', 'error');
+            } finally {
+              setButtonBusy(btn, false, 'Deleting...', 'Delete');
             }
           };
         });
@@ -436,6 +493,7 @@
         container.querySelectorAll(".updateBtn").forEach(btn => {
           btn.onclick = async () => {
             try {
+              setButtonBusy(btn, true, 'Saving...', 'Save');
               const card = btn.parentElement;
               const newName = card.querySelector("h4").textContent.trim();
               const newPrice = parseFloat(card.querySelector(".price").textContent.replace(/[^\d.]/g, ''));
@@ -464,9 +522,17 @@
                   body: JSON.stringify(body)
                 });
               if (!res.ok) console.error('Update failed', await res.text());
+              if (res.ok) {
+                setSystemStatus('Product updated successfully.', 'ok');
+              } else {
+                setSystemStatus('Update failed. Check permissions/data.', 'warn');
+              }
               loadProducts();
             } catch (err) {
               console.error('Update failed', err);
+              setSystemStatus('Update request failed.', 'error');
+            } finally {
+              setButtonBusy(btn, false, 'Saving...', 'Save');
             }
           };
         });
@@ -480,12 +546,13 @@
     // Load and show orders
     async function loadOrders() {
       try {
+        const tbody = document.getElementById("ordersBody");
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Loading orders...</td></tr>';
         const legacyToken = getAdminToken();
         const res = await fetch(`${API_BASE}/api/order/all`, {
           credentials: 'include',
           headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
         });
-        const tbody = document.getElementById("ordersBody");
         tbody.innerHTML = '';
         if (!res.ok) {
           tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Failed to load orders.</td></tr>';
