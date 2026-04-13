@@ -8,6 +8,7 @@ const Order = require('../models/Order');
 const IpnLog = require('../models/IpnLog');
 const axios = require('axios');
 const crypto = require('crypto');
+const net = require('net');
 
 function getBaseUrl(req) {
   return process.env.SERVER_PUBLIC_URL || `${req.protocol}://${req.get('host')}`;
@@ -32,6 +33,59 @@ function buildPayfastSignature(fields, passphrase) {
     : payload;
 
   return crypto.createHash('md5').update(finalPayload).digest('hex');
+}
+
+const PAYFAST_ALLOWED_IP_RULES = [
+  { subnet: '197.97.145.144', prefix: 28 },
+  { subnet: '41.74.179.192', prefix: 27 },
+  { subnet: '102.216.36.0', prefix: 28 },
+  { subnet: '102.216.36.128', prefix: 28 },
+  { single: '144.126.193.139' },
+  // PayFast AWS migration IPs (payment/api domains)
+  { single: '3.163.232.237' },
+  { single: '3.163.233.237' },
+  { single: '3.163.234.237' },
+  { single: '3.163.235.237' },
+  { single: '3.163.236.237' },
+  { single: '3.163.237.237' },
+  { single: '3.163.238.237' },
+  { single: '3.163.239.237' },
+  { single: '3.163.240.237' },
+  { single: '3.163.241.237' },
+  { single: '3.163.242.237' },
+  { single: '3.163.243.237' },
+  { single: '3.163.244.237' },
+  { single: '3.163.245.237' },
+  { single: '3.163.246.237' },
+  { single: '3.163.247.237' },
+  { single: '3.163.248.237' },
+  { single: '3.163.249.237' },
+  { single: '3.163.250.237' },
+  { single: '3.163.251.237' },
+  { single: '3.163.252.237' }
+];
+
+function getClientIp(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (forwarded) {
+    const first = String(forwarded).split(',')[0].trim();
+    return first;
+  }
+  const raw = req.socket?.remoteAddress || req.ip || '';
+  return String(raw).replace('::ffff:', '');
+}
+
+function isIpAllowedByPayfast(ip) {
+  if (!ip || net.isIP(ip) !== 4) return false;
+  const bl = new net.BlockList();
+  for (const rule of PAYFAST_ALLOWED_IP_RULES) {
+    if (rule.single) {
+      bl.addAddress(rule.single, 'ipv4');
+    } else {
+      bl.addSubnet(rule.subnet, rule.prefix, 'ipv4');
+    }
+  }
+  return bl.check(ip, 'ipv4');
 }
 
 // Security middleware
@@ -130,6 +184,22 @@ router.post('/payfast-ipn', async (req, res) => {
   // Verify PayFast IPN and mark order paid only after verification
   try {
     const body = req.body || {};
+    const sourceIp = getClientIp(req);
+    const enforceIpCheck = String(process.env.PAYFAST_ENFORCE_IP_CHECK || 'false').toLowerCase() === 'true';
+
+    if (enforceIpCheck && !isIpAllowedByPayfast(sourceIp)) {
+      console.warn('Rejected PayFast IPN from non-whitelisted IP', { sourceIp });
+      const rejectedLog = new IpnLog({
+        provider: 'PayFast',
+        payload: body,
+        headers: req.headers,
+        verified: false,
+        verificationResponse: `Rejected source IP: ${sourceIp || 'unknown'}`
+      });
+      await rejectedLog.save();
+      return res.status(403).send('Forbidden');
+    }
+
     // Create initial IPN log
     const ipnLog = new IpnLog({ provider: 'PayFast', payload: body, headers: req.headers });
     await ipnLog.save();
