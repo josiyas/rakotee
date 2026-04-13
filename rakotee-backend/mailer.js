@@ -46,6 +46,24 @@ async function createTransporter() {
   });
 }
 
+function getMailConfigSummary() {
+  const smtpConfigured = !!(process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS);
+  return {
+    mode: smtpConfigured ? 'smtp' : 'ethereal-fallback',
+    host: process.env.EMAIL_HOST || 'not set',
+    port: process.env.EMAIL_PORT || '587',
+    secure: process.env.EMAIL_SECURE || 'false',
+    user: process.env.EMAIL_USER || 'not set',
+    from: process.env.EMAIL_FROM || process.env.EMAIL_USER || 'not set'
+  };
+}
+
+async function verifyMailTransport() {
+  const transporter = await createTransporter();
+  await transporter.verify();
+  return true;
+}
+
 async function sendMail({ to, subject, text, html, from }) {
   const transporter = await createTransporter();
   const info = await transporter.sendMail({
@@ -60,4 +78,4 @@ async function sendMail({ to, subject, text, html, from }) {
   return { info, preview };
 }
 
-module.exports = { sendMail };
+module.exports = { sendMail, getMailConfigSummary, verifyMailTransport };
