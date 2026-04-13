@@ -2506,24 +2506,26 @@ const products = [
 // This uses name-based heuristics so the category filter works immediately
 // without modifying every product object manually.
 ;(function autoTagCategories() {
-  const phoneRe = /\b(iphone|xr|11 pro|12 pro|max|13 pro|iphone-|iphone)\b|\b11\b|\b12\b|\b13\b/i;
-  const shoesRe = /\b(nike|adidas|jordan|dunk|puma|vans|shox|air force|airforce|airforce-1|airforce1)\b/i;
+  // Phone keywords must be unambiguously phone-related — no generic numbers or "max"
+  const phoneRe = /\b(iphone|samsung|galaxy|huawei|pixel|oneplus|xiaomi|oppo|apple phone)\b/i;
+  // Expanded shoes regex to cover all footwear brands and product types sold
+  const shoesRe = /\b(nike|adidas|jordan|dunk|puma|vans|shox|air force|airforce|airforce-1|airforce1|lacoste|converse|reebok|new balance|skechers|fila|asics|saucony|air max|campus|superstar|yeezy|crocs|timberland|ugg|slide|mule|clog|sneaker|sock)\b/i;
   const hubblyRe = /\b(hubbly|hubble|shisha|hookah)\b/i;
-  const accessoriesRe = /\b(case|charger|cable|accessor|earbud|headphone|cover|screen protector|charger)\b/i;
+  const accessoriesRe = /\b(case|charger|cable|accessor|earbud|headphone|cover|screen protector)\b/i;
 
   products.forEach(p => {
-    if (p.category) return; // keep explicit categories
+    if (p.category) return; // keep explicit categories — phones 166-169 are already tagged
     const name = (p.name || '').toString().toLowerCase();
-    if (shoesRe.test(name)) {
-      p.category = 'Shoes';
-    } else if (phoneRe.test(name)) {
+    if (phoneRe.test(name)) {
       p.category = 'Phones';
+    } else if (shoesRe.test(name)) {
+      p.category = 'Shoes';
     } else if (hubblyRe.test(name)) {
       p.category = 'Hubbly';
     } else if (accessoriesRe.test(name)) {
       p.category = 'Accessories';
     } else {
-      p.category = 'Other';
+      p.category = 'Shoes'; // everything else in this store is footwear
     }
   });
 })();
