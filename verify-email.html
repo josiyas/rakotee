@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RAKOTEE | Verify Email</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+  <header class="main-header">
+    <nav class="nav-container">
+      <div class="logo"><a href="index.html">RAKOTEE</a></div>
+      <div style="display:flex;gap:1.5rem;align-items:center;">
+        <a href="products.html" style="color:#fff;text-decoration:none;font-weight:600;">Products</a>
+        <a href="login.html" style="color:#fff;text-decoration:none;font-weight:600;">Login</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container auth-container">
+    <div id="verifyBox" style="text-align:center;padding:2rem 0;">
+      <p id="verifyMsg">Verifying your email, please wait...</p>
+      <div id="verifyActions" style="display:none; margin-top:1.5rem;"></div>
+    </div>
+  </main>
+
+  <script>
+    const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:5000'
+      : 'https://rakotee-back.onrender.com';
+
+    const msgEl = document.getElementById('verifyMsg');
+    const actionsEl = document.getElementById('verifyActions');
+
+    async function verifyEmail() {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      const email = params.get('email');
+
+      if (!token || !email) {
+        msgEl.style.color = 'red';
+        msgEl.textContent = 'Invalid verification link. Please check your email and try again.';
+        actionsEl.innerHTML = '<a href="login.html">Go to Login</a>';
+        actionsEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${apiBase}/api/auth/verify-email?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          msgEl.style.color = 'green';
+          msgEl.innerHTML = '&#10004; ' + (data.message || 'Email verified successfully! You can now log in.');
+          actionsEl.innerHTML = '<a href="login.html" style="background:#000;color:#fff;padding:0.6rem 1.4rem;border-radius:4px;text-decoration:none;font-weight:600;">Go to Login</a>';
+        } else {
+          msgEl.style.color = 'red';
+          msgEl.textContent = data.message || 'Verification failed. The link may have expired.';
+          actionsEl.innerHTML = '<a href="login.html">Go to Login</a>';
+        }
+      } catch {
+        msgEl.style.color = 'red';
+        msgEl.textContent = 'Network error. Please try again.';
+        actionsEl.innerHTML = '<a href="login.html">Go to Login</a>';
+      }
+
+      actionsEl.style.display = 'block';
+    }
+
+    verifyEmail();
+  </script>
+</body>
+</html>

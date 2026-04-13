@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const Order = require('../models/Order');
 const IpnLog = require('../models/IpnLog');
+const { sendMail } = require('../mailer');
 const axios = require('axios');
 const crypto = require('crypto');
 const net = require('net');
@@ -256,6 +257,36 @@ router.post('/payfast-ipn', async (req, res) => {
       order.paymentMethod = 'PayFast';
       order.paymentRef = body.m_payment_id || body.payment_id || '';
       await order.save();
+
+      // Send order confirmation email to customer
+      try {
+        const itemsList = order.cart.map(i =>
+          `<li>${i.name} x${i.quantity || 1} — R${(Number(i.price) * (i.quantity || 1)).toFixed(2)}</li>`
+        ).join('');
+        const total = order.cart.reduce((s, i) => s + (Number(i.price) * (i.quantity || 1)), 0).toFixed(2);
+        await sendMail({
+          to: order.email,
+          subject: 'Your RAKOTEE Order is Confirmed!',
+          html: `
+            <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
+              <h2 style="color:#000;">Order Confirmed ✓</h2>
+              <p>Hi ${order.name},</p>
+              <p>Thank you for your order! Your payment was received and we are processing your order.</p>
+              <h3>Order Summary</h3>
+              <ul>${itemsList}</ul>
+              <p><strong>Total: R${total}</strong></p>
+              <p>Order ID: <code>${order._id}</code></p>
+              <p>Shipping to: ${order.address}</p>
+              <br/>
+              <p>We'll notify you when your order ships.</p>
+              <p>— The RAKOTEE Team</p>
+            </div>
+          `
+        });
+      } catch (emailErr) {
+        console.error('Order confirmation email failed:', emailErr.message);
+      }
+
       return res.status(200).send('OK');
     }
 
