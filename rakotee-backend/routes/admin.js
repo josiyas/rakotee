@@ -215,19 +215,6 @@ router.get('/products', requireAdmin, async (req, res) => {
       .limit(limit)
       .sort({ createdAt: -1 });
     const total = await Product.countDocuments(query);
-    // If no products exist, create a demo product for admin visibility
-    if (total === 0) {
-      const demoProduct = new Product({
-        name: 'Demo Product',
-        description: 'This is a demo product for admin testing.',
-        price: 99.99,
-        image: 'https://via.placeholder.com/150',
-        stock: 10,
-        category: 'Demo'
-      });
-      await demoProduct.save();
-      products = [demoProduct];
-    }
     res.json({ products, page, totalPages: Math.ceil(total / limit), total });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch products' });
