@@ -39,7 +39,7 @@ function getDefaultSizesForCategory(cat) {
 
 function getLegacyAdminToken() {
 	try {
-		return localStorage.getItem('rakotee_admin_token') || '';
+		return sessionStorage.getItem('rakotee_admin_token') || localStorage.getItem('rakotee_admin_token') || '';
 	} catch {
 		return '';
 	}

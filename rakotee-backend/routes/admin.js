@@ -25,6 +25,7 @@ router.post('/pin', adminLoginLimiter, async (req, res) => {
       httpOnly: true,
       secure: process.env.COOKIE_SECURE === 'true',
       sameSite: 'strict',
+      path: '/',
       maxAge: 20 * 60 * 1000 // 20 minutes
     };
     try {
@@ -58,6 +59,7 @@ router.post('/login', async (req, res) => {
       httpOnly: true,
       secure: process.env.COOKIE_SECURE === 'true',
       sameSite: 'strict',
+      path: '/',
       maxAge: 24 * 60 * 60 * 1000
     };
     try {
@@ -71,6 +73,33 @@ router.post('/login', async (req, res) => {
     res.json({ token, role: admin.role });
   } catch (err) {
     res.status(500).json({ error: 'Login failed.' });
+  }
+});
+
+// Validate current admin session (cookie or bearer token)
+router.get('/session', requireAdmin, async (req, res) => {
+  try {
+    return res.json({ ok: true, admin: req.admin || null });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: 'Session check failed' });
+  }
+});
+
+// Explicit logout endpoint to clear admin cookie server-side
+router.post('/logout', (req, res) => {
+  try {
+    const cookie = require('cookie');
+    const serialized = cookie.serialize('admin_token', '', {
+      httpOnly: true,
+      secure: process.env.COOKIE_SECURE === 'true',
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 0
+    });
+    res.setHeader('Set-Cookie', serialized);
+    return res.json({ ok: true });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: 'Logout failed' });
   }
 });
 

@@ -107,6 +107,26 @@
   <!-- Firebase Admin Script -->
   <script type="module">
 
+    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:5000'
+      : 'https://rakotee-back.onrender.com';
+
+    function getAdminToken() {
+      return sessionStorage.getItem('rakotee_admin_token') || localStorage.getItem('rakotee_admin_token') || '';
+    }
+
+    function setAdminToken(token) {
+      if (!token) return;
+      sessionStorage.setItem('rakotee_admin_token', token);
+      // Remove old long-lived token if present; session token is safer.
+      localStorage.removeItem('rakotee_admin_token');
+    }
+
+    function clearAdminToken() {
+      sessionStorage.removeItem('rakotee_admin_token');
+      localStorage.removeItem('rakotee_admin_token');
+    }
+
     const loginSection = document.getElementById("loginSection");
     const adminDashboard = document.getElementById("adminDashboard");
     const loginBtn = document.getElementById("loginBtn");
@@ -123,15 +143,27 @@
       loginSection.classList.remove('hidden');
     }
 
-    // Try auto-login: prefer server-set cookie; fall back to legacy localStorage token for migration
-    (function tryAutoLogin() {
-      const cookieAdmin = document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('admin_token='));
-      const legacyToken = localStorage.getItem('rakotee_admin_token');
-      if (cookieAdmin || legacyToken) {
+    // Auto-login only after server-side validation.
+    (async function tryAutoLogin() {
+      const token = getAdminToken();
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/session`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: token ? { Authorization: 'Bearer ' + token } : {}
+        });
+        if (!res.ok) {
+          clearAdminToken();
+          showLogin();
+          setAdminBanner();
+          return;
+        }
         showAdmin();
-        // Fire-and-forget load; these functions handle errors internally
         loadProducts();
         loadOrders();
+        setAdminBanner();
+      } catch {
+        showLogin();
         setAdminBanner();
       }
     })();
@@ -140,7 +172,7 @@
       const banner = document.getElementById('adminBanner');
       if (!banner) return;
       // detect admin via token or cookie
-      const token = localStorage.getItem('rakotee_admin_token');
+      const token = getAdminToken();
       const cookieAdmin = document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('admin_token='));
       if (token || cookieAdmin) {
         banner.style.display = 'block';
@@ -161,16 +193,15 @@
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
       try {
-        const res = await fetch('http://localhost:5000/api/admin/login', {
+        const res = await fetch(`${API_BASE}/api/admin/login`, {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
         const data = await res.json();
         if (res.ok && data.token) {
-          // Server should set an HttpOnly cookie; do not persist token to localStorage for new logins.
-          // Keep a fallback token for cross-origin admin tools (e.g. admin-products on static host).
-          localStorage.setItem('rakotee_admin_token', data.token);
+          setAdminToken(data.token);
           showAdmin();
           loadProducts();
           loadOrders();
@@ -190,7 +221,7 @@
       if (!val) return;
       loginError.textContent = '';
       try {
-        const res = await fetch('http://localhost:5000/api/admin/pin', {
+        const res = await fetch(`${API_BASE}/api/admin/pin`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -198,8 +229,7 @@
         });
         const data = await res.json();
         if (res.ok) {
-          // Server should set HttpOnly cookie; do not store token in localStorage for new logins.
-          if (data && data.token) localStorage.setItem('rakotee_admin_token', data.token);
+          if (data && data.token) setAdminToken(data.token);
           showAdmin();
           loadProducts();
           loadOrders();
@@ -214,8 +244,10 @@
     };
 
     logoutBtn.onclick = () => {
-      localStorage.removeItem('rakotee_admin_token');
+      clearAdminToken();
+      fetch(`${API_BASE}/api/admin/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
       showLogin();
+      setAdminBanner();
     };
 
     // Upload product
@@ -255,8 +287,8 @@
   }
   // append image files (backend should accept multiple files named 'images')
   files.forEach(f => formData.append('images', f));
-        const legacyToken = localStorage.getItem('rakotee_admin_token');
-        const res = await fetch('http://localhost:5000/api/admin/products', {
+        const legacyToken = getAdminToken();
+        const res = await fetch(`${API_BASE}/api/admin/products`, {
           method: 'POST',
           credentials: 'include',
           headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {},
@@ -312,8 +344,8 @@
       const container = document.getElementById("productsContainer");
       container.innerHTML = "";
       try {
-        const legacyToken = localStorage.getItem('rakotee_admin_token');
-        const res = await fetch('http://localhost:5000/api/admin/products', {
+        const legacyToken = getAdminToken();
+        const res = await fetch(`${API_BASE}/api/admin/products`, {
           credentials: 'include',
           headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
         });
@@ -321,7 +353,7 @@
         // If unauthorized, fall back to public products endpoint and render read-only
         if (res.status === 401 || res.status === 403) {
           console.warn('Admin products unauthorized; fetching public products');
-          const pub = await fetch('http://localhost:5000/api/products');
+          const pub = await fetch(`${API_BASE}/api/products`);
           if (!pub.ok) {
             container.innerHTML = '<p>Failed to load products.</p>';
             return;
@@ -386,8 +418,8 @@
         container.querySelectorAll(".deleteBtn").forEach(btn => {
           btn.onclick = async () => {
             try {
-              const legacyToken = localStorage.getItem('rakotee_admin_token');
-              await fetch(`http://localhost:5000/api/admin/products/${btn.dataset.id}`, {
+              const legacyToken = getAdminToken();
+              await fetch(`${API_BASE}/api/admin/products/${btn.dataset.id}`, {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
@@ -413,14 +445,14 @@
               const sizes = sizesStr.split(/,|\n/).map(s => s.trim()).filter(Boolean);
               const colors = colorsStr.split(/,|\n/).map(s => s.trim()).filter(Boolean);
               const highlights = highlightsStr.split(/\r?\n|,/).map(s => s.trim()).filter(Boolean);
-              const legacyToken = localStorage.getItem('rakotee_admin_token');
+              const legacyToken = getAdminToken();
               const category = card.querySelector('.category').textContent.trim();
               let variants = undefined;
               if (variantsStr) {
                 try { variants = JSON.parse(variantsStr); } catch (e) { variants = variantsStr; }
               }
               const body = { name: newName, price: newPrice, sizes, colors, description, highlights, category, variants };
-              const res = await fetch(`http://localhost:5000/api/admin/products/${btn.dataset.id}`, {
+                const res = await fetch(`${API_BASE}/api/admin/products/${btn.dataset.id}`, {
                   method: 'PUT',
                   credentials: 'include',
                   headers: {
@@ -446,8 +478,8 @@
     // Load and show orders
     async function loadOrders() {
       try {
-        const legacyToken = localStorage.getItem('rakotee_admin_token');
-        const res = await fetch('http://localhost:5000/api/order/all', {
+        const legacyToken = getAdminToken();
+        const res = await fetch(`${API_BASE}/api/order/all`, {
           credentials: 'include',
           headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
         });
@@ -486,8 +518,8 @@
     }
     window.markDelivered = async function(orderId) {
       try {
-        const legacyToken = localStorage.getItem('rakotee_admin_token');
-        await fetch(`http://localhost:5000/api/order/deliver/${orderId}`, {
+        const legacyToken = getAdminToken();
+        await fetch(`${API_BASE}/api/order/deliver/${orderId}`, {
           method: 'PUT',
           credentials: 'include',
           headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}

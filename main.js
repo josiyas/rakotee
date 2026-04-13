@@ -112,6 +112,7 @@ function renderAccountDropdown() {
       </button>
       <div class="dropdown-menu" id="accountMenu">
         <a href="account.html">Account</a>
+        <a href="admin.html" rel="nofollow">Admin Portal</a>
         <a href="#" id="logoutBtn">Logout</a>
       </div>
     `;
@@ -123,6 +124,7 @@ function renderAccountDropdown() {
       <div class="dropdown-menu" id="accountMenu">
         <a href="login.html">Login</a>
         <a href="register.html">Register</a>
+        <a href="admin.html" rel="nofollow">Admin Portal</a>
       </div>
     `;
   }
