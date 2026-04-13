@@ -74,6 +74,11 @@ td {
   background: rgba(13, 19, 33, 0.45);
 }
 
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--brand-accent-soft);
+  outline-offset: 2px;
+}
+
 /* Keep cart icon/logo readable across all themed pages */
 .cart-icon-btn,
 .nav-icons .cart-icon-btn,
@@ -88,6 +93,13 @@ td {
 #cartIconBtn:hover {
   background: rgba(116, 140, 171, 0.2) !important;
   color: var(--brand-text) !important;
+}
+
+.cart-icon-btn i,
+#cartIconBtn i {
+  font-size: 1.05rem;
+  line-height: 1;
+  display: inline-block;
 }
 
 .cart-count {
