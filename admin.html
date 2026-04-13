@@ -203,6 +203,7 @@
         if (res.ok && data.token) {
           setAdminToken(data.token);
           showAdmin();
+          setAdminBanner();
           loadProducts();
           loadOrders();
         } else {
@@ -231,6 +232,7 @@
         if (res.ok) {
           if (data && data.token) setAdminToken(data.token);
           showAdmin();
+          setAdminBanner();
           loadProducts();
           loadOrders();
           return;
