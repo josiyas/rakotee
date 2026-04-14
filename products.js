@@ -2518,9 +2518,23 @@ async function mergeLiveProductsFromApi() {
     'https://rakotee-back.onrender.com'
   ];
 
-  for (const base of candidates) {
+  const uniqueCandidates = [...new Set(candidates)];
+  let didMerge = false;
+
+  async function fetchWithTimeout(url, timeoutMs) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
-      const res = await fetch(`${base}/api/products`);
+      const res = await fetch(url, { signal: controller.signal });
+      return res;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  for (const base of uniqueCandidates) {
+    try {
+      const res = await fetchWithTimeout(`${base}/api/products`, 2500);
       if (!res.ok) continue;
       const remote = await res.json();
       if (!Array.isArray(remote) || !remote.length) continue;
@@ -2551,16 +2565,20 @@ async function mergeLiveProductsFromApi() {
         const existingIndex = products.findIndex((p) => Number(p && p.id) === Number(normalized.id));
         if (existingIndex >= 0) {
           products[existingIndex] = { ...products[existingIndex], ...normalized };
+          didMerge = true;
         } else {
           products.push(normalized);
+          didMerge = true;
         }
       });
 
-      return;
+      return didMerge;
     } catch (err) {
       // Try next candidate silently.
     }
   }
+
+  return false;
 }
 
 // Auto-tag categories for any products that don't have an explicit category.
@@ -3122,9 +3140,28 @@ function getCategoryProducts(category) {
 
 document.addEventListener('DOMContentLoaded', function() {
   (async () => {
-    await mergeLiveProductsFromApi();
-    refreshFilterOptions();
     const category = getQueryParam('category');
+
+    // Render immediately from bundled catalog for fast first paint.
+    if (category) {
+      if (categoryFilter) {
+        const norm = category.toLowerCase();
+        const matchingOption = Array.from(categoryFilter.options).find(
+          o => o.value.toLowerCase() === norm
+        );
+        if (matchingOption) {
+          categoryFilter.value = matchingOption.value;
+        }
+      }
+    }
+    refreshFilterOptions();
+    displayProducts(getCategoryProducts(category));
+
+    // Hydrate with live backend products in background; re-render only if data changed.
+    const didMerge = await mergeLiveProductsFromApi();
+    if (!didMerge) return;
+
+    refreshFilterOptions();
     if (category) {
       // Sync the category dropdown so the filter UI matches the URL param
       if (categoryFilter) {
@@ -3138,7 +3175,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     }
-    const filtered = getCategoryProducts(category);
-    displayProducts(filtered);
+    displayProducts(getCategoryProducts(category));
   })();
 });
