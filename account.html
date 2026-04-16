@@ -139,12 +139,17 @@
     .profile-info p {
       color: #e7edf8;
       margin: 0.3rem 0;
+      -webkit-text-fill-color: #e7edf8;
+      opacity: 1;
     }
     .profile-info p strong {
       color: #a8b8d8;
+      -webkit-text-fill-color: #a8b8d8;
     }
     .profile-info p span {
       color: #fff;
+      -webkit-text-fill-color: #fff;
+      font-weight: 500;
     }
     .alert {
       padding: 1rem;
@@ -218,10 +223,10 @@
           <img id="profilePic" class="profile-pic-large" src="https://placehold.co/120x120?text=User" alt="Profile Picture" />
           <div class="profile-info">
             <h2 id="greeting">Welcome, <span id="accountUsername"></span>!</h2>
-            <p><strong>Email:</strong> <span id="accountEmail"></span></p>
-            <p><strong>Account Created:</strong> <span id="accountCreated"></span></p>
-            <p><strong>Last Login:</strong> <span id="lastLogin"></span></p>
-            <p><strong>Email Verified:</strong> <span id="emailVerified"></span> <button id="verifyEmailBtn" style="display:none; margin-left:1rem;">Verify Email</button></p>
+            <p><strong>Email:</strong> <span id="accountEmail">Loading...</span></p>
+            <p><strong>Account Created:</strong> <span id="accountCreated">Loading...</span></p>
+            <p><strong>Last Login:</strong> <span id="lastLogin">Loading...</span></p>
+            <p><strong>Email Verified:</strong> <span id="emailVerified">Loading...</span> <button id="verifyEmailBtn" style="display:none; margin-left:1rem;">Verify Email</button></p>
           </div>
         </div>
         <div id="alertBox" class="alert" style="display:none;"></div>
@@ -464,8 +469,8 @@
       currentUser = user;
       localStorage.setItem('user_profile', JSON.stringify(user));
 
-      document.getElementById('accountUsername').textContent = user.username || '';
-      document.getElementById('accountEmail').textContent = user.email || '';
+      document.getElementById('accountUsername').textContent = user.username || 'Customer';
+      document.getElementById('accountEmail').textContent = user.email || 'Not available';
       document.getElementById('accountCreated').textContent = user.createdAt ? new Date(user.createdAt).toLocaleString() : 'Unknown';
       document.getElementById('lastLogin').textContent = user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Unknown';
       document.getElementById('emailVerified').textContent = user.emailVerified ? 'Yes' : 'No';
