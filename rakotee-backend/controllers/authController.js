@@ -262,12 +262,23 @@ exports.account = async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found.' });
     // Fetch orders for this user
     const orders = await Order.find({ email: user.email }).sort({ createdAt: -1 });
+    const addresses = Array.isArray(user.addresses) ? user.addresses : [];
+    const safeDefaultIndex = Number.isInteger(user.defaultAddressIndex) ? user.defaultAddressIndex : 0;
+    const defaultAddress = addresses[safeDefaultIndex] || null;
+    const defaultAddressString = defaultAddress
+      ? [defaultAddress.fullName, defaultAddress.address, defaultAddress.city, defaultAddress.postalCode, defaultAddress.country]
+          .filter(Boolean)
+          .join(', ')
+      : (user.shippingAddress || '');
+
     res.json({
       username: user.username,
       email: user.email,
       createdAt: user.createdAt,
       lastLogin: user.lastLogin,
-      shippingAddress: user.shippingAddress,
+      shippingAddress: defaultAddressString,
+      addresses,
+      defaultAddressIndex: safeDefaultIndex,
       emailVerified: user.emailVerified,
       profilePic: user.profilePic,
       orderHistory: orders
@@ -291,10 +302,42 @@ exports.updateAccount = async (req, res) => {
     }
     const user = await User.findById(decoded.userId);
     if (!user) return res.status(404).json({ message: 'User not found.' });
-    const { username, email, profilePic } = req.body;
+    const { username, email, profilePic, addresses, defaultAddressIndex, shippingAddress } = req.body;
     if (username) user.username = username;
     if (email) user.email = email;
     if (profilePic) user.profilePic = profilePic;
+
+    if (Array.isArray(addresses)) {
+      user.addresses = addresses
+        .filter((a) => a && typeof a === 'object')
+        .map((a) => ({
+          fullName: (a.fullName || '').toString().trim(),
+          address: (a.address || '').toString().trim(),
+          city: (a.city || '').toString().trim(),
+          postalCode: (a.postalCode || '').toString().trim(),
+          country: (a.country || '').toString().trim()
+        }))
+        .filter((a) => a.address);
+    }
+
+    if (typeof defaultAddressIndex === 'number' && Number.isInteger(defaultAddressIndex)) {
+      const maxIndex = Array.isArray(user.addresses) && user.addresses.length ? user.addresses.length - 1 : 0;
+      user.defaultAddressIndex = Math.min(Math.max(defaultAddressIndex, 0), maxIndex);
+    }
+
+    if (typeof shippingAddress === 'string') {
+      user.shippingAddress = shippingAddress.trim();
+    }
+
+    if (Array.isArray(user.addresses) && user.addresses.length) {
+      const idx = Number.isInteger(user.defaultAddressIndex) ? user.defaultAddressIndex : 0;
+      const selected = user.addresses[idx] || user.addresses[0];
+      user.shippingAddress = [selected.fullName, selected.address, selected.city, selected.postalCode, selected.country]
+        .filter(Boolean)
+        .join(', ');
+      user.defaultAddressIndex = user.addresses[idx] ? idx : 0;
+    }
+
     await user.save();
     res.json({
       username: user.username,
@@ -302,6 +345,8 @@ exports.updateAccount = async (req, res) => {
       createdAt: user.createdAt,
       lastLogin: user.lastLogin,
       shippingAddress: user.shippingAddress,
+      addresses: user.addresses || [],
+      defaultAddressIndex: Number.isInteger(user.defaultAddressIndex) ? user.defaultAddressIndex : 0,
       emailVerified: user.emailVerified,
       profilePic: user.profilePic,
       orderHistory: user.orderHistory || []

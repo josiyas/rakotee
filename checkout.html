@@ -432,7 +432,41 @@
       }
     }
 
+    async function hydrateCheckoutFromAccount() {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const hasLocalDraft = localStorage.getItem('rakotee_checkout_details');
+        if (hasLocalDraft) return;
+
+        const res = await fetch(`${API_BASE}/api/auth/account`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+
+        const user = await res.json();
+        if (!nameInput.value && user.username) nameInput.value = user.username;
+        if (!emailInput.value && user.email) emailInput.value = user.email;
+
+        if (!addressInput.value) {
+          const addresses = Array.isArray(user.addresses) ? user.addresses : [];
+          const idx = Number.isInteger(user.defaultAddressIndex) ? user.defaultAddressIndex : 0;
+          const selected = addresses[idx] || addresses[0];
+          const fullAddress = selected
+            ? [selected.address, selected.city, selected.postalCode, selected.country].filter(Boolean).join(', ')
+            : (user.shippingAddress || '');
+          if (fullAddress) addressInput.value = fullAddress;
+        }
+
+        persistCheckoutDetails();
+      } catch {
+        // optional account hydration failed; keep normal checkout flow
+      }
+    }
+
     loadCheckoutDetails();
+    hydrateCheckoutFromAccount();
     const initial = renderSummary();
 
     [nameInput, emailInput, addressInput].forEach((input) => {

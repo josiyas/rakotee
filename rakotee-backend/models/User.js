@@ -4,6 +4,9 @@ const UserSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  profilePic: { type: String },
+  lastLogin: { type: Date },
+  shippingAddress: { type: String },
   emailVerified: { type: Boolean, default: false },
   emailVerificationToken: { type: String },
   resetPasswordToken: { type: String },
@@ -18,6 +21,7 @@ const UserSchema = new mongoose.Schema({
       country: String
     }
   ],
+  defaultAddressIndex: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
