@@ -431,10 +431,34 @@ exports.sendVerification = async (req, res) => {
     }
     const user = await User.findById(decoded.userId);
     if (!user) return res.status(404).json({ message: 'User not found.' });
-    // Simulate sending verification email
-    user.emailVerified = true;
+
+    if (user.emailVerified) {
+      return res.json({ message: 'Email is already verified.' });
+    }
+
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const clientUrl = process.env.CLIENT_URL || 'https://rakotee.site';
+    const verifyUrl = `${clientUrl}/verify-email?token=${verificationToken}&email=${encodeURIComponent(user.email)}`;
+
+    const verifyHtml = buildEmailTemplate({
+      title: 'Verify your email',
+      intro: `Hi ${user.username || 'there'}, please confirm your email address.`,
+      bodyHtml: '<p>Use the button below to verify your account and keep your profile secure.</p>',
+      ctaLabel: 'Verify email address',
+      ctaUrl: verifyUrl,
+      footerNote: 'If you did not request this, you can ignore this email.'
+    });
+
+    await sendMail({
+      to: user.email,
+      subject: 'Verify your RAKOTEE email address',
+      html: verifyHtml,
+      text: `Verify your RAKOTEE email address: ${verifyUrl}`
+    });
+
+    user.emailVerificationToken = verificationToken;
     await user.save();
-    res.json({ message: 'Verification email sent.' });
+    res.json({ message: 'Verification email sent. Please check your inbox.' });
   } catch (err) {
     console.error('Send verification error:', err);
     res.status(500).json({ message: 'Server error.', error: err.message });

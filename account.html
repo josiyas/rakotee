@@ -109,12 +109,13 @@
     }
     .account-content {
       flex: 1;
-      background: var(--main-fg);
-      color: var(--main-bg);
+      background: #141b2c;
+      color: #e7edf8;
       border-radius: 1rem;
       padding: 2rem;
       min-width: 300px;
       box-shadow: var(--shadow);
+      border: 1px solid rgba(116, 140, 171, 0.25);
     }
     .profile-section {
       display: flex;
@@ -133,7 +134,7 @@
     .profile-info h2 {
       margin: 0 0 0.5rem 0;
       font-size: 2rem;
-      color: var(--main-bg);
+      color: #fff;
     }
     .alert {
       padding: 1rem;
@@ -146,21 +147,21 @@
     table#orderHistoryTable {
       width: 100%;
       border-collapse: collapse;
-      background: var(--main-fg);
-      color: var(--main-bg);
+      background: rgba(8, 14, 26, 0.65);
+      color: #e7edf8;
       margin-bottom: 1rem;
     }
     table#orderHistoryTable th, table#orderHistoryTable td {
-      border: 1px solid var(--border);
+      border: 1px solid rgba(116, 140, 171, 0.24);
       padding: 0.5rem 0.7rem;
       text-align: left;
     }
     table#orderHistoryTable th {
-      background: #f3f3f3;
-      color: var(--main-bg);
+      background: rgba(116, 140, 171, 0.18);
+      color: #fff;
     }
     table#orderHistoryTable tr:nth-child(even) {
-      background: #f8f8f8;
+      background: rgba(116, 140, 171, 0.06);
     }
     @media (max-width: 900px) {
       .account-main { flex-direction: column; }
@@ -317,16 +318,10 @@
   <div class="cart-overlay" id="cartOverlay"></div>
   <script src="cart.js"></script>
   <script>
-    // Redirect to login if not logged in
-    if (localStorage.getItem('rakotee_logged_in') !== 'true') {
-      window.location.href = 'login.html';
-    }
-  
-    // Step 1: Get token from localStorage
+    const isLoggedIn = localStorage.getItem('rakotee_logged_in') === 'true';
     const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = 'login.html';
-    }
+    if (!isLoggedIn || !token) window.location.href = 'login.html';
+
     const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://localhost:5000'
       : 'https://rakotee-back.onrender.com';
@@ -334,41 +329,81 @@
     let currentOrderPage = 1;
     const ordersPerPage = 5;
     let allOrders = [];
+    let currentUser = null;
     let addressBook = [];
     let defaultAddressIndex = 0;
+
+    function showAlert(message, type = 'success') {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.textContent = message;
+      alertBox.className = `alert ${type === 'error' ? 'alert-error' : 'alert-success'}`;
+      alertBox.style.display = 'block';
+      setTimeout(() => { alertBox.style.display = 'none'; }, 3500);
+    }
 
     function formatAddressLine(addr) {
       if (!addr) return 'Not set';
       return [addr.fullName, addr.address, addr.city, addr.postalCode, addr.country].filter(Boolean).join(', ');
     }
 
-    async function persistAddressBook() {
-      try {
-        const payload = {
-          addresses: addressBook,
-          defaultAddressIndex,
-          shippingAddress: formatAddressLine(addressBook[defaultAddressIndex])
-        };
-        const res = await fetch(`${API_BASE}/api/auth/account`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) throw new Error('Could not save addresses');
-      } catch (err) {
-        showAlert(err.message || 'Address update failed', 'error');
+    async function api(path, opts = {}) {
+      const headers = { ...(opts.headers || {}), Authorization: `Bearer ${token}` };
+      const res = await fetch(`${API_BASE}${path}`, { ...opts, headers });
+      let data = {};
+      try { data = await res.json(); } catch {}
+      if (!res.ok) throw new Error(data.message || 'Request failed');
+      return data;
+    }
+
+    function getOrderId(order) {
+      return order.orderId || order._id || order.id || 'N/A';
+    }
+
+    function getOrderDate(order) {
+      return order.createdAt || order.date;
+    }
+
+    function getOrderTotal(order) {
+      if (Number.isFinite(Number(order.total))) return Number(order.total);
+      if (Array.isArray(order.cart)) {
+        return order.cart.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1), 0);
       }
+      return 0;
+    }
+
+    function renderOrderHistory() {
+      const orderHistoryBody = document.getElementById('orderHistoryBody');
+      orderHistoryBody.innerHTML = '';
+
+      const start = (currentOrderPage - 1) * ordersPerPage;
+      const pageOrders = allOrders.slice(start, start + ordersPerPage);
+
+      if (!pageOrders.length) {
+        orderHistoryBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No orders yet.</td></tr>';
+      } else {
+        pageOrders.forEach((order, idx) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${getOrderId(order)}</td>
+            <td>${getOrderDate(order) ? new Date(getOrderDate(order)).toLocaleString() : 'Unknown'}</td>
+            <td>${order.status || (order.paid ? 'paid' : 'pending')}</td>
+            <td>R${getOrderTotal(order).toFixed(2)}</td>
+            <td><button type="button" class="details-btn" data-idx="${start + idx}">View Details</button></td>
+          `;
+          orderHistoryBody.appendChild(row);
+        });
+      }
+
+      const totalPages = Math.max(1, Math.ceil(allOrders.length / ordersPerPage));
+      document.getElementById('orderPageInfo').textContent = `Page ${currentOrderPage} of ${totalPages}`;
+      document.getElementById('prevOrdersBtn').disabled = currentOrderPage === 1;
+      document.getElementById('nextOrdersBtn').disabled = currentOrderPage === totalPages;
     }
 
     function renderAddressBook() {
       const shippingAddressEl = document.getElementById('shippingAddress');
       const listEl = document.getElementById('addressList');
       const modalList = document.getElementById('addressModalList');
-      if (!shippingAddressEl || !listEl || !modalList) return;
-
       shippingAddressEl.textContent = addressBook.length ? formatAddressLine(addressBook[defaultAddressIndex]) : 'Not set';
 
       listEl.innerHTML = '';
@@ -381,451 +416,228 @@
       }
 
       addressBook.forEach((addr, idx) => {
-        const isDefault = idx === defaultAddressIndex;
         const row = document.createElement('div');
-        row.style.cssText = 'padding:0.5rem 0.65rem;border:1px solid #d9deea;border-radius:8px;background:#fff;';
-        row.innerHTML = `${isDefault ? '<strong style="color:#1a7f37;">Default:</strong> ' : ''}${formatAddressLine(addr)}`;
+        row.style.cssText = 'padding:0.5rem 0.65rem;border:1px solid rgba(116,140,171,0.35);border-radius:8px;background:rgba(255,255,255,0.03);';
+        row.innerHTML = `${idx === defaultAddressIndex ? '<strong style="color:#5be092;">Default:</strong> ' : ''}${formatAddressLine(addr)}`;
         listEl.appendChild(row);
 
         const modalRow = document.createElement('div');
         modalRow.style.cssText = 'padding:0.55rem 0.65rem;border:1px solid #d9deea;border-radius:8px;background:#f8fafc;display:flex;gap:0.5rem;align-items:center;justify-content:space-between;';
-
-        const text = document.createElement('div');
-        text.style.flex = '1';
-        text.textContent = formatAddressLine(addr);
-
-        const actions = document.createElement('div');
-        actions.style.cssText = 'display:flex; gap:0.35rem;';
-
-        const setDefaultBtn = document.createElement('button');
-        setDefaultBtn.type = 'button';
-        setDefaultBtn.textContent = isDefault ? 'Default' : 'Set default';
-        setDefaultBtn.disabled = isDefault;
-        setDefaultBtn.onclick = async () => {
-          defaultAddressIndex = idx;
-          renderAddressBook();
-          await persistAddressBook();
-        };
-
-        const removeBtn = document.createElement('button');
-        removeBtn.type = 'button';
-        removeBtn.textContent = 'Remove';
-        removeBtn.onclick = async () => {
-          addressBook.splice(idx, 1);
-          if (defaultAddressIndex >= addressBook.length) defaultAddressIndex = Math.max(0, addressBook.length - 1);
-          renderAddressBook();
-          await persistAddressBook();
-        };
-
-        actions.appendChild(setDefaultBtn);
-        actions.appendChild(removeBtn);
-        modalRow.appendChild(text);
-        modalRow.appendChild(actions);
+        modalRow.innerHTML = `
+          <div style="flex:1;">${formatAddressLine(addr)}</div>
+          <div style="display:flex;gap:0.35rem;">
+            <button type="button" data-default="${idx}" ${idx === defaultAddressIndex ? 'disabled' : ''}>${idx === defaultAddressIndex ? 'Default' : 'Set default'}</button>
+            <button type="button" data-remove="${idx}">Remove</button>
+          </div>
+        `;
         modalList.appendChild(modalRow);
       });
     }
 
-    // Step 2: Fetch user info from backend
+    async function persistAddressBook() {
+      await api('/api/auth/account', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          addresses: addressBook,
+          defaultAddressIndex,
+          shippingAddress: formatAddressLine(addressBook[defaultAddressIndex])
+        })
+      });
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
     async function fetchUserProfile() {
-      try {
-        const res = await fetch(`${API_BASE}/api/auth/account`, {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (!res.ok) throw new Error('Session expired');
-        const user = await res.json();
+      const user = await api('/api/auth/account');
+      currentUser = user;
+      localStorage.setItem('user_profile', JSON.stringify(user));
 
-        // Step 3: Update the UI with user info
-        document.getElementById('accountUsername').textContent = user.username || '';
-        document.getElementById('accountEmail').textContent = user.email || '';
-        document.getElementById('accountCreated').textContent = user.createdAt ? new Date(user.createdAt).toLocaleString() : 'Unknown';
-        document.getElementById('lastLogin').textContent = user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Unknown';
-        addressBook = Array.isArray(user.addresses) ? user.addresses : [];
-        defaultAddressIndex = Number.isInteger(user.defaultAddressIndex) ? user.defaultAddressIndex : 0;
-        if (!addressBook.length && user.shippingAddress) {
-          addressBook = [{ fullName: '', address: user.shippingAddress, city: '', postalCode: '', country: '' }];
-          defaultAddressIndex = 0;
-        }
-        renderAddressBook();
-        document.getElementById('emailVerified').textContent = user.emailVerified ? 'Yes' : 'No';
-        const verifyEmailBtn = document.getElementById('verifyEmailBtn');
-        if (!user.emailVerified) {
-          verifyEmailBtn.style.display = 'inline-block';
-        } else {
-          verifyEmailBtn.style.display = 'none';
-        }
-        // Show initials if no profilePic
-        let picSrc = 'https://placehold.co/120x120?text=User';
-        if (user.profilePic) {
-          if (user.profilePic.startsWith('data:image')) {
-            picSrc = user.profilePic;
-          } else if (user.profilePic.startsWith('/')) {
-            picSrc = user.profilePic;
-          } else {
-            picSrc = 'data:image/png;base64,' + user.profilePic;
-          }
-        } else if (user.email) {
-          // Generate initials from email
-          const initials = user.email.split('@')[0].split(/[._]/).map(s => s[0]).join('').toUpperCase().slice(0,2);
-          picSrc = `https://placehold.co/120x120?text=${initials}`;
-        }
-        document.getElementById('profilePic').src = picSrc;
-      } catch (err) {
-        // fallback to cache or force re-login
-        const cached = localStorage.getItem('user_profile');
-        if (cached) {
-          const user = JSON.parse(cached);
-          document.getElementById('accountUsername').textContent = user.username || '';
-          document.getElementById('accountEmail').textContent = user.email || '';
-          document.getElementById('accountCreated').textContent = user.createdAt ? new Date(user.createdAt).toLocaleString() : 'Unknown';
-          document.getElementById('lastLogin').textContent = user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Unknown';
-          addressBook = Array.isArray(user.addresses) ? user.addresses : [];
-          defaultAddressIndex = Number.isInteger(user.defaultAddressIndex) ? user.defaultAddressIndex : 0;
-          renderAddressBook();
-          if (user.profilePic) document.getElementById('profilePic').src = user.profilePic;
-          allOrders = user.orderHistory || [];
-          currentOrderPage = 1;
-          renderOrderHistory();
-        } else {
-          window.location.href = 'login.html';
-        }
+      document.getElementById('accountUsername').textContent = user.username || '';
+      document.getElementById('accountEmail').textContent = user.email || '';
+      document.getElementById('accountCreated').textContent = user.createdAt ? new Date(user.createdAt).toLocaleString() : 'Unknown';
+      document.getElementById('lastLogin').textContent = user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Unknown';
+      document.getElementById('emailVerified').textContent = user.emailVerified ? 'Yes' : 'No';
+
+      const verifyBtn = document.getElementById('verifyEmailBtn');
+      verifyBtn.style.display = user.emailVerified ? 'none' : 'inline-block';
+
+      let picSrc = 'https://placehold.co/120x120?text=User';
+      if (user.profilePic) picSrc = user.profilePic;
+      document.getElementById('profilePic').src = picSrc;
+
+      addressBook = Array.isArray(user.addresses) ? user.addresses : [];
+      defaultAddressIndex = Number.isInteger(user.defaultAddressIndex) ? user.defaultAddressIndex : 0;
+      if (!addressBook.length && user.shippingAddress) {
+        addressBook = [{ fullName: '', address: user.shippingAddress, city: '', postalCode: '', country: '' }];
       }
-    }
-    fetchUserProfile();
+      if (defaultAddressIndex >= addressBook.length) defaultAddressIndex = 0;
+      renderAddressBook();
 
-    // Render paginated order history
-    function renderOrderHistory() {
-      const orderHistoryBody = document.getElementById('orderHistoryBody');
-      orderHistoryBody.innerHTML = '';
-      const start = (currentOrderPage - 1) * ordersPerPage;
-      const end = start + ordersPerPage;
-      const pageOrders = allOrders.slice(start, end);
-
-      if (pageOrders.length === 0) {
-        orderHistoryBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No orders yet.</td></tr>';
-      } else {
-        pageOrders.forEach(order => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${order.id}</td>
-            <td>${new Date(order.date).toLocaleString()}</td>
-            <td>${order.status}</td>
-            <td>R${order.total.toFixed(2)}</td>
-            <td><button class="details-btn" onclick="showOrderDetails(${order.id})">View Details</button></td>
-          `;
-          orderHistoryBody.appendChild(row);
-        });
-      }
-
-      // Update pagination info
-      const pageInfo = document.getElementById('orderPageInfo');
-      const totalPages = Math.ceil(allOrders.length / ordersPerPage) || 1;
-      pageInfo.textContent = `Page ${currentOrderPage} of ${totalPages}`;
-
-      // Enable/disable buttons
-      document.getElementById('prevOrdersBtn').disabled = currentOrderPage === 1;
-      document.getElementById('nextOrdersBtn').disabled = currentOrderPage === totalPages;
+      allOrders = Array.isArray(user.orderHistory) ? user.orderHistory : [];
+      currentOrderPage = 1;
+      renderOrderHistory();
     }
 
-    // Pagination button event listeners
-    document.getElementById('prevOrdersBtn').onclick = function() {
+    document.getElementById('prevOrdersBtn').onclick = () => {
       if (currentOrderPage > 1) {
         currentOrderPage--;
         renderOrderHistory();
       }
     };
-    document.getElementById('nextOrdersBtn').onclick = function() {
-      const totalPages = Math.ceil(allOrders.length / ordersPerPage) || 1;
+    document.getElementById('nextOrdersBtn').onclick = () => {
+      const totalPages = Math.max(1, Math.ceil(allOrders.length / ordersPerPage));
       if (currentOrderPage < totalPages) {
         currentOrderPage++;
         renderOrderHistory();
       }
     };
 
-    // Edit Profile Modal Logic
-    const editProfileBtn = document.getElementById('editProfileBtn');
-    const editProfileModal = document.getElementById('editProfileModal');
-    const closeEditProfile = document.getElementById('closeEditProfile');
-    const editProfileForm = document.getElementById('editProfileForm');
-    const editProfilePic = document.getElementById('editProfilePic');
-    const editProfilePicPreview = document.getElementById('editProfilePicPreview');
-
-    editProfileBtn.onclick = () => {
-      const user = JSON.parse(localStorage.getItem('user_profile') || '{}');
-      document.getElementById('editUsername').value = user.username || '';
-      document.getElementById('editEmail').value = user.email || '';
-      editProfilePicPreview.src = user.profilePic || 'https://placehold.co/120x120?text=User';
-      editProfileModal.style.display = 'flex';
-    };
-    closeEditProfile.onclick = () => {
-      editProfileModal.style.display = 'none';
-    };
-    editProfilePic.onchange = function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          editProfilePicPreview.src = evt.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-
-    // Save profile changes to backend
-    document.getElementById('editProfileForm').onsubmit = async function(e) {
-      e.preventDefault();
-      const username = document.getElementById('editUsername').value.trim();
-      const email = document.getElementById('editEmail').value.trim();
-      const profilePicInput = document.getElementById('editProfilePic');
-      let profilePic = undefined;
-      if (profilePicInput.files[0]) {
-        // Convert image to base64 for demo (in production, use file upload API)
-        const reader = new FileReader();
-        reader.onload = async function(evt) {
-          profilePic = evt.target.result;
-          await updateProfile(username, email, profilePic);
-        };
-        reader.readAsDataURL(profilePicInput.files[0]);
-        return;
-      }
-      await updateProfile(username, email, undefined);
-    };
-    async function updateProfile(username, email, profilePic) {
-      try {
-        const token = localStorage.getItem('token');
-        const res = await fetch(`${API_BASE}/api/auth/account`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          },
-          body: JSON.stringify({ username, email, profilePic })
-        });
-        if (!res.ok) throw new Error('Failed to update profile');
-        showAlert('Profile updated!');
-        document.getElementById('editProfileModal').style.display = 'none';
-        fetchUserProfile();
-      } catch (err) {
-        showAlert('Could not update profile', 'error');
-      }
-    }
-
-    // Change Password Modal Logic
-    const changePasswordBtn = document.getElementById('changePasswordBtn');
-    const changePasswordModal = document.getElementById('changePasswordModal');
-    const closeChangePassword = document.getElementById('closeChangePassword');
-    const changePasswordForm = document.getElementById('changePasswordForm');
-    const changePasswordMsg = document.getElementById('changePasswordMsg');
-
-    changePasswordBtn.onclick = () => {
-      changePasswordModal.style.display = 'flex';
-      changePasswordMsg.style.display = 'none';
-      changePasswordForm.reset();
-    };
-    closeChangePassword.onclick = () => {
-      changePasswordModal.style.display = 'none';
-    };
-
-    // Change password
-    document.getElementById('changePasswordForm').onsubmit = async function(e) {
-      e.preventDefault();
-      const currentPassword = document.getElementById('currentPassword').value;
-      const newPassword = document.getElementById('newPassword').value;
-      try {
-        const token = localStorage.getItem('token');
-        const res = await fetch(`${API_BASE}/api/auth/account/password`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          },
-          body: JSON.stringify({ currentPassword, newPassword })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Failed to update password');
-        showAlert('Password updated!');
-        document.getElementById('changePasswordModal').style.display = 'none';
-      } catch (err) {
-        showAlert(err.message || 'Could not update password', 'error');
-      }
-    };
-
-    // Delete Account Modal Logic
-    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
-    const deleteAccountModal = document.getElementById('deleteAccountModal');
-    const confirmDeleteAccount = document.getElementById('confirmDeleteAccount');
-    const cancelDeleteAccount = document.getElementById('cancelDeleteAccount');
-
-    deleteAccountBtn.onclick = () => {
-      deleteAccountModal.style.display = 'flex';
-    };
-    cancelDeleteAccount.onclick = () => {
-      deleteAccountModal.style.display = 'none';
-    };
-    confirmDeleteAccount.onclick = async () => {
-      // Delete account (calls backend)
-      document.getElementById('deleteAccountModal').style.display = 'none';
-      try {
-        const token = localStorage.getItem('token');
-        const res = await fetch(`${API_BASE}/api/auth/account`, {
-          method: 'DELETE',
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (!res.ok) throw new Error('Failed to delete account');
-        showAlert('Account deleted!');
-        setTimeout(() => { window.location.href = 'register.html'; }, 2000);
-      } catch (err) {
-        showAlert('Could not delete account', 'error');
-      }
-    };
-
-    // Logout button
-    document.getElementById('logoutBtn').onclick = function() {
-      localStorage.clear();
-      window.location.href = 'login.html';
-    };
-    const verifyEmailBtn = document.getElementById('verifyEmailBtn');
-    verifyEmailBtn.onclick = async function() {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          alert('You are not logged in. Please log in again.');
-          return;
-        }
-        const res = await fetch(`${API_BASE}/api/auth/account/send-verification`, {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + token
-          }
-        });
-        const data = await res.json();
-        if (res.ok) {
-          document.getElementById('emailVerified').textContent = 'Yes';
-          verifyEmailBtn.style.display = 'none';
-          alert('Verification email sent!');
-        } else {
-          alert(data.message || 'Verification failed.');
-        }
-      } catch (err) {
-        alert('Server error: ' + (err.message || err));
-      }
-    };
-
-    function showOrderDetails(orderId) {
-      const order = allOrders.find(o => o.id === orderId);
+    document.getElementById('orderHistoryBody').addEventListener('click', (e) => {
+      const btn = e.target.closest('.details-btn');
+      if (!btn) return;
+      const idx = Number(btn.dataset.idx);
+      const order = allOrders[idx];
       if (!order) return;
-      const modal = document.getElementById('orderDetailsModal');
-      const content = document.getElementById('orderDetailsContent');
-      content.innerHTML = `
-        <p><strong>Order ID:</strong> ${order.id}</p>
-        <p><strong>Date:</strong> ${new Date(order.date).toLocaleString()}</p>
-        <p><strong>Status:</strong> ${order.status}</p>
-        <p><strong>Total:</strong> R${order.total.toFixed(2)}</p>
-        <!-- Add more fields as needed -->
+      document.getElementById('orderDetailsContent').innerHTML = `
+        <p><strong>Order ID:</strong> ${getOrderId(order)}</p>
+        <p><strong>Date:</strong> ${getOrderDate(order) ? new Date(getOrderDate(order)).toLocaleString() : 'Unknown'}</p>
+        <p><strong>Status:</strong> ${order.status || (order.paid ? 'paid' : 'pending')}</p>
+        <p><strong>Total:</strong> R${getOrderTotal(order).toFixed(2)}</p>
       `;
-      modal.style.display = 'flex';
-    }
+      openModal('orderDetailsModal');
+    });
 
-    document.getElementById('closeOrderDetails').onclick = function() {
-      document.getElementById('orderDetailsModal').style.display = 'none';
+    document.getElementById('editProfileBtn').onclick = () => {
+      document.getElementById('editUsername').value = currentUser?.username || '';
+      document.getElementById('editEmail').value = currentUser?.email || '';
+      document.getElementById('editProfilePicPreview').src = currentUser?.profilePic || 'https://placehold.co/120x120?text=User';
+      openModal('editProfileModal');
     };
+    document.getElementById('closeEditProfile').onclick = () => closeModal('editProfileModal');
+    document.getElementById('changePasswordBtn').onclick = () => openModal('changePasswordModal');
+    document.getElementById('closeChangePassword').onclick = () => closeModal('changePasswordModal');
+    document.getElementById('deleteAccountBtn').onclick = () => openModal('deleteAccountModal');
+    document.getElementById('cancelDeleteAccount').onclick = () => closeModal('deleteAccountModal');
+    document.getElementById('closeOrderDetails').onclick = () => closeModal('orderDetailsModal');
 
-    // Account page interactivity for modals, profile, and order table
-    // Show Edit Profile Modal
-    document.getElementById('editProfileBtn').onclick = function() {
-      document.getElementById('editProfileModal').style.display = 'flex';
-    };
-    document.getElementById('closeEditProfile').onclick = function() {
-      document.getElementById('editProfileModal').style.display = 'none';
-    };
-    // Show Change Password Modal
-    document.getElementById('changePasswordBtn').onclick = function() {
-      document.getElementById('changePasswordModal').style.display = 'flex';
-    };
-    document.getElementById('closeChangePassword').onclick = function() {
-      document.getElementById('changePasswordModal').style.display = 'none';
-    };
-    // Show Delete Account Modal
-    document.getElementById('deleteAccountBtn').onclick = function() {
-      document.getElementById('deleteAccountModal').style.display = 'flex';
-    };
-    document.getElementById('cancelDeleteAccount').onclick = function() {
-      document.getElementById('deleteAccountModal').style.display = 'none';
-    };
-    const addressModal = document.getElementById('addressModal');
-    document.getElementById('editShippingBtn').onclick = function() {
-      addressModal.style.display = 'flex';
+    document.getElementById('editShippingBtn').onclick = () => {
       renderAddressBook();
+      openModal('addressModal');
     };
-    document.getElementById('closeAddressModal').onclick = function() {
-      addressModal.style.display = 'none';
-    };
-    document.getElementById('addAddressBtn').onclick = async function() {
+    document.getElementById('closeAddressModal').onclick = () => closeModal('addressModal');
+
+    document.getElementById('addressModalList').addEventListener('click', async (e) => {
+      const setBtn = e.target.closest('[data-default]');
+      const removeBtn = e.target.closest('[data-remove]');
+      if (setBtn) {
+        defaultAddressIndex = Number(setBtn.dataset.default);
+      }
+      if (removeBtn) {
+        const idx = Number(removeBtn.dataset.remove);
+        addressBook.splice(idx, 1);
+        if (defaultAddressIndex >= addressBook.length) defaultAddressIndex = Math.max(0, addressBook.length - 1);
+      }
+      renderAddressBook();
+      try {
+        await persistAddressBook();
+      } catch (err) {
+        showAlert(err.message || 'Address update failed', 'error');
+      }
+    });
+
+    document.getElementById('addAddressBtn').onclick = async () => {
       const fullName = document.getElementById('addrFullName').value.trim();
       const address = document.getElementById('addrAddress').value.trim();
       const city = document.getElementById('addrCity').value.trim();
       const postalCode = document.getElementById('addrPostal').value.trim();
       const country = document.getElementById('addrCountry').value.trim();
-      if (!address) {
-        showAlert('Street address is required', 'error');
-        return;
-      }
+      if (!address) return showAlert('Street address is required', 'error');
       addressBook.push({ fullName, address, city, postalCode, country });
       if (addressBook.length === 1) defaultAddressIndex = 0;
-      document.getElementById('addrFullName').value = '';
-      document.getElementById('addrAddress').value = '';
-      document.getElementById('addrCity').value = '';
-      document.getElementById('addrPostal').value = '';
-      document.getElementById('addrCountry').value = '';
+      ['addrFullName','addrAddress','addrCity','addrPostal','addrCountry'].forEach((id) => document.getElementById(id).value = '');
       renderAddressBook();
-      await persistAddressBook();
-      showAlert('Address saved');
-    };
-    // Show alert
-    function showAlert(message, type = 'success') {
-      const alertBox = document.getElementById('alertBox');
-      alertBox.textContent = message;
-      alertBox.className = 'alert ' + (type === 'error' ? 'alert-error' : 'alert-success');
-      alertBox.style.display = 'block';
-      setTimeout(() => { alertBox.style.display = 'none'; }, 4000);
-    }
-
-    // Profile picture upload preview
-    document.getElementById('editProfilePic').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          document.getElementById('editProfilePicPreview').src = evt.target.result;
-        };
-        reader.readAsDataURL(file);
+      try {
+        await persistAddressBook();
+        showAlert('Address saved');
+      } catch (err) {
+        showAlert(err.message || 'Address save failed', 'error');
       }
+    };
+
+    document.getElementById('editProfilePic').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => { document.getElementById('editProfilePicPreview').src = evt.target.result; };
+      reader.readAsDataURL(file);
     });
 
-    // Modal interactivity for sidebar actions
-    document.getElementById('editProfileBtn').onclick = function() {
-      document.getElementById('editProfileModal').style.display = 'flex';
-    };
-    document.getElementById('closeEditProfile').onclick = function() {
-      document.getElementById('editProfileModal').style.display = 'none';
-    };
-    document.getElementById('changePasswordBtn').onclick = function() {
-      document.getElementById('changePasswordModal').style.display = 'flex';
-    };
-    document.getElementById('closeChangePassword').onclick = function() {
-      document.getElementById('changePasswordModal').style.display = 'none';
-    };
-    document.getElementById('deleteAccountBtn').onclick = function() {
-      document.getElementById('deleteAccountModal').style.display = 'flex';
-    };
-    document.getElementById('cancelDeleteAccount').onclick = function() {
-      document.getElementById('deleteAccountModal').style.display = 'none';
-    };
-    document.getElementById('editShippingBtn').onclick = function() {
-      addressModal.style.display = 'flex';
-      renderAddressBook();
+    document.getElementById('editProfileForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('editUsername').value.trim();
+      const email = document.getElementById('editEmail').value.trim();
+      const profilePic = document.getElementById('editProfilePicPreview').src;
+      try {
+        await api('/api/auth/account', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, profilePic })
+        });
+        closeModal('editProfileModal');
+        await fetchUserProfile();
+        showAlert('Profile updated');
+      } catch (err) {
+        showAlert(err.message || 'Could not update profile', 'error');
+      }
     };
 
-    // Attach sidebar button actions for best UX
+    document.getElementById('changePasswordForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      try {
+        await api('/api/auth/account/password', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentPassword, newPassword })
+        });
+        closeModal('changePasswordModal');
+        showAlert('Password updated');
+      } catch (err) {
+        showAlert(err.message || 'Could not update password', 'error');
+      }
+    };
+
+    document.getElementById('confirmDeleteAccount').onclick = async () => {
+      try {
+        await api('/api/auth/account', { method: 'DELETE' });
+        localStorage.clear();
+        window.location.href = 'register.html';
+      } catch (err) {
+        showAlert(err.message || 'Could not delete account', 'error');
+      }
+    };
+
+    document.getElementById('verifyEmailBtn').onclick = async () => {
+      try {
+        const data = await api('/api/auth/account/send-verification', { method: 'POST' });
+        showAlert(data.message || 'Verification email sent');
+      } catch (err) {
+        showAlert(err.message || 'Verification request failed', 'error');
+      }
+    };
+
+    document.getElementById('logoutBtn').onclick = () => {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    };
+
+    fetchUserProfile().catch(() => {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    });
   </script>
 <!-- ...rest of your HTML... -->
   
