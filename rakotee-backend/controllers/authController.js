@@ -263,10 +263,13 @@ exports.account = async (req, res) => {
     // Fetch only successfully completed/paid orders for account history.
     const orders = await Order.find({
       email: user.email,
+      paid: true,
+      refunded: { $ne: true },
       $or: [
-        { paid: true },
-        { status: { $regex: /^(paid|completed|delivered)$/i } }
-      ]
+        { paymentRef: { $exists: true, $ne: '' } },
+        { paymentMethod: { $regex: /^payfast$/i } }
+      ],
+      status: { $regex: /^(paid|completed|delivered)$/i }
     }).sort({ createdAt: -1 });
     const addresses = Array.isArray(user.addresses) ? user.addresses : [];
     const safeDefaultIndex = Number.isInteger(user.defaultAddressIndex) ? user.defaultAddressIndex : 0;
