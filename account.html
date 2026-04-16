@@ -530,7 +530,15 @@
     document.getElementById('closeChangePassword').onclick = () => closeModal('changePasswordModal');
     document.getElementById('deleteAccountBtn').onclick = () => openModal('deleteAccountModal');
     document.getElementById('cancelDeleteAccount').onclick = () => closeModal('deleteAccountModal');
-    document.getElementById('closeOrderDetails').onclick = () => closeModal('orderDetailsModal');
+    const closeOrderDetailsBtn = document.getElementById('closeOrderDetails');
+    if (closeOrderDetailsBtn) {
+      closeOrderDetailsBtn.onclick = () => closeModal('orderDetailsModal');
+    }
+    document.addEventListener('click', (e) => {
+      if (e.target && e.target.id === 'closeOrderDetails') {
+        closeModal('orderDetailsModal');
+      }
+    });
 
     document.getElementById('editShippingBtn').onclick = () => {
       renderAddressBook();
