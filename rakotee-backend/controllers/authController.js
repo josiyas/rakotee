@@ -140,6 +140,8 @@ exports.login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials.' });
     }
+    user.lastLogin = new Date();
+    await user.save();
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_SECRET,
