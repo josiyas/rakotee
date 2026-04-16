@@ -174,7 +174,23 @@ router.post('/payfast', async (req, res) => {
       console.warn('Using temporary order ID due to MongoDB error:', order._id);
     }
 
-    const amount = cart.reduce((s, it) => s + (it.price * (it.quantity || 1)), 0).toFixed(2);
+    // Validate all cart items have valid prices
+    for (const item of cart) {
+      const price = Number(item.price);
+      const qty = Number(item.quantity) || 1;
+      if (!Number.isFinite(price) || price <= 0) {
+        return res.status(400).json({ error: `Invalid price for item: ${item.name || 'unknown'}` });
+      }
+      if (!Number.isFinite(qty) || qty < 1) {
+        return res.status(400).json({ error: `Invalid quantity for item: ${item.name || 'unknown'}` });
+      }
+    }
+
+    const rawAmount = cart.reduce((s, it) => s + (Number(it.price) * (Number(it.quantity) || 1)), 0);
+    if (!Number.isFinite(rawAmount) || rawAmount < 1) {
+      return res.status(400).json({ error: 'Order total must be at least R1.00.' });
+    }
+    const amount = rawAmount.toFixed(2);
     const frontendBase = normalizeBaseUrl(return_url || getFrontendUrl(req));
     const backendBase = normalizeBaseUrl(getBaseUrl(req));
     const pfReturn = `${frontendBase}/checkout.html?payfast=success&orderId=${order._id}`;
@@ -266,10 +282,14 @@ router.post('/payfast-ipn', async (req, res) => {
     const order = await Order.findById(orderId);
     if (!order) return res.status(404).send('Order not found');
 
-    // Basic amount check
+    // Strict amount check — reject underpayments entirely
     const amount_gross = parseFloat(body.amount_gross || body.amount || 0) || 0;
-    const expected = order.cart.reduce((s, it) => s + (it.price * (it.quantity || 1)), 0);
-    const amountMatches = Math.abs(amount_gross - expected) < 0.5; // allow small rounding diffs
+    const expected = order.cart.reduce((s, it) => s + (Number(it.price) * (Number(it.quantity) || 1)), 0);
+    // Allow at most R0.05 rounding difference, never accept less than expected
+    const amountMatches = amount_gross >= expected - 0.05 && Math.abs(amount_gross - expected) < 0.5;
+    if (!amountMatches) {
+      console.warn('PayFast IPN amount mismatch', { amount_gross, expected, orderId });
+    }
 
     ipnLog.orderId = order._id;
     ipnLog.amount = amount_gross;
