@@ -11,6 +11,34 @@ const axios = require('axios');
 const crypto = require('crypto');
 const net = require('net');
 
+function buildOrderEmailTemplate({ customerName, orderId, itemsHtml, total, address }) {
+  const currentYear = new Date().getFullYear();
+  return `
+    <div style="margin:0;padding:24px;background:#f5f7fb;font-family:Segoe UI,Arial,sans-serif;color:#111;">
+      <div style="max-width:640px;margin:0 auto;background:#fff;border:1px solid #e7ebf3;border-radius:12px;overflow:hidden;">
+        <div style="background:#0f172a;color:#fff;padding:20px 24px;">
+          <div style="font-size:12px;letter-spacing:1.2px;text-transform:uppercase;opacity:0.8;">RAKOTEE</div>
+          <h1 style="margin:8px 0 0;font-size:22px;line-height:1.3;">Order Confirmed</h1>
+        </div>
+        <div style="padding:24px;line-height:1.65;color:#1f2937;font-size:15px;">
+          <p style="margin-top:0;">Hi ${customerName}, your payment was successful and your order is now being processed.</p>
+          <p><strong>Order ID:</strong> ${orderId}</p>
+          <h3 style="margin-bottom:10px;">Order summary</h3>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
+            <tbody>${itemsHtml}</tbody>
+          </table>
+          <p style="margin:10px 0;"><strong>Total:</strong> R${total}</p>
+          <p style="margin:10px 0;"><strong>Delivery address:</strong> ${address}</p>
+          <p style="margin-top:20px;">We will email you again when your order ships.</p>
+        </div>
+        <div style="padding:14px 24px;border-top:1px solid #eef2f7;background:#fafcff;color:#64748b;font-size:12px;">
+          © ${currentYear} RAKOTEE. All rights reserved.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function getBaseUrl(req) {
   return process.env.SERVER_PUBLIC_URL || `${req.protocol}://${req.get('host')}`;
 }
@@ -261,27 +289,25 @@ router.post('/payfast-ipn', async (req, res) => {
       // Send order confirmation email to customer
       try {
         const itemsList = order.cart.map(i =>
-          `<li>${i.name} x${i.quantity || 1} — R${(Number(i.price) * (i.quantity || 1)).toFixed(2)}</li>`
+          `<tr>
+            <td style="padding:8px 0;border-bottom:1px solid #edf2f7;">${i.name}</td>
+            <td style="padding:8px 0;border-bottom:1px solid #edf2f7;text-align:center;">x${i.quantity || 1}</td>
+            <td style="padding:8px 0;border-bottom:1px solid #edf2f7;text-align:right;">R${(Number(i.price) * (i.quantity || 1)).toFixed(2)}</td>
+          </tr>`
         ).join('');
         const total = order.cart.reduce((s, i) => s + (Number(i.price) * (i.quantity || 1)), 0).toFixed(2);
+        const emailHtml = buildOrderEmailTemplate({
+          customerName: order.name,
+          orderId: order._id,
+          itemsHtml: itemsList,
+          total,
+          address: order.address
+        });
         await sendMail({
           to: order.email,
-          subject: 'Your RAKOTEE Order is Confirmed!',
-          html: `
-            <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
-              <h2 style="color:#000;">Order Confirmed ✓</h2>
-              <p>Hi ${order.name},</p>
-              <p>Thank you for your order! Your payment was received and we are processing your order.</p>
-              <h3>Order Summary</h3>
-              <ul>${itemsList}</ul>
-              <p><strong>Total: R${total}</strong></p>
-              <p>Order ID: <code>${order._id}</code></p>
-              <p>Shipping to: ${order.address}</p>
-              <br/>
-              <p>We'll notify you when your order ships.</p>
-              <p>— The RAKOTEE Team</p>
-            </div>
-          `
+          subject: 'RAKOTEE Order Confirmation',
+          html: emailHtml,
+          text: `Order confirmed. Order ID: ${order._id}. Total: R${total}. Delivery address: ${order.address}`
         });
       } catch (emailErr) {
         console.error('Order confirmation email failed:', emailErr.message);
