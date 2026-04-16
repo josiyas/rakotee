@@ -31,7 +31,7 @@ function buildEmailTemplate({ title, intro, bodyHtml, ctaLabel, ctaUrl, footerNo
           <p style="margin-top:0;">${intro}</p>
           ${bodyHtml || ''}
           ${ctaBlock}
-          <p style="margin:24px 0 0;">${footerNote || 'If you need help, reply to this email and our team will assist you.'}</p>
+          <p style="margin:24px 0 0;">${footerNote || 'Need help? Reply to this email and the RAKOTEE team will assist you.'}</p>
         </div>
         <div style="padding:14px 24px;border-top:1px solid #eef2f7;background:#fafcff;color:#64748b;font-size:12px;">
           © ${currentYear} RAKOTEE. All rights reserved.
@@ -65,18 +65,18 @@ exports.register = async (req, res) => {
     let emailDelivered = true;
     try {
       const emailHtml = buildEmailTemplate({
-        title: 'Verify your account',
-        intro: `Hi ${username}, thanks for joining RAKOTEE.`,
-        bodyHtml: '<p>Please verify your email address to secure your account and complete your sign-up.</p>',
+        title: 'Welcome to RAKOTEE',
+        intro: `Hi ${username}, your account is almost ready.`,
+        bodyHtml: '<p>Confirm your email to activate your account and start shopping the latest drops.</p>',
         ctaLabel: 'Verify email address',
         ctaUrl: verifyUrl,
-        footerNote: 'If you did not create this account, you can safely ignore this email.'
+        footerNote: 'If you did not create this account, you can safely ignore this message.'
       });
       const { preview } = await sendMail({
         to: email,
-        subject: 'Verify your RAKOTEE account',
+        subject: 'Action needed: verify your RAKOTEE account',
         html: emailHtml,
-        text: `Welcome to RAKOTEE. Verify your account: ${verifyUrl}`
+        text: `Welcome to RAKOTEE. Verify your account to get started: ${verifyUrl}`
       });
       if (preview) console.log('Ethereal preview URL (registration):', preview);
     } catch (mailErr) {
@@ -106,18 +106,18 @@ exports.verifyEmail = async (req, res) => {
   await user.save();
   // send confirmation email
   const verifiedHtml = buildEmailTemplate({
-    title: 'Email verified successfully',
-    intro: `Hi ${user.username || 'there'}, your email has been verified.`,
-    bodyHtml: '<p>You can now sign in and start shopping with full account access.</p>',
-    ctaLabel: 'Go to login',
+    title: 'You are verified',
+    intro: `Hi ${user.username || 'there'}, your email is now confirmed.`,
+    bodyHtml: '<p>Your RAKOTEE account is fully active and ready for checkout, orders, and updates.</p>',
+    ctaLabel: 'Sign in now',
     ctaUrl: `${process.env.CLIENT_URL || 'https://rakotee.site'}/login.html`,
-    footerNote: 'Thank you for choosing RAKOTEE.'
+    footerNote: 'Welcome in. Keep movin\'.'
   });
   const { preview } = await sendMail({
     to: user.email,
-    subject: 'Your RAKOTEE email is verified',
+    subject: 'RAKOTEE account verified',
     html: verifiedHtml,
-    text: 'Your email has been verified. You can now log in at RAKOTEE.'
+    text: 'Your RAKOTEE account is verified. You can now sign in.'
   });
   if (preview) console.log('Ethereal preview URL (verify):', preview);
   res.json({ message: 'Email verified. You can now log in.' });
@@ -168,18 +168,18 @@ exports.forgotPassword = async (req, res) => {
     let emailDelivered = true;
     try {
       const resetHtml = buildEmailTemplate({
-        title: 'Reset your password',
-        intro: 'We received a request to reset your RAKOTEE account password.',
-        bodyHtml: '<p>This link expires in 1 hour for security reasons.</p>',
+        title: 'Password reset request',
+        intro: 'We received a request to reset your RAKOTEE password.',
+        bodyHtml: '<p>For your security, this reset link expires in 1 hour.</p>',
         ctaLabel: 'Reset password',
         ctaUrl: resetUrl,
-        footerNote: 'If you did not request this, no action is needed and your password remains unchanged.'
+        footerNote: 'If you did not request this, no action is needed and your password stays the same.'
       });
       const mailPromise = sendMail({
         to: email,
         subject: 'Reset your RAKOTEE password',
         html: resetHtml,
-        text: `Reset your RAKOTEE password using this secure link (expires in 1 hour): ${resetUrl}`
+        text: `Reset your password using this secure link (valid for 1 hour): ${resetUrl}`
       });
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('SMTP timeout')), 12000);
@@ -216,18 +216,18 @@ exports.resetPassword = async (req, res) => {
   user.resetPasswordExpires = undefined;
   await user.save();
   const resetDoneHtml = buildEmailTemplate({
-    title: 'Password reset successful',
-    intro: `Hi ${user.username || 'there'}, your password was changed successfully.`,
-    bodyHtml: '<p>If you did not make this change, reset your password immediately and contact support.</p>',
+    title: 'Password updated',
+    intro: `Hi ${user.username || 'there'}, your password has been updated successfully.`,
+    bodyHtml: '<p>If this was not you, secure your account immediately by resetting your password again.</p>',
     ctaLabel: 'Sign in to your account',
     ctaUrl: `${process.env.CLIENT_URL || 'https://rakotee.site'}/login.html`,
-    footerNote: 'Your account security matters to us.'
+    footerNote: 'Thanks for helping keep your account secure.'
   });
   const { preview } = await sendMail({
     to: user.email,
-    subject: 'Your RAKOTEE password was reset',
+    subject: 'RAKOTEE password reset successful',
     html: resetDoneHtml,
-    text: 'Your password has been reset successfully. If this was not you, contact support immediately.'
+    text: 'Your password was reset successfully. If this was not you, contact support immediately.'
   });
   if (preview) console.log('Ethereal preview URL (reset complete):', preview);
   res.json({ message: 'Password reset successful. You can now log in.' });
@@ -331,8 +331,8 @@ exports.changePassword = async (req, res) => {
   user.password = await bcrypt.hash(newPassword, 10);
   await user.save();
   const changedHtml = buildEmailTemplate({
-    title: 'Password changed',
-    intro: `Hi ${user.username || 'there'}, your RAKOTEE account password has been changed.`,
+    title: 'Security alert: password changed',
+    intro: `Hi ${user.username || 'there'}, your RAKOTEE password was changed.`,
     bodyHtml: '<p>If this was not you, use the forgot-password flow immediately to secure your account.</p>',
     ctaLabel: 'Reset password now',
     ctaUrl: `${process.env.CLIENT_URL || 'https://rakotee.site'}/forgot-password.html`,

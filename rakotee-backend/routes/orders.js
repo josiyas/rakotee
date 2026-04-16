@@ -21,7 +21,7 @@ function buildOrderEmailTemplate({ customerName, orderId, itemsHtml, total, addr
           <h1 style="margin:8px 0 0;font-size:22px;line-height:1.3;">Order Confirmed</h1>
         </div>
         <div style="padding:24px;line-height:1.65;color:#1f2937;font-size:15px;">
-          <p style="margin-top:0;">Hi ${customerName}, your payment was successful and your order is now being processed.</p>
+          <p style="margin-top:0;">Hi ${customerName}, payment received. Your order is confirmed and now being prepared.</p>
           <p><strong>Order ID:</strong> ${orderId}</p>
           <h3 style="margin-bottom:10px;">Order summary</h3>
           <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
@@ -29,7 +29,7 @@ function buildOrderEmailTemplate({ customerName, orderId, itemsHtml, total, addr
           </table>
           <p style="margin:10px 0;"><strong>Total:</strong> R${total}</p>
           <p style="margin:10px 0;"><strong>Delivery address:</strong> ${address}</p>
-          <p style="margin-top:20px;">We will email you again when your order ships.</p>
+          <p style="margin-top:20px;">We will send another update as soon as your order ships.</p>
         </div>
         <div style="padding:14px 24px;border-top:1px solid #eef2f7;background:#fafcff;color:#64748b;font-size:12px;">
           © ${currentYear} RAKOTEE. All rights reserved.
@@ -305,9 +305,9 @@ router.post('/payfast-ipn', async (req, res) => {
         });
         await sendMail({
           to: order.email,
-          subject: 'RAKOTEE Order Confirmation',
+          subject: 'Your RAKOTEE order is confirmed',
           html: emailHtml,
-          text: `Order confirmed. Order ID: ${order._id}. Total: R${total}. Delivery address: ${order.address}`
+          text: `Your RAKOTEE order is confirmed. Order ID: ${order._id}. Total: R${total}. Delivery address: ${order.address}`
         });
       } catch (emailErr) {
         console.error('Order confirmation email failed:', emailErr.message);
