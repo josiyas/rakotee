@@ -260,8 +260,14 @@ exports.account = async (req, res) => {
     }
     const user = await User.findById(decoded.userId);
     if (!user) return res.status(404).json({ message: 'User not found.' });
-    // Fetch orders for this user
-    const orders = await Order.find({ email: user.email }).sort({ createdAt: -1 });
+    // Fetch only successfully completed/paid orders for account history.
+    const orders = await Order.find({
+      email: user.email,
+      $or: [
+        { paid: true },
+        { status: { $regex: /^(paid|completed|delivered)$/i } }
+      ]
+    }).sort({ createdAt: -1 });
     const addresses = Array.isArray(user.addresses) ? user.addresses : [];
     const safeDefaultIndex = Number.isInteger(user.defaultAddressIndex) ? user.defaultAddressIndex : 0;
     const defaultAddress = addresses[safeDefaultIndex] || null;
