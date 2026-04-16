@@ -108,9 +108,9 @@ function renderAccountDropdown() {
     accountDropdown.innerHTML = `
       <button class="icon-btn" id="accountToggle" aria-label="Account" tabindex="0">
         <i class="fas fa-user"></i>
-        <span class="user-email" style="margin-left:8px;font-size:0.95em;">${userEmail ? userEmail : ""}</span>
       </button>
       <div class="dropdown-menu" id="accountMenu">
+        <div class="dropdown-user" title="${userEmail ? userEmail : ''}">${userEmail ? userEmail : ''}</div>
         <a href="account.html">Account</a>
         <a href="admin.html" rel="nofollow">Admin Portal</a>
         <a href="#" id="logoutBtn">Logout</a>
