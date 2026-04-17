@@ -33,12 +33,16 @@ jobs:
           fi
 
       - name: Send webhook alert on failure
-        if: failure() && secrets.HEALTH_ALERT_WEBHOOK_URL != ''
+        if: failure()
         env:
           WEBHOOK_URL: ${{ secrets.HEALTH_ALERT_WEBHOOK_URL }}
           HEALTH_URL: ${{ secrets.HEALTHCHECK_URL }}
         run: |
           URL=${HEALTH_URL:-https://rakotee-back.onrender.com/health}
+          if [ -z "$WEBHOOK_URL" ]; then
+            echo "HEALTH_ALERT_WEBHOOK_URL is not set; skipping alert send."
+            exit 0
+          fi
           MSG="RAKOTEE health check failed for ${URL} in workflow ${GITHUB_WORKFLOW} (run ${GITHUB_RUN_ID})."
           curl -X POST "$WEBHOOK_URL" \
             -H "Content-Type: application/json" \
