@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.11.1",
+    "@sentry/node": "^10.49.0",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",

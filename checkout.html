@@ -3,6 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Securely complete your RAKOTEE purchase with fast confirmation and reliable payment processing." />
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="canonical" href="https://rakotee.site/checkout.html" />
+  <meta property="og:title" content="Secure Checkout | RAKOTEE" />
+  <meta property="og:description" content="Complete your payment securely and confirm your order in seconds." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://rakotee.site/checkout.html" />
+  <meta property="og:image" content="https://rakotee.site/rakotee.png.png" />
   <title>Checkout | RAKOTEE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -248,6 +256,26 @@
       margin-bottom: 0;
       width: 100%;
     }
+    .checkout-trust {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.7rem;
+    }
+    .checkout-trust-item {
+      background: rgba(8, 14, 26, 0.52);
+      border: 1px solid rgba(116, 140, 171, 0.35);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      color: var(--checkout-muted);
+      font-size: 0.85rem;
+      line-height: 1.45;
+    }
+    .checkout-trust-item strong {
+      display: block;
+      color: #fff;
+      margin-bottom: 0.2rem;
+    }
     @media (max-width: 820px) {
       .checkout-shell {
         width: 100%;
@@ -331,6 +359,20 @@
     <div id="payment-options">
       <button id="payfastBtn" type="button" class="payment-btn payfast">PayFast</button>
     </div>
+    <section class="checkout-trust" aria-label="Checkout trust indicators">
+      <article class="checkout-trust-item">
+        <strong>Encrypted Payment</strong>
+        Your payment details are handled over secure encrypted channels.
+      </article>
+      <article class="checkout-trust-item">
+        <strong>Order Confirmation</strong>
+        You receive a confirmation email right after successful payment.
+      </article>
+      <article class="checkout-trust-item">
+        <strong>Support On Demand</strong>
+        Contact support quickly if you need any checkout assistance.
+      </article>
+    </section>
     </div>
   </div>
   <script>

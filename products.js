@@ -2753,12 +2753,15 @@ function displayProducts(filteredProducts) {
   // Use DocumentFragment to batch DOM appends for better performance
   const fragment = document.createDocumentFragment();
   
-  filteredProducts.forEach(product => {
+  filteredProducts.forEach((product, index) => {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.style.cursor = 'pointer';
+    const imageSrc = product.images[0].startsWith('/') ? product.images[0] : '/' + product.images[0];
+    const loadingAttr = index < 4 ? 'eager' : 'lazy';
+    const fetchPriority = index < 2 ? 'high' : 'auto';
     card.innerHTML = `
-  <img src="${product.images[0].startsWith('/') ? product.images[0] : '/' + product.images[0]}" alt="${product.name}" class="product-img" loading="lazy" onerror="this.onerror=null;this.src='/products/fallback.png';">
+  <img src="${imageSrc}" alt="${product.name}" class="product-img" loading="${loadingAttr}" decoding="async" fetchpriority="${fetchPriority}" onerror="this.onerror=null;this.src='/products/fallback.png';">
         <h3>${product.name}</h3>
         <p>R ${product.price.toFixed(2)}</p>
       `;

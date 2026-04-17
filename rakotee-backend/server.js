@@ -8,8 +8,22 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cookie = require('cookie');
 const { getMailConfigSummary } = require('./mailer');
+const Sentry = require('@sentry/node');
 
 const app = express();
+
+const sentryDsn = process.env.SENTRY_DSN || '';
+if (sentryDsn) {
+  Sentry.init({
+    dsn: sentryDsn,
+    environment: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || 'production',
+    tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE || 0.1)
+  });
+}
+
+if (sentryDsn && Sentry.Handlers?.requestHandler) {
+  app.use(Sentry.Handlers.requestHandler());
+}
 
 // Middleware
 app.use(express.json());
@@ -94,6 +108,7 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     mongo: mongoReady ? 'connected' : 'disconnected',
+    sentry: sentryDsn ? 'configured' : 'disabled',
     email: getMailConfigSummary(),
     payfast: {
       merchant_id: process.env.PAYFAST_MERCHANT_ID ? 'configured' : 'missing',
@@ -117,6 +132,29 @@ mongoose.connect(process.env.MONGO_URI, {
 })
   .then(() => console.log('MongoDB connected securely'))
   .catch((err) => console.error('MongoDB connection error:', err));
+
+if (sentryDsn && Sentry.Handlers?.errorHandler) {
+  app.use(Sentry.Handlers.errorHandler());
+}
+
+app.use((err, req, res, next) => {
+  if (sentryDsn) {
+    Sentry.captureException(err);
+  }
+  console.error('Unhandled server error:', err);
+  if (res.headersSent) return next(err);
+  return res.status(500).json({ message: 'Internal server error.' });
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled rejection:', reason);
+  if (sentryDsn) Sentry.captureException(reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+  if (sentryDsn) Sentry.captureException(err);
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

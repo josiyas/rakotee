@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin-orders.html
+Disallow: /admin-products.html
+Disallow: /account.html
+Disallow: /checkout.html
+Disallow: /signin.html
+Disallow: /login.html
+Disallow: /register.html
+
+Sitemap: https://rakotee.site/sitemap.xml

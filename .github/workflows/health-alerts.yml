@@ -1,0 +1,45 @@
+name: Health Alerts
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor-health:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check production health endpoint
+        id: health
+        env:
+          HEALTH_URL: ${{ secrets.HEALTHCHECK_URL }}
+        run: |
+          URL=${HEALTH_URL:-https://rakotee-back.onrender.com/health}
+          echo "Using health URL: ${URL}"
+          set +e
+          RESPONSE=$(curl -sS -w "\n%{http_code}" "$URL")
+          EXIT_CODE=$?
+          set -e
+          BODY=$(echo "$RESPONSE" | sed '$d')
+          CODE=$(echo "$RESPONSE" | tail -n1)
+          echo "code=$CODE" >> $GITHUB_OUTPUT
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          if [ $EXIT_CODE -ne 0 ] || [ "$CODE" -ne 200 ]; then
+            echo "Health check failed"
+            exit 1
+          fi
+
+      - name: Send webhook alert on failure
+        if: failure() && secrets.HEALTH_ALERT_WEBHOOK_URL != ''
+        env:
+          WEBHOOK_URL: ${{ secrets.HEALTH_ALERT_WEBHOOK_URL }}
+          HEALTH_URL: ${{ secrets.HEALTHCHECK_URL }}
+        run: |
+          URL=${HEALTH_URL:-https://rakotee-back.onrender.com/health}
+          MSG="RAKOTEE health check failed for ${URL} in workflow ${GITHUB_WORKFLOW} (run ${GITHUB_RUN_ID})."
+          curl -X POST "$WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"${MSG}\"}"
