@@ -1,1332 +1,1333 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="RAKOTEE - Your go-to for streetwear, footwear, and accessories. KEEP MOVIN'. Shop the latest sneakers, phones, and more. Secure checkout and fast delivery." />
-  <meta name="keywords" content="streetwear, sneakers, footwear, accessories, phones, sale, rakotee, online store, shop" />
-  <meta name="author" content="RAKOTEE" />
-  <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://rakotee.site/index.html" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="RAKOTEE | KEEP MOVIN" />
-  <meta property="og:description" content="Streetwear, footwear, phones and essentials with secure checkout and fast dispatch." />
-  <meta property="og:url" content="https://rakotee.site/index.html" />
-  <meta property="og:image" content="https://rakotee.site/rakotee.png.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="RAKOTEE | KEEP MOVIN" />
-  <meta name="twitter:description" content="Streetwear, footwear, phones and essentials with secure checkout and fast dispatch." />
-  <meta name="twitter:image" content="https://rakotee.site/rakotee.png.png" />
-  <title>RAKOTEE | KEEP MOVIN</title>
-  <link rel="preload" as="image" href="rakotee.png.png" fetchpriority="high" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260413n" />
-  <link rel="stylesheet" href="theme.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "RAKOTEE",
-    "url": "https://rakotee.site",
-    "logo": "https://rakotee.site/rakotee.png.png",
-    "sameAs": [
-      "https://instagram.com/rakotee",
-      "https://facebook.com/rakotee",
-      "https://twitter.com/rakotee"
-    ]
-  }
-  </script>
-</head>
-<body class="premium-home">
-
-<!-- Navigation -->
-<header class="main-header">
-  <nav class="nav-container" aria-label="Main Navigation">
-    <div class="logo">
-      <a href="index.html" aria-label="RAKOTEE Home">RAKOTEE</a>
-    </div>
-    <div class="nav-icons">
-      <button class="icon-btn" id="searchToggle" aria-label="Search" tabindex="0"><i class="fas fa-search"></i></button>
-      <div class="account-dropdown" id="accountDropdown" aria-haspopup="true" aria-expanded="false">
-        <!-- Account menu will be rendered by JS -->
-      </div>
-      <button class="cart-icon-btn" id="cartIconBtn" aria-label="Open Cart" tabindex="0">
-        🛒
-        <span id="cartCount" class="cart-count" aria-live="polite">0</span>
-      </button>
-      <button class="icon-btn menu-toggle" aria-label="Menu" tabindex="0">
-        <i class="fas fa-bars"></i>
-      </button>
-    </div>
-  </nav>
-
-  <div class="search-bar" id="searchBar" role="search">
-    <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products" />
-  </div>
-</header>
-
-<!-- Shop Now Banner -->
-<section class="shop-now-banner">
-  <div class="shop-now-content">
-    <p class="home-kicker">Streetwear Curated</p>
-    <h1>KEEP MOVIN'</h1>
-    <p class="home-subtitle">Premium drops, timeless silhouettes, and everyday essentials built for your lane.</p>
-    <div class="home-cta-row">
-      <a href="products.html" class="shop-now-btn">Shop Now</a>
-      <a href="#newdrops" class="shop-now-btn secondary">Explore Catalog</a>
-    </div>
-  </div>
-</section>
-
-<!-- Mobile Menu -->
-<div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile Menu">
-  <a href="index.html">Home</a>
-  <a href="#newdrops">New Drops</a>
-  <a href="#footwear">Footwear</a>
-  <a href="#phones">Phones</a>
-  <a href="#sale">Sale</a>
-  <a href="#contactus">Contact Us</a>
-  <a href="about.html">About Us</a>
-  <a href="faq.html">FAQ</a>
-  <a href="returns.html">Returns</a>
-</div>
-<div class="mobile-overlay" id="mobileOverlay" tabindex="-1"></div>
-
-<!-- Main Product Sections -->
-<main class="container">
-
-  <section class="product-section footwear-section" id="footwear">
-    <div class="section-head">
-      <p id="newdrops">Featured Collection</p>
-      <h2>Footwear</h2>
-    </div>
-    <div class="carousel-wrapper">
-      <div class="product-carousel" data-carousel="footwear"></div>
-      <button class="carousel-nav prev" data-carousel="footwear" aria-label="Previous product">&#8249;</button>
-      <button class="carousel-nav next" data-carousel="footwear" aria-label="Next product">&#8250;</button>
-    </div>
-    <div class="section-cta">
-      <a href="products.html?category=footwear" class="btn view-all">View All Footwear</a>
-    </div>
-  </section>
-
-  <!-- Phones -->
-  <section class="product-section phones-section" id="phones">
-    <div class="section-head">
-      <p>Latest Devices</p>
-      <h2>Phones</h2>
-    </div>
-    <div class="carousel-wrapper">
-      <div class="product-carousel" data-carousel="phones"></div>
-      <button class="carousel-nav prev" data-carousel="phones" aria-label="Previous product">&#8249;</button>
-      <button class="carousel-nav next" data-carousel="phones" aria-label="Next product">&#8250;</button>
-    </div>
-    <div class="section-cta">
-      <a href="products.html?category=phones" class="btn view-all">View All Phones</a>
-    </div>
-  </section>
-
-  <!-- Sale -->
-  <section class="product-section sale-section" id="sale">
-    <div class="section-head">
-      <p>Deals Running</p>
-      <h2>Sale Items</h2>
-    </div>
-    <div class="carousel-wrapper">
-      <div class="product-carousel" data-carousel="sale"></div>
-      <button class="carousel-nav prev" data-carousel="sale" aria-label="Previous product">&#8249;</button>
-      <button class="carousel-nav next" data-carousel="sale" aria-label="Next product">&#8250;</button>
-    </div>
-    <div class="section-cta">
-      <a href="products.html?category=sale" class="btn view-all">View All Sale Items</a>
-    </div>
-  </section>
-
-</main>
-<!-- Fullscreen Modal -->
-<div id="productModal" class="modal fullscreen-modal" role="dialog" aria-modal="true" aria-labelledby="modalName" tabindex="-1">
-  <div class="modal-content">
-    <span class="close-modal" id="closeModalBtn" tabindex="0" aria-label="Close Modal">&times;</span>
-    <div class="modal-body">
-      <div class="modal-left">
-        <img id="modalImage" src="" alt="Main Product Image" />
-        <div id="modalThumbnails" class="thumbnails"></div>
-      </div>
-      <div class="modal-right">
-        <h3 id="modalName"></h3>
-        <p class="price">R <span id="modalPrice"></span></p>
-        <p id="modalDescription" class="product-description"></p>
-        <label for="sizeSelect">Size:</label>
-        <select id="sizeSelect"></select>
-        <label for="colorSelect">Color:</label>
-        <select id="colorSelect"></select>
-        <label for="quantityInput">Quantity:</label>
-        <input type="number" id="quantityInput" min="1" value="1" />
-        <div class="product-highlights">
-          <h4>Product Details</h4>
-          <ul>
-            <li>Durable rubber sole for long-lasting wear</li>
-            <li>Breathable mesh upper keeps feet cool</li>
-            <li>Cushioned insole for all-day comfort</li>
-            <li>True to size - fits as expected</li>
-            <li>Available in multiple colorways</li>
-          </ul>
-          <div class="modal-highlights">
-            <h4>Product Highlights</h4>
-            <ul id="modal-highlights-list"></ul>
-          </div>
-        </div>
-        <button id="addToCartBtn">Add to Cart</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Contact Section -->
-<section class="contact-section" id="contactus">
-  <div class="container">
-    <h2>Contact Us</h2>
-    <ul class="contact-list">
-      <li><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:rakoteeholdings@gmail.com">rakoteeholdings@gmail.com</a></li>
-      <li><i class="fas fa-phone"></i> <strong>Phone:</strong> <a href="tel:0663963261">0663963261</a></li>
-      <li><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> <a href="https://wa.me/27663963261" target="_blank" rel="noopener">0663963261</a></li>
-      <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> Online Store Only (No Walk-ins)</li>
-    </ul>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="main-footer">
-  <div class="footer-content">
-    <div class="footer-column">
-      <h4>Info</h4>
-      <ul>
-        <li><a href="faq.html">FAQ</a></li>
-        <li><a href="returns.html">Returns</a></li>
-        <li><a href="terms.html">Terms & Conditions</a></li>
-        <li><a href="security.html">Security</a></li>
-        <li><a href="privacy.html">Privacy Policy</a></li>
-      </ul>
-    </div>
-    <div class="footer-column">
-      <h4>RAKOTEE</h4>
-      <ul>
-        <li><a href="about.html">About Us</a></li>
-      </ul>
-    </div>
-    <div class="footer-column">
-      <h4>Mailing List</h4>
-      <form id="mailingListForm" autocomplete="off">
-        <input type="email" id="mailingListEmail" placeholder="Enter your email" required aria-label="Email address" />
-        <button type="submit">Join</button>
-        <span id="mailingListFeedback" style="display:none;color:green;font-size:0.9em;"></span>
-      </form>
-    </div>
-  </div>
-  <div class="footer-payments">
-    <!-- Payment Providers: PayFast, Yoco, Peach Payments, PayPal -->
-  <img src="images/payfast.svg" alt="PayFast payment option" style="height:32px;" />
-  <img src="images/paypal.png" alt="PayPal payment option" style="height:32px;" />
-    <!-- If you don't have these images, use text placeholders below -->
-    <!-- <span class="payment-text">PayFast</span>
-    <span class="payment-text">Yoco</span>
-    <span class="payment-text">Peach Payments</span>
-    <span class="payment-text">PayPal</span> -->
-  </div>
-  <div class="footer-socials">
-    <a href="https://instagram.com/rakotee" aria-label="Instagram" target="_blank" rel="noopener"><i class="fab fa-instagram" aria-hidden="true"></i></a>
-    <a href="https://facebook.com/rakotee" aria-label="Facebook" target="_blank" rel="noopener"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
-    <a href="https://twitter.com/rakotee" aria-label="Twitter" target="_blank" rel="noopener"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>
-  </div>
-  <p class="footer-note">&copy; 2025 RAKOTEE. All rights reserved. KEEP MOVIN.</p>
-</footer>
-
-<!-- Scripts -->
-<style>
-.premium-home {
-  font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background:
-    radial-gradient(circle at 12% 14%, rgba(116, 140, 171, 0.2), transparent 35%),
-    radial-gradient(circle at 86% 6%, rgba(62, 92, 118, 0.2), transparent 38%),
-    var(--dark-navy);
-}
-
-.premium-home .main-header {
-  position: sticky;
-  top: 0;
-  z-index: 1100;
-  background: linear-gradient(120deg, rgba(13, 19, 33, 0.95), rgba(29, 45, 68, 0.92));
-  border-bottom: 1px solid rgba(116, 140, 171, 0.35);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-}
-
-.premium-home .nav-container {
-  max-width: 1240px;
-  padding: 0.8rem 1rem;
-  gap: 0.8rem;
-}
-
-.premium-home .logo a {
-  font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
-  letter-spacing: 0.08em;
-  font-size: 2rem;
-  color: var(--light-beige);
-}
-
-.premium-home .icon-btn {
-  border: 1px solid rgba(116, 140, 171, 0.4);
-  border-radius: 999px;
-  background: rgba(13, 19, 33, 0.55);
-  color: var(--light-beige);
-  transition: transform 0.25s ease, background-color 0.25s ease;
-  width: 42px;
-  height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.premium-home .icon-btn:hover {
-  transform: translateY(-1px);
-  background: rgba(62, 92, 118, 0.55);
-}
-
-.premium-home .nav-icons {
-  gap: 0.6rem;
-}
-
-.premium-home .cart-icon-btn {
-  color: var(--light-beige);
-  background: rgba(13, 19, 33, 0.65);
-  border: 1px solid rgba(116, 140, 171, 0.48);
-  border-radius: 999px;
-  padding: 0.48rem 0.9rem;
-  font-size: 1.15rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 56px;
-  transition: transform 0.25s ease, background-color 0.25s ease;
-  margin-left: 0;
-  position: relative;
-  cursor: pointer;
-}
-
-.premium-home .cart-icon-btn:hover {
-  transform: translateY(-1px);
-  background: rgba(62, 92, 118, 0.55);
-}
-
-.premium-home .cart-icon-btn .cart-count {
-  top: -8px;
-  right: -8px;
-  background: var(--steel-blue);
-  color: var(--dark-navy);
-  border: 1px solid rgba(240, 235, 216, 0.5);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-}
-
-.premium-home .account-dropdown {
-  display: inline-flex;
-  align-items: center;
-}
-
-.premium-home .search-bar {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 1rem 0.8rem;
-}
-
-.premium-home .search-bar input {
-  width: 100%;
-  background: rgba(13, 19, 33, 0.82);
-  border: 1px solid rgba(116, 140, 171, 0.42);
-  border-radius: 12px;
-  color: var(--light-beige);
-  padding: 0.75rem 0.95rem;
-}
-
-.premium-home .search-bar input:focus {
-  outline: none;
-  border-color: rgba(116, 140, 171, 0.9);
-  box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.2);
-}
-
-.premium-home .mobile-menu {
-  background: linear-gradient(150deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.96)) !important;
-  border: 1px solid rgba(116, 140, 171, 0.4) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.35) !important;
-  color: var(--light-beige) !important;
-  padding: 1rem 0.85rem !important;
-}
-
-.premium-home .mobile-menu.active {
-  right: 0 !important;
-  background: linear-gradient(150deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.96)) !important;
-}
-
-.premium-home .mobile-menu a {
-  color: var(--light-beige) !important;
-  background: transparent !important;
-  border-radius: 8px !important;
-  padding: 0.7rem 0.75rem !important;
-  margin: 0.15rem 0 !important;
-  font-size: 1rem !important;
-  transition: background-color 0.2s ease, color 0.2s ease !important;
-}
-
-.premium-home .mobile-menu a:hover {
-  background: rgba(116, 140, 171, 0.25) !important;
-  color: #ffffff !important;
-}
-
-.premium-home .mobile-menu a::after {
-  display: none !important;
-}
-
-.premium-home .mobile-overlay {
-  background: rgba(6, 10, 18, 0.62) !important;
-  backdrop-filter: blur(2px);
-}
-
-.premium-home .mobile-overlay.active {
-  display: block !important;
-  background: rgba(6, 10, 18, 0.62) !important;
-}
-
-.premium-home .dropdown-menu {
-  background: linear-gradient(150deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.96));
-  border: 1px solid rgba(116, 140, 171, 0.38);
-  border-radius: 10px;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
-  overflow: hidden;
-}
-
-.premium-home .dropdown-menu a {
-  color: var(--light-beige);
-  border-bottom: 1px solid rgba(116, 140, 171, 0.2);
-}
-
-.premium-home .dropdown-menu a:last-child {
-  border-bottom: none;
-}
-
-.premium-home .dropdown-menu a:hover {
-  background: rgba(116, 140, 171, 0.22);
-  color: #ffffff;
-}
-
-.premium-home .shop-now-banner {
-  min-height: clamp(340px, 62svh, 580px);
-  background:
-    linear-gradient(130deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.85)),
-    url('images/products/airforce/air-force-black.png') center/cover no-repeat;
-  border-bottom: 1px solid rgba(116, 140, 171, 0.25);
-}
-
-.premium-home .shop-now-content {
-  max-width: 900px;
-  padding: clamp(1.4rem, 3.2vh, 2.6rem) 1rem;
-  animation: homeLift 0.7s ease;
-}
-
-.premium-home .home-kicker {
-  margin: 0;
-  color: var(--steel-blue);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.8rem;
-}
-
-.premium-home .shop-now-content h1 {
-  font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
-  font-size: clamp(2.8rem, 8vw, 5.6rem);
-  line-height: 0.9;
-  letter-spacing: 0.04em;
-  margin: 0.35rem 0;
-}
-
-.premium-home .home-subtitle {
-  margin: 0;
-  color: rgba(240, 235, 216, 0.86);
-  font-size: clamp(1rem, 2vw, 1.16rem);
-  line-height: 1.6;
-}
-
-.premium-home .home-cta-row {
-  margin-top: 1.3rem;
-  display: flex;
-  justify-content: center;
-  gap: 0.7rem;
-  flex-wrap: wrap;
-}
-
-.premium-home .shop-now-btn {
-  border-radius: 999px;
-  padding: 0.82rem 1.5rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--slate-blue), var(--steel-blue));
-  border: 1px solid rgba(116, 140, 171, 0.6);
-  color: var(--light-beige);
-  box-shadow: 0 12px 24px rgba(62, 92, 118, 0.35);
-}
-
-.premium-home .shop-now-btn.secondary {
-  background: rgba(13, 19, 33, 0.68);
-  border-color: rgba(116, 140, 171, 0.5);
-}
-
-.premium-home .container {
-  width: min(1200px, calc(100% - 2rem));
-  margin: 1.4rem auto 0;
-}
-
-.premium-home .product-section {
-  background: linear-gradient(160deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.82));
-  border: 1px solid rgba(116, 140, 171, 0.25);
-  border-radius: 18px;
-  padding: 1.2rem;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
-  position: relative;
-  isolation: isolate;
-}
-
-.premium-home .section-head {
-  margin-bottom: 0.8rem;
-}
-
-.premium-home .section-head p {
-  margin: 0;
-  color: var(--steel-blue);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.premium-home .section-head h2 {
-  margin: 0.35rem 0 0;
-  color: var(--light-beige);
-}
-
-.premium-home .product-card {
-  background: linear-gradient(165deg, #121b2d, #10192a);
-  border: 1px solid rgba(116, 140, 171, 0.2);
-  border-radius: 14px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-.premium-home .product-card:hover {
-  transform: translateY(-7px);
-  border-color: rgba(116, 140, 171, 0.55);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.34);
-}
-
-.premium-home .view-all {
-  margin-top: 1rem;
-  display: inline-flex;
-  align-self: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: rgba(116, 140, 171, 0.22);
-  border: 1px solid rgba(116, 140, 171, 0.5);
-  color: var(--light-beige);
-}
-
-.premium-home .section-cta {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 0.9rem;
-  margin-bottom: 0.2rem;
-}
-
-@keyframes homeLift {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Carousel Styling */
-.premium-home .carousel-wrapper {
-  position: relative;
-  margin: 1rem 0;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.premium-home #footwear .carousel-wrapper {
-  gap: 0;
-}
-
-.premium-home .product-carousel {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  flex: 1;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(116, 140, 171, 0.3) transparent;
-}
-
-.premium-home .product-carousel::-webkit-scrollbar {
-  height: 6px;
-}
-
-.premium-home .product-carousel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.premium-home .product-carousel::-webkit-scrollbar-thumb {
-  background: rgba(116, 140, 171, 0.3);
-  border-radius: 3px;
-}
-
-.premium-home .product-carousel .product-card {
-  flex: 0 0 calc(33.333% - 0.67rem);
-  min-width: calc(33.333% - 0.67rem);
-}
-
-.premium-home .product-carousel.is-marquee {
-  display: block;
-  overflow: hidden;
-  scroll-behavior: auto;
-  scrollbar-width: none;
-}
-
-.premium-home .product-carousel.is-marquee::-webkit-scrollbar {
-  display: none;
-}
-
-.premium-home .product-carousel.is-marquee .marquee-track {
-  display: flex;
-  gap: 1rem;
-  width: max-content;
-  animation: footwearMarquee 35s linear infinite;
-}
-
-.premium-home .product-carousel.is-marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
-.premium-home #footwear .product-carousel.is-marquee .product-card {
-  flex: 0 0 240px;
-  min-width: 240px;
-}
-
-.premium-home .product-carousel .product-card img {
-  width: 100%;
-  height: 190px;
-  object-fit: cover;
-  display: block;
-}
-
-.premium-home .product-carousel .product-card h3 {
-  margin: 0.6rem 0.7rem 0.3rem;
-  color: var(--light-beige);
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1.3;
-  white-space: normal;
-  min-height: 2.4em;
-}
-
-.premium-home .product-carousel .product-card p {
-  margin: 0 0.7rem 0.75rem;
-  color: rgba(240, 235, 216, 0.78);
-  font-size: 0.86rem;
-}
-
-.premium-home #footwear .carousel-nav {
-  display: none;
-}
-
-.premium-home .carousel-nav {
-  flex-shrink: 0;
-  background: rgba(116, 140, 171, 0.2);
-  border: 1px solid rgba(116, 140, 171, 0.5);
-  color: var(--light-beige);
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  font-size: 1.8rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.premium-home .carousel-nav:hover {
-  background: rgba(116, 140, 171, 0.45);
-  border-color: rgba(116, 140, 171, 0.75);
-  transform: scale(1.1);
-}
-
-@media (max-width: 1024px) {
-  .premium-home .product-carousel .product-card {
-    flex: 0 0 calc(50% - 0.5rem);
-    min-width: calc(50% - 0.5rem);
-  }
-}
-
-@media (max-width: 640px) {
-  .premium-home .product-carousel .product-card {
-    flex: 0 0 100%;
-    min-width: 100%;
-  }
-
-  .premium-home #footwear .product-carousel.is-marquee .product-card {
-    flex: 0 0 72vw;
-    min-width: 72vw;
-  }
-  
-  .premium-home .carousel-nav {
-    width: 38px;
-    height: 38px;
-    font-size: 1.4rem;
-  }
-}
-
-@keyframes footwearMarquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-.premium-home .main-footer {
-  background: linear-gradient(165deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.94));
-  border-top: 1px solid rgba(116, 140, 171, 0.3);
-  color: var(--light-beige);
-  padding: 2rem 1rem;
-  margin-top: 2rem;
-}
-
-.premium-home .footer-content {
-  width: min(1200px, calc(100% - 2rem));
-  margin: 0 auto 1.5rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-}
-
-.premium-home .footer-column h4 {
-  margin: 0 0 0.8rem;
-  color: var(--steel-blue);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 700;
-}
-
-.premium-home .footer-column ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.premium-home .footer-column ul li {
-  margin: 0.5rem 0;
-}
-
-.premium-home .footer-column ul li a {
-  color: rgba(240, 235, 216, 0.85);
-  text-decoration: none;
-  font-size: 0.95rem;
-  transition: color 0.25s ease;
-}
-
-.premium-home .footer-column ul li a:hover {
-  color: var(--steel-blue);
-}
-
-.premium-home .footer-column form {
-  display: flex;
-  gap: 0.4rem;
-}
-
-.premium-home .footer-column input[type="email"] {
-  flex: 1;
-  padding: 0.6rem 0.85rem;
-  background: rgba(13, 19, 33, 0.8);
-  border: 1px solid rgba(116, 140, 171, 0.48);
-  border-radius: 8px;
-  color: var(--light-beige);
-  font-size: 0.9rem;
-}
-
-.premium-home .footer-column input[type="email"]:focus {
-  outline: none;
-  border-color: rgba(116, 140, 171, 0.8);
-  box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.2);
-}
-
-.premium-home .footer-column button {
-  padding: 0.6rem 1rem;
-  background: rgba(116, 140, 171, 0.3);
-  border: 1px solid rgba(116, 140, 171, 0.6);
-  border-radius: 8px;
-  color: var(--light-beige);
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.premium-home .footer-column button:hover {
-  background: rgba(116, 140, 171, 0.55);
-  border-color: rgba(116, 140, 171, 0.9);
-}
-
-.premium-home .footer-payments {
-  text-align: center;
-  padding: 1rem 0;
-  border-top: 1px solid rgba(116, 140, 171, 0.2);
-  border-bottom: 1px solid rgba(116, 140, 171, 0.2);
-}
-
-.premium-home .footer-payments img {
-  height: 32px;
-  margin: 0 0.8rem;
-  opacity: 0.9;
-  transition: opacity 0.25s ease;
-}
-
-.premium-home .footer-payments img:hover {
-  opacity: 1;
-}
-
-.premium-home .footer-socials {
-  text-align: center;
-  padding: 1rem 0;
-  margin-bottom: 0.5rem;
-}
-
-.premium-home .footer-socials a {
-  display: inline-block;
-  width: 42px;
-  height: 42px;
-  background: rgba(116, 140, 171, 0.2);
-  border: 1px solid rgba(116, 140, 171, 0.4);
-  border-radius: 999px;
-  color: var(--light-beige);
-  text-decoration: none;
-  font-size: 1.1rem;
-  line-height: 40px;
-  margin: 0 0.4rem;
-  transition: all 0.25s ease;
-}
-
-.premium-home .footer-socials a:hover {
-  transform: translateY(-2px);
-  background: rgba(116, 140, 171, 0.45);
-  border-color: rgba(116, 140, 171, 0.75);
-}
-
-.premium-home .footer-note {
-  text-align: center;
-  margin: 1rem 0 0;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(116, 140, 171, 0.2);
-  color: rgba(240, 235, 216, 0.7);
-  font-size: 0.88rem;
-}
-
-.premium-home .contact-section {
-  background: linear-gradient(160deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.82));
-  border: 1px solid rgba(116, 140, 171, 0.25);
-  border-radius: 18px;
-  padding: 2rem 1rem;
-  margin: 2rem 1rem;
-}
-
-.premium-home .contact-section h2 {
-  text-align: center;
-  color: var(--light-beige);
-  font-size: 2.2rem;
-  margin-bottom: 1.5rem;
-}
-
-.premium-home .contact-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: min(800px, 100%);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.2rem;
-}
-
-.premium-home .contact-list li {
-  background: rgba(13, 19, 33, 0.7);
-  border: 1px solid rgba(116, 140, 171, 0.35);
-  border-radius: 14px;
-  padding: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.5rem;
-  transition: all 0.25s ease;
-}
-
-.premium-home .contact-list li:hover {
-  transform: translateY(-4px);
-  border-color: rgba(116, 140, 171, 0.65);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-}
-
-.premium-home .contact-list li i {
-  font-size: 1.8rem;
-  color: var(--steel-blue);
-}
-
-.premium-home .contact-list li strong {
-  color: var(--light-beige);
-  font-size: 0.95rem;
-}
-
-.premium-home .contact-list li a {
-  color: rgba(240, 235, 216, 0.85);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.25s ease;
-}
-
-.premium-home .contact-list li a:hover {
-  color: var(--steel-blue);
-}
-
-/* Critical Android header layout guard */
-@media (max-width: 900px) {
-  .premium-home .main-header,
-  .premium-home .nav-container,
-  .premium-home .nav-icons {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  .premium-home .nav-container {
-    justify-content: space-between !important;
-    align-items: center !important;
-    flex-wrap: nowrap !important;
-  }
-
-  .premium-home .nav-icons {
-    margin-left: auto !important;
-    gap: 0.45rem !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-  }
-
-  .premium-home .menu-toggle,
-  .premium-home #searchToggle,
-  .premium-home #cartIconBtn,
-  .premium-home #accountToggle {
-    display: inline-flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    margin: 0 !important;
-    margin-bottom: 0 !important;
-    padding: 0.4rem !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex: 0 0 auto !important;
-    border-radius: 999px !important;
-  }
-
-  .premium-home #cartIconBtn {
-    width: auto !important;
-    min-width: 52px !important;
-    padding: 0.35rem 0.65rem !important;
-  }
-}
-
-/* FINAL ANDROID STABILIZATION LOCK: keep this block last */
-.premium-home .shop-now-content h1,
-.premium-home .section-head h2,
-.premium-home .contact-section h2 {
-  font-family: 'Bebas Neue', 'Arial Narrow', sans-serif !important;
-  font-weight: 400 !important;
-  letter-spacing: 0.06em !important;
-  text-transform: uppercase !important;
-  line-height: 1.15 !important;
-  text-align: center !important;
-  overflow-wrap: anywhere !important;
-  text-wrap: balance !important;
-}
-
-@media (max-width: 768px) {
-  .premium-home {
-    --android-banner-h: clamp(300px, 56svh, 420px);
-  }
-
-  .premium-home .shop-now-banner {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: var(--android-banner-h) !important;
-    box-sizing: border-box !important;
-    overflow: visible !important;
-  }
-
-  .premium-home .product-section,
-  .premium-home .contact-section {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: unset !important;
-    height: auto !important;
-    box-sizing: border-box !important;
-    overflow: visible !important;
-  }
-
-  .premium-home .product-section {
-    margin-bottom: 1rem !important;
-  }
-
-  .premium-home .product-section,
-  .premium-home .contact-section {
-    display: block !important;
-  }
-
-  .premium-home .shop-now-content h1,
-  .premium-home .section-head h2,
-  .premium-home .contact-section h2 {
-    font-size: 1.9rem !important;
-    margin-top: 0 !important;
-    margin-bottom: 0.7rem !important;
-  }
-
-  .premium-home .carousel-wrapper {
-    margin: 0.75rem 0 0.95rem !important;
-  }
-
-  .premium-home .product-carousel .product-card {
-    flex: 0 0 80vw !important;
-    min-width: 80vw !important;
-  }
-
-  .premium-home .product-section .section-cta {
-    display: flex !important;
-    justify-content: center !important;
-    margin-top: 0.95rem !important;
-    margin-bottom: 0.15rem !important;
-    width: 100% !important;
-  }
-
-  .premium-home .product-section .view-all {
-    position: static !important;
-    clear: both !important;
-    display: inline-flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    margin: 0 !important;
-    text-align: center !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .premium-home {
-    --android-banner-h: clamp(260px, 48svh, 340px);
-  }
-
-  .premium-home .shop-now-banner {
-    min-height: var(--android-banner-h) !important;
-  }
-
-  .premium-home .shop-now-content h1,
-  .premium-home .section-head h2,
-  .premium-home .contact-section h2 {
-    font-size: 1.65rem !important;
-  }
-
-  .premium-home .home-cta-row {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    justify-content: center !important;
-    gap: 0.45rem !important;
-  }
-
-  .premium-home .product-section .view-all {
-    width: min(84vw, 280px) !important;
-    min-height: 44px !important;
-  }
-
-  .premium-home .product-section {
-    margin-bottom: 0.9rem !important;
-  }
-
-  .premium-home .product-carousel .product-card {
-    flex: 0 0 86vw !important;
-    min-width: 86vw !important;
-  }
-}
-
-</style>
-
-<script src="main.js?v=20260413n"></script>
-<script src="cart.js?v=20260413n"></script>
-<!-- Cart Sidebar -->
-<div id="cartSidebar" class="cart-sidebar" role="complementary" aria-label="Shopping Cart Sidebar" tabindex="-1">
-  <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart" tabindex="0">&times;</button>
-  <h2>Your Cart</h2>
-  <div id="cartItems"></div>
-  <div id="cart-summary">
-    <p><strong>Total:</strong> R <span id="cartTotal">0.00</span></p>
-    <button id="checkout-btn">Checkout</button>
-  </div>
-</div>
-<div class="cart-overlay" id="cartOverlay" tabindex="-1"></div>
-
-<script>
-// Render homepage carousels with a resilient data source.
-document.addEventListener('DOMContentLoaded', async () => {
-  const loadCatalog = async () => {
-    // Parse product objects from products.js so category-based carousels (phones/sale)
-    // can use the same source as products.html.
-    try {
-      const jsResponse = await fetch('products.js', { cache: 'no-store' });
-      if (jsResponse.ok) {
-        const jsText = await jsResponse.text();
-        const startToken = 'const products = [';
-        const start = jsText.indexOf(startToken);
-        if (start !== -1) {
-          let depth = 0;
-          let end = -1;
-          for (let i = start + startToken.length - 1; i < jsText.length; i += 1) {
-            const ch = jsText[i];
-            if (ch === '[') depth += 1;
-            if (ch === ']') {
-              depth -= 1;
-              if (depth === 0) {
-                end = i;
-                break;
-              }
-            }
-          }
-
-          if (end !== -1) {
-            const arrayLiteral = jsText.slice(start + 'const products = '.length, end + 1);
-            const parsedProducts = Function(`"use strict"; return (${arrayLiteral});`)();
-            if (Array.isArray(parsedProducts) && parsedProducts.length) {
-              return parsedProducts
-                .filter((p) => p && typeof p === 'object')
-                .map((p) => ({
-                  name: p.name || 'Product',
-                  price: Number(p.price) || 0,
-                  images: Array.isArray(p.images) && p.images.length ? p.images : ['products/fallback.png'],
-                  category: (p.category || '').toString()
-                }));
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.warn('Could not parse products.js for homepage carousel.', error);
-    }
-
-    try {
-      const response = await fetch('products.json', { cache: 'no-store' });
-      if (!response.ok) return [];
-      const data = await response.json();
-      return Array.isArray(data)
-        ? data.map(item => ({
-            name: item && item.name ? item.name : 'Product',
-            price: Number(item && item.price) || 0,
-            images: [item && item.image ? item.image : 'products/fallback.png'],
-            category: (item && item.category ? item.category : '').toString()
-          }))
-        : [];
-    } catch (error) {
-      console.error('Could not load products for homepage carousel.', error);
-      return [];
-    }
-  };
-
-  const catalog = await loadCatalog();
-  if (!catalog.length) {
-    console.error('No products available to render on homepage.');
-    return;
-  }
-
-  // Guaranteed image set from the real products folder for the footwear marquee.
-  const footwearImageFiles = [
-    'WHITE AIR01.jpg',
-    'WHITE AIR02.jpg',
-    'luxe1.jpg',
-    'luxe2.jpg',
-    'Panda 1.jpg',
-    'Panda 2.jpg',
-    'Triple Black1.jpg',
-    'University Red1.jpg',
-    'Safari 1.jpg',
-    'jarritos1.jpg',
-    'syracuse1.jpg',
-    'royal1.jpg',
-    'cacao1.jpg',
-    'spacejam1.png',
-    'wolf1.png'
-  ];
-
-  const renderCardHTML = (product, fallbackName = 'Product') => {
-    const name = product && product.name ? product.name : fallbackName;
-    const price = Number(product && product.price) || 0;
-    const firstImage = product && Array.isArray(product.images) && product.images[0]
-      ? product.images[0]
-      : (product && typeof product.image === 'string' ? product.image : 'products/fallback.png');
-    const imgUrl = firstImage.startsWith('/') ? firstImage.slice(1) : firstImage;
-
-    return `
-      <article class="product-card" style="cursor:pointer;">
-        <img src="${imgUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='products/fallback.png';">
-        <h3>${name}</h3>
-        <p>R ${price.toFixed(2)}</p>
-      </article>
-    `;
-  };
-
-  const isPhoneProduct = (item) => /iphone|samsung|huawei|pixel|xr|11\s*pro|12\s*pro|13\s*pro|max/i.test((item && item.name) || '');
-  const isFootwearProduct = (item) => /nike|adidas|jordan|dunk|puma|vans|shox|air force|air max|slide|mule/i.test((item && item.name) || '');
-  const isSaleProduct = (item) => /sale|deal|discount/i.test((item && item.name) || '');
-
-  const byCategory = (categoryName) => {
-    const normalized = (categoryName || '').toLowerCase();
-    return catalog.filter((item) => ((item && item.category) || '').toString().toLowerCase() === normalized);
-  };
-
-  const footwearProducts = byCategory('shoes').length
-    ? byCategory('shoes')
-    : catalog.filter(isFootwearProduct);
-
-  const phoneProducts = byCategory('phones').length
-    ? byCategory('phones')
-    : catalog.filter(isPhoneProduct);
-
-  const saleProducts = byCategory('sale').length
-    ? byCategory('sale')
-    : catalog.filter(isSaleProduct);
-
-  // Populate each carousel with category-aware products.
-  const carouselIds = ['footwear', 'phones', 'sale'];
-
-  carouselIds.forEach(id => {
-    const carousel = document.querySelector(`[data-carousel="${id}"]`);
-    if (!carousel) return;
-
-    let productsToShow = [];
-
-    if (id === 'footwear') {
-      productsToShow = footwearProducts.slice(0, 15);
-      const fallbackFootwear = footwearImageFiles.map((fileName, index) => ({
-        image: `products/${fileName}`,
-        images: [`products/${fileName}`],
-        name: `Footwear ${index + 1}`,
-        price: 0
-      }));
-      if (!productsToShow.length) productsToShow = fallbackFootwear;
-
-      const footwearCards = productsToShow
-        .map(item => renderCardHTML(item, item.name || 'Footwear'))
-        .join('');
-
-      carousel.classList.add('is-marquee');
-      carousel.innerHTML = `<div class="marquee-track">${footwearCards}${footwearCards}</div>`;
-      return;
-    }
-
-    if (id === 'phones') {
-      productsToShow = phoneProducts.slice(0, 15);
-      if (!productsToShow.length) productsToShow = footwearProducts.slice(0, 15);
-    }
-
-    if (id === 'sale') {
-      productsToShow = saleProducts.slice(0, 15);
-      if (!productsToShow.length) productsToShow = catalog.slice(0, 15);
-    }
-
-    const cardsHTML = productsToShow
-      .map((item, index) => renderCardHTML(item, `Product ${index + 1}`))
-      .join('');
-
-    carousel.innerHTML = cardsHTML;
-  });
-
-  // Initialize carousel functionality
-  const carousels = document.querySelectorAll('.product-carousel');
-  const autoScrollInterval = 5000;
-  
-  carousels.forEach(carousel => {
-    if (carousel.classList.contains('is-marquee')) return;
-
-    const carouselId = carousel.dataset.carousel;
-    const cards = carousel.querySelectorAll('.product-card');
-    const wrapper = carousel.parentElement;
-    let currentIndex = 0;
-    let autoScrollTimer;
-    
-    if (cards.length === 0) return;
-    
-    const scrollToCard = (index) => {
-      currentIndex = (index + cards.length) % cards.length;
-      const cardWidth = cards[0].offsetWidth;
-      const gap = 16;
-      const scrollPos = currentIndex * (cardWidth + gap);
-      carousel.scrollLeft = scrollPos;
-    };
-    
-    const nextCard = () => {
-      scrollToCard(currentIndex + 1);
-    };
-    
-    const prevCard = () => {
-      scrollToCard(currentIndex - 1);
-    };
-    
-    const startAutoScroll = () => {
-      if (autoScrollTimer) clearInterval(autoScrollTimer);
-      autoScrollTimer = setInterval(nextCard, autoScrollInterval);
-    };
-    
-    const stopAutoScroll = () => {
-      if (autoScrollTimer) clearInterval(autoScrollTimer);
-    };
-    
-    // Attach nav button listeners
-    wrapper.querySelectorAll('.carousel-nav').forEach(btn => {
-      if (btn.dataset.carousel === carouselId) {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          stopAutoScroll();
-          if (btn.classList.contains('next')) {
-            nextCard();
-          } else {
-            prevCard();
-          }
-          startAutoScroll();
-        });
-      }
-    });
-    
-    // Stop auto-scroll on mouse hover
-    carousel.addEventListener('mouseenter', stopAutoScroll);
-    carousel.addEventListener('mouseleave', startAutoScroll);
-    
-    // Start auto-scroll on load
-    setTimeout(startAutoScroll, 500);
-  });
-});
-</script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RAKOTEE - Your go-to for streetwear, footwear, and accessories. KEEP MOVIN'. Shop the latest sneakers, phones, and more. Secure checkout and fast delivery." />
+  <meta name="keywords" content="streetwear, sneakers, footwear, accessories, phones, sale, rakotee, online store, shop" />
+  <meta name="author" content="RAKOTEE" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://rakotee.site/index.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RAKOTEE | KEEP MOVIN" />
+  <meta property="og:description" content="Streetwear, footwear, phones and essentials with secure checkout and fast dispatch." />
+  <meta property="og:url" content="https://rakotee.site/index.html" />
+  <meta property="og:image" content="https://rakotee.site/rakotee.png.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RAKOTEE | KEEP MOVIN" />
+  <meta name="twitter:description" content="Streetwear, footwear, phones and essentials with secure checkout and fast dispatch." />
+  <meta name="twitter:image" content="https://rakotee.site/rakotee.png.png" />
+  <title>RAKOTEE | KEEP MOVIN</title>
+  <link rel="preload" as="image" href="rakotee.png.png" fetchpriority="high" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260413n" />
+  <link rel="stylesheet" href="theme.min.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "RAKOTEE",
+    "url": "https://rakotee.site",
+    "logo": "https://rakotee.site/rakotee.png.png",
+    "sameAs": [
+      "https://instagram.com/rakotee",
+      "https://facebook.com/rakotee",
+      "https://twitter.com/rakotee"
+    ]
+  }
+  </script>
+</head>
+<body class="premium-home">
+
+<!-- Navigation -->
+<header class="main-header">
+  <nav class="nav-container" aria-label="Main Navigation">
+    <div class="logo">
+      <a href="index.html" aria-label="RAKOTEE Home">RAKOTEE</a>
+    </div>
+    <div class="nav-icons">
+      <button class="icon-btn" id="searchToggle" aria-label="Search" tabindex="0"><i class="fas fa-search"></i></button>
+      <div class="account-dropdown" id="accountDropdown" aria-haspopup="true" aria-expanded="false">
+        <!-- Account menu will be rendered by JS -->
+      </div>
+      <button class="cart-icon-btn" id="cartIconBtn" aria-label="Open Cart" tabindex="0">
+        ??
+        <span id="cartCount" class="cart-count" aria-live="polite">0</span>
+      </button>
+      <button class="icon-btn menu-toggle" aria-label="Menu" tabindex="0">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <div class="search-bar" id="searchBar" role="search">
+    <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products" />
+  </div>
+</header>
+
+<!-- Shop Now Banner -->
+<section class="shop-now-banner">
+  <div class="shop-now-content">
+    <p class="home-kicker">Streetwear Curated</p>
+    <h1>KEEP MOVIN'</h1>
+    <p class="home-subtitle">Premium drops, timeless silhouettes, and everyday essentials built for your lane.</p>
+    <div class="home-cta-row">
+      <a href="products.html" class="shop-now-btn">Shop Now</a>
+      <a href="#newdrops" class="shop-now-btn secondary">Explore Catalog</a>
+    </div>
+  </div>
+</section>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile Menu">
+  <a href="index.html">Home</a>
+  <a href="#newdrops">New Drops</a>
+  <a href="#footwear">Footwear</a>
+  <a href="#phones">Phones</a>
+  <a href="#sale">Sale</a>
+  <a href="#contactus">Contact Us</a>
+  <a href="about.html">About Us</a>
+  <a href="faq.html">FAQ</a>
+  <a href="returns.html">Returns</a>
+</div>
+<div class="mobile-overlay" id="mobileOverlay" tabindex="-1"></div>
+
+<!-- Main Product Sections -->
+<main class="container">
+
+  <section class="product-section footwear-section" id="footwear">
+    <div class="section-head">
+      <p id="newdrops">Featured Collection</p>
+      <h2>Footwear</h2>
+    </div>
+    <div class="carousel-wrapper">
+      <div class="product-carousel" data-carousel="footwear"></div>
+      <button class="carousel-nav prev" data-carousel="footwear" aria-label="Previous product">&#8249;</button>
+      <button class="carousel-nav next" data-carousel="footwear" aria-label="Next product">&#8250;</button>
+    </div>
+    <div class="section-cta">
+      <a href="products.html?category=footwear" class="btn view-all">View All Footwear</a>
+    </div>
+  </section>
+
+  <!-- Phones -->
+  <section class="product-section phones-section" id="phones">
+    <div class="section-head">
+      <p>Latest Devices</p>
+      <h2>Phones</h2>
+    </div>
+    <div class="carousel-wrapper">
+      <div class="product-carousel" data-carousel="phones"></div>
+      <button class="carousel-nav prev" data-carousel="phones" aria-label="Previous product">&#8249;</button>
+      <button class="carousel-nav next" data-carousel="phones" aria-label="Next product">&#8250;</button>
+    </div>
+    <div class="section-cta">
+      <a href="products.html?category=phones" class="btn view-all">View All Phones</a>
+    </div>
+  </section>
+
+  <!-- Sale -->
+  <section class="product-section sale-section" id="sale">
+    <div class="section-head">
+      <p>Deals Running</p>
+      <h2>Sale Items</h2>
+    </div>
+    <div class="carousel-wrapper">
+      <div class="product-carousel" data-carousel="sale"></div>
+      <button class="carousel-nav prev" data-carousel="sale" aria-label="Previous product">&#8249;</button>
+      <button class="carousel-nav next" data-carousel="sale" aria-label="Next product">&#8250;</button>
+    </div>
+    <div class="section-cta">
+      <a href="products.html?category=sale" class="btn view-all">View All Sale Items</a>
+    </div>
+  </section>
+
+</main>
+<!-- Fullscreen Modal -->
+<div id="productModal" class="modal fullscreen-modal" role="dialog" aria-modal="true" aria-labelledby="modalName" tabindex="-1">
+  <div class="modal-content">
+    <span class="close-modal" id="closeModalBtn" tabindex="0" aria-label="Close Modal">&times;</span>
+    <div class="modal-body">
+      <div class="modal-left">
+        <img id="modalImage" src="" alt="Main Product Image" />
+        <div id="modalThumbnails" class="thumbnails"></div>
+      </div>
+      <div class="modal-right">
+        <h3 id="modalName"></h3>
+        <p class="price">R <span id="modalPrice"></span></p>
+        <p id="modalDescription" class="product-description"></p>
+        <label for="sizeSelect">Size:</label>
+        <select id="sizeSelect"></select>
+        <label for="colorSelect">Color:</label>
+        <select id="colorSelect"></select>
+        <label for="quantityInput">Quantity:</label>
+        <input type="number" id="quantityInput" min="1" value="1" />
+        <div class="product-highlights">
+          <h4>Product Details</h4>
+          <ul>
+            <li>Durable rubber sole for long-lasting wear</li>
+            <li>Breathable mesh upper keeps feet cool</li>
+            <li>Cushioned insole for all-day comfort</li>
+            <li>True to size - fits as expected</li>
+            <li>Available in multiple colorways</li>
+          </ul>
+          <div class="modal-highlights">
+            <h4>Product Highlights</h4>
+            <ul id="modal-highlights-list"></ul>
+          </div>
+        </div>
+        <button id="addToCartBtn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Section -->
+<section class="contact-section" id="contactus">
+  <div class="container">
+    <h2>Contact Us</h2>
+    <ul class="contact-list">
+      <li><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:rakoteeholdings@gmail.com">rakoteeholdings@gmail.com</a></li>
+      <li><i class="fas fa-phone"></i> <strong>Phone:</strong> <a href="tel:0663963261">0663963261</a></li>
+      <li><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> <a href="https://wa.me/27663963261" target="_blank" rel="noopener">0663963261</a></li>
+      <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="16" height="16"><path fill="currentColor" d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z"/></svg> <strong>Address:</strong> Online Store Only (No Walk-ins)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-column">
+      <h4>Info</h4>
+      <ul>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="returns.html">Returns</a></li>
+        <li><a href="terms.html">Terms & Conditions</a></li>
+        <li><a href="security.html">Security</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>RAKOTEE</h4>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Mailing List</h4>
+      <form id="mailingListForm" autocomplete="off">
+        <input type="email" id="mailingListEmail" placeholder="Enter your email" required aria-label="Email address" />
+        <button type="submit">Join</button>
+        <span id="mailingListFeedback" style="display:none;color:green;font-size:0.9em;"></span>
+      </form>
+    </div>
+  </div>
+  <div class="footer-payments">
+    <!-- Payment Providers: PayFast, Yoco, Peach Payments, PayPal -->
+  <img src="images/payfast.svg" alt="PayFast payment option" style="height:32px;" />
+  <img src="images/paypal.png" alt="PayPal payment option" style="height:32px;" />
+    <!-- If you don't have these images, use text placeholders below -->
+    <!-- <span class="payment-text">PayFast</span>
+    <span class="payment-text">Yoco</span>
+    <span class="payment-text">Peach Payments</span>
+    <span class="payment-text">PayPal</span> -->
+  </div>
+  <div class="footer-socials">
+    <a href="https://instagram.com/rakotee" aria-label="Instagram" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16"><path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg></a>
+    <a href="https://facebook.com/rakotee" aria-label="Facebook" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16"><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.75l-11 71.69h-57.75V501C413.31 482.38 504 379.78 504 256z"/></svg></a>
+    <a href="https://twitter.com/rakotee" aria-label="Twitter" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16"><path fill="currentColor" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg></a>
+  </div>
+  <p class="footer-note">&copy; 2025 RAKOTEE. All rights reserved. KEEP MOVIN.</p>
+</footer>
+
+<!-- Scripts -->
+<style>
+.premium-home {
+  font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:
+    radial-gradient(circle at 12% 14%, rgba(116, 140, 171, 0.2), transparent 35%),
+    radial-gradient(circle at 86% 6%, rgba(62, 92, 118, 0.2), transparent 38%),
+    var(--dark-navy);
+}
+
+.premium-home .main-header {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  background: linear-gradient(120deg, rgba(13, 19, 33, 0.95), rgba(29, 45, 68, 0.92));
+  border-bottom: 1px solid rgba(116, 140, 171, 0.35);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+.premium-home .nav-container {
+  max-width: 1240px;
+  padding: 0.8rem 1rem;
+  gap: 0.8rem;
+}
+
+.premium-home .logo a {
+  font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+  letter-spacing: 0.08em;
+  font-size: 2rem;
+  color: var(--light-beige);
+}
+
+.premium-home .icon-btn {
+  border: 1px solid rgba(116, 140, 171, 0.4);
+  border-radius: 999px;
+  background: rgba(13, 19, 33, 0.55);
+  color: var(--light-beige);
+  transition: transform 0.25s ease, background-color 0.25s ease;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.premium-home .icon-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(62, 92, 118, 0.55);
+}
+
+.premium-home .nav-icons {
+  gap: 0.6rem;
+}
+
+.premium-home .cart-icon-btn {
+  color: var(--light-beige);
+  background: rgba(13, 19, 33, 0.65);
+  border: 1px solid rgba(116, 140, 171, 0.48);
+  border-radius: 999px;
+  padding: 0.48rem 0.9rem;
+  font-size: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+  margin-left: 0;
+  position: relative;
+  cursor: pointer;
+}
+
+.premium-home .cart-icon-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(62, 92, 118, 0.55);
+}
+
+.premium-home .cart-icon-btn .cart-count {
+  top: -8px;
+  right: -8px;
+  background: var(--steel-blue);
+  color: var(--dark-navy);
+  border: 1px solid rgba(240, 235, 216, 0.5);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+.premium-home .account-dropdown {
+  display: inline-flex;
+  align-items: center;
+}
+
+.premium-home .search-bar {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1rem 0.8rem;
+}
+
+.premium-home .search-bar input {
+  width: 100%;
+  background: rgba(13, 19, 33, 0.82);
+  border: 1px solid rgba(116, 140, 171, 0.42);
+  border-radius: 12px;
+  color: var(--light-beige);
+  padding: 0.75rem 0.95rem;
+}
+
+.premium-home .search-bar input:focus {
+  outline: none;
+  border-color: rgba(116, 140, 171, 0.9);
+  box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.2);
+}
+
+.premium-home .mobile-menu {
+  background: linear-gradient(150deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.96)) !important;
+  border: 1px solid rgba(116, 140, 171, 0.4) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.35) !important;
+  color: var(--light-beige) !important;
+  padding: 1rem 0.85rem !important;
+}
+
+.premium-home .mobile-menu.active {
+  right: 0 !important;
+  background: linear-gradient(150deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.96)) !important;
+}
+
+.premium-home .mobile-menu a {
+  color: var(--light-beige) !important;
+  background: transparent !important;
+  border-radius: 8px !important;
+  padding: 0.7rem 0.75rem !important;
+  margin: 0.15rem 0 !important;
+  font-size: 1rem !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+.premium-home .mobile-menu a:hover {
+  background: rgba(116, 140, 171, 0.25) !important;
+  color: #ffffff !important;
+}
+
+.premium-home .mobile-menu a::after {
+  display: none !important;
+}
+
+.premium-home .mobile-overlay {
+  background: rgba(6, 10, 18, 0.62) !important;
+  backdrop-filter: blur(2px);
+}
+
+.premium-home .mobile-overlay.active {
+  display: block !important;
+  background: rgba(6, 10, 18, 0.62) !important;
+}
+
+.premium-home .dropdown-menu {
+  background: linear-gradient(150deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.96));
+  border: 1px solid rgba(116, 140, 171, 0.38);
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.premium-home .dropdown-menu a {
+  color: var(--light-beige);
+  border-bottom: 1px solid rgba(116, 140, 171, 0.2);
+}
+
+.premium-home .dropdown-menu a:last-child {
+  border-bottom: none;
+}
+
+.premium-home .dropdown-menu a:hover {
+  background: rgba(116, 140, 171, 0.22);
+  color: #ffffff;
+}
+
+.premium-home .shop-now-banner {
+  min-height: clamp(340px, 62svh, 580px);
+  background:
+    linear-gradient(130deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.85)),
+    url('images/products/airforce/air-force-black.png') center/cover no-repeat;
+  border-bottom: 1px solid rgba(116, 140, 171, 0.25);
+}
+
+.premium-home .shop-now-content {
+  max-width: 900px;
+  padding: clamp(1.4rem, 3.2vh, 2.6rem) 1rem;
+  animation: homeLift 0.7s ease;
+}
+
+.premium-home .home-kicker {
+  margin: 0;
+  color: var(--steel-blue);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+}
+
+.premium-home .shop-now-content h1 {
+  font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+  font-size: clamp(2.8rem, 8vw, 5.6rem);
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  margin: 0.35rem 0;
+}
+
+.premium-home .home-subtitle {
+  margin: 0;
+  color: rgba(240, 235, 216, 0.86);
+  font-size: clamp(1rem, 2vw, 1.16rem);
+  line-height: 1.6;
+}
+
+.premium-home .home-cta-row {
+  margin-top: 1.3rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.premium-home .shop-now-btn {
+  border-radius: 999px;
+  padding: 0.82rem 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--slate-blue), var(--steel-blue));
+  border: 1px solid rgba(116, 140, 171, 0.6);
+  color: var(--light-beige);
+  box-shadow: 0 12px 24px rgba(62, 92, 118, 0.35);
+}
+
+.premium-home .shop-now-btn.secondary {
+  background: rgba(13, 19, 33, 0.68);
+  border-color: rgba(116, 140, 171, 0.5);
+}
+
+.premium-home .container {
+  width: min(1200px, calc(100% - 2rem));
+  margin: 1.4rem auto 0;
+}
+
+.premium-home .product-section {
+  background: linear-gradient(160deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.82));
+  border: 1px solid rgba(116, 140, 171, 0.25);
+  border-radius: 18px;
+  padding: 1.2rem;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  position: relative;
+  isolation: isolate;
+}
+
+.premium-home .section-head {
+  margin-bottom: 0.8rem;
+}
+
+.premium-home .section-head p {
+  margin: 0;
+  color: var(--steel-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.premium-home .section-head h2 {
+  margin: 0.35rem 0 0;
+  color: var(--light-beige);
+}
+
+.premium-home .product-card {
+  background: linear-gradient(165deg, #121b2d, #10192a);
+  border: 1px solid rgba(116, 140, 171, 0.2);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.premium-home .product-card:hover {
+  transform: translateY(-7px);
+  border-color: rgba(116, 140, 171, 0.55);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.34);
+}
+
+.premium-home .view-all {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-self: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(116, 140, 171, 0.22);
+  border: 1px solid rgba(116, 140, 171, 0.5);
+  color: var(--light-beige);
+}
+
+.premium-home .section-cta {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+@keyframes homeLift {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Carousel Styling */
+.premium-home .carousel-wrapper {
+  position: relative;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.premium-home #footwear .carousel-wrapper {
+  gap: 0;
+}
+
+.premium-home .product-carousel {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(116, 140, 171, 0.3) transparent;
+}
+
+.premium-home .product-carousel::-webkit-scrollbar {
+  height: 6px;
+}
+
+.premium-home .product-carousel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.premium-home .product-carousel::-webkit-scrollbar-thumb {
+  background: rgba(116, 140, 171, 0.3);
+  border-radius: 3px;
+}
+
+.premium-home .product-carousel .product-card {
+  flex: 0 0 calc(33.333% - 0.67rem);
+  min-width: calc(33.333% - 0.67rem);
+}
+
+.premium-home .product-carousel.is-marquee {
+  display: block;
+  overflow: hidden;
+  scroll-behavior: auto;
+  scrollbar-width: none;
+}
+
+.premium-home .product-carousel.is-marquee::-webkit-scrollbar {
+  display: none;
+}
+
+.premium-home .product-carousel.is-marquee .marquee-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: footwearMarquee 35s linear infinite;
+}
+
+.premium-home .product-carousel.is-marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.premium-home #footwear .product-carousel.is-marquee .product-card {
+  flex: 0 0 240px;
+  min-width: 240px;
+}
+
+.premium-home .product-carousel .product-card img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  display: block;
+}
+
+.premium-home .product-carousel .product-card h3 {
+  margin: 0.6rem 0.7rem 0.3rem;
+  color: var(--light-beige);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: normal;
+  min-height: 2.4em;
+}
+
+.premium-home .product-carousel .product-card p {
+  margin: 0 0.7rem 0.75rem;
+  color: rgba(240, 235, 216, 0.78);
+  font-size: 0.86rem;
+}
+
+.premium-home #footwear .carousel-nav {
+  display: none;
+}
+
+.premium-home .carousel-nav {
+  flex-shrink: 0;
+  background: rgba(116, 140, 171, 0.2);
+  border: 1px solid rgba(116, 140, 171, 0.5);
+  color: var(--light-beige);
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.premium-home .carousel-nav:hover {
+  background: rgba(116, 140, 171, 0.45);
+  border-color: rgba(116, 140, 171, 0.75);
+  transform: scale(1.1);
+}
+
+@media (max-width: 1024px) {
+  .premium-home .product-carousel .product-card {
+    flex: 0 0 calc(50% - 0.5rem);
+    min-width: calc(50% - 0.5rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .premium-home .product-carousel .product-card {
+    flex: 0 0 100%;
+    min-width: 100%;
+  }
+
+  .premium-home #footwear .product-carousel.is-marquee .product-card {
+    flex: 0 0 72vw;
+    min-width: 72vw;
+  }
+  
+  .premium-home .carousel-nav {
+    width: 38px;
+    height: 38px;
+    font-size: 1.4rem;
+  }
+}
+
+@keyframes footwearMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.premium-home .main-footer {
+  background: linear-gradient(165deg, rgba(13, 19, 33, 0.98), rgba(29, 45, 68, 0.94));
+  border-top: 1px solid rgba(116, 140, 171, 0.3);
+  color: var(--light-beige);
+  padding: 2rem 1rem;
+  margin-top: 2rem;
+}
+
+.premium-home .footer-content {
+  width: min(1200px, calc(100% - 2rem));
+  margin: 0 auto 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.premium-home .footer-column h4 {
+  margin: 0 0 0.8rem;
+  color: var(--steel-blue);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.premium-home .footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.premium-home .footer-column ul li {
+  margin: 0.5rem 0;
+}
+
+.premium-home .footer-column ul li a {
+  color: rgba(240, 235, 216, 0.85);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.25s ease;
+}
+
+.premium-home .footer-column ul li a:hover {
+  color: var(--steel-blue);
+}
+
+.premium-home .footer-column form {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.premium-home .footer-column input[type="email"] {
+  flex: 1;
+  padding: 0.6rem 0.85rem;
+  background: rgba(13, 19, 33, 0.8);
+  border: 1px solid rgba(116, 140, 171, 0.48);
+  border-radius: 8px;
+  color: var(--light-beige);
+  font-size: 0.9rem;
+}
+
+.premium-home .footer-column input[type="email"]:focus {
+  outline: none;
+  border-color: rgba(116, 140, 171, 0.8);
+  box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.2);
+}
+
+.premium-home .footer-column button {
+  padding: 0.6rem 1rem;
+  background: rgba(116, 140, 171, 0.3);
+  border: 1px solid rgba(116, 140, 171, 0.6);
+  border-radius: 8px;
+  color: var(--light-beige);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.premium-home .footer-column button:hover {
+  background: rgba(116, 140, 171, 0.55);
+  border-color: rgba(116, 140, 171, 0.9);
+}
+
+.premium-home .footer-payments {
+  text-align: center;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(116, 140, 171, 0.2);
+  border-bottom: 1px solid rgba(116, 140, 171, 0.2);
+}
+
+.premium-home .footer-payments img {
+  height: 32px;
+  margin: 0 0.8rem;
+  opacity: 0.9;
+  transition: opacity 0.25s ease;
+}
+
+.premium-home .footer-payments img:hover {
+  opacity: 1;
+}
+
+.premium-home .footer-socials {
+  text-align: center;
+  padding: 1rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.premium-home .footer-socials a {
+  display: inline-block;
+  width: 42px;
+  height: 42px;
+  background: rgba(116, 140, 171, 0.2);
+  border: 1px solid rgba(116, 140, 171, 0.4);
+  border-radius: 999px;
+  color: var(--light-beige);
+  text-decoration: none;
+  font-size: 1.1rem;
+  line-height: 40px;
+  margin: 0 0.4rem;
+  transition: all 0.25s ease;
+}
+
+.premium-home .footer-socials a:hover {
+  transform: translateY(-2px);
+  background: rgba(116, 140, 171, 0.45);
+  border-color: rgba(116, 140, 171, 0.75);
+}
+
+.premium-home .footer-note {
+  text-align: center;
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(116, 140, 171, 0.2);
+  color: rgba(240, 235, 216, 0.7);
+  font-size: 0.88rem;
+}
+
+.premium-home .contact-section {
+  background: linear-gradient(160deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.82));
+  border: 1px solid rgba(116, 140, 171, 0.25);
+  border-radius: 18px;
+  padding: 2rem 1rem;
+  margin: 2rem 1rem;
+}
+
+.premium-home .contact-section h2 {
+  text-align: center;
+  color: var(--light-beige);
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.premium-home .contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: min(800px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.2rem;
+}
+
+.premium-home .contact-list li {
+  background: rgba(13, 19, 33, 0.7);
+  border: 1px solid rgba(116, 140, 171, 0.35);
+  border-radius: 14px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+}
+
+.premium-home .contact-list li:hover {
+  transform: translateY(-4px);
+  border-color: rgba(116, 140, 171, 0.65);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.premium-home .contact-list li i {
+  font-size: 1.8rem;
+  color: var(--steel-blue);
+}
+
+.premium-home .contact-list li strong {
+  color: var(--light-beige);
+  font-size: 0.95rem;
+}
+
+.premium-home .contact-list li a {
+  color: rgba(240, 235, 216, 0.85);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.25s ease;
+}
+
+.premium-home .contact-list li a:hover {
+  color: var(--steel-blue);
+}
+
+/* Critical Android header layout guard */
+@media (max-width: 900px) {
+  .premium-home .main-header,
+  .premium-home .nav-container,
+  .premium-home .nav-icons {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .premium-home .nav-container {
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .premium-home .nav-icons {
+    margin-left: auto !important;
+    gap: 0.45rem !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+  }
+
+  .premium-home .menu-toggle,
+  .premium-home #searchToggle,
+  .premium-home #cartIconBtn,
+  .premium-home #accountToggle {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0.4rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 auto !important;
+    border-radius: 999px !important;
+  }
+
+  .premium-home #cartIconBtn {
+    width: auto !important;
+    min-width: 52px !important;
+    padding: 0.35rem 0.65rem !important;
+  }
+}
+
+/* FINAL ANDROID STABILIZATION LOCK: keep this block last */
+.premium-home .shop-now-content h1,
+.premium-home .section-head h2,
+.premium-home .contact-section h2 {
+  font-family: 'Bebas Neue', 'Arial Narrow', sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  line-height: 1.15 !important;
+  text-align: center !important;
+  overflow-wrap: anywhere !important;
+  text-wrap: balance !important;
+}
+
+@media (max-width: 768px) {
+  .premium-home {
+    --android-banner-h: clamp(300px, 56svh, 420px);
+  }
+
+  .premium-home .shop-now-banner {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: var(--android-banner-h) !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  .premium-home .product-section,
+  .premium-home .contact-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: unset !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  .premium-home .product-section {
+    margin-bottom: 1rem !important;
+  }
+
+  .premium-home .product-section,
+  .premium-home .contact-section {
+    display: block !important;
+  }
+
+  .premium-home .shop-now-content h1,
+  .premium-home .section-head h2,
+  .premium-home .contact-section h2 {
+    font-size: 1.9rem !important;
+    margin-top: 0 !important;
+    margin-bottom: 0.7rem !important;
+  }
+
+  .premium-home .carousel-wrapper {
+    margin: 0.75rem 0 0.95rem !important;
+  }
+
+  .premium-home .product-carousel .product-card {
+    flex: 0 0 80vw !important;
+    min-width: 80vw !important;
+  }
+
+  .premium-home .product-section .section-cta {
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 0.95rem !important;
+    margin-bottom: 0.15rem !important;
+    width: 100% !important;
+  }
+
+  .premium-home .product-section .view-all {
+    position: static !important;
+    clear: both !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .premium-home {
+    --android-banner-h: clamp(260px, 48svh, 340px);
+  }
+
+  .premium-home .shop-now-banner {
+    min-height: var(--android-banner-h) !important;
+  }
+
+  .premium-home .shop-now-content h1,
+  .premium-home .section-head h2,
+  .premium-home .contact-section h2 {
+    font-size: 1.65rem !important;
+  }
+
+  .premium-home .home-cta-row {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    gap: 0.45rem !important;
+  }
+
+  .premium-home .product-section .view-all {
+    width: min(84vw, 280px) !important;
+    min-height: 44px !important;
+  }
+
+  .premium-home .product-section {
+    margin-bottom: 0.9rem !important;
+  }
+
+  .premium-home .product-carousel .product-card {
+    flex: 0 0 86vw !important;
+    min-width: 86vw !important;
+  }
+}
+
+</style>
+
+<script defer src="main.js?v=20260413n"></script>
+<script src="cart.js?v=20260413n"></script>
+<!-- Cart Sidebar -->
+<div id="cartSidebar" class="cart-sidebar" role="complementary" aria-label="Shopping Cart Sidebar" tabindex="-1">
+  <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart" tabindex="0">&times;</button>
+  <h2>Your Cart</h2>
+  <div id="cartItems"></div>
+  <div id="cart-summary">
+    <p><strong>Total:</strong> R <span id="cartTotal">0.00</span></p>
+    <button id="checkout-btn">Checkout</button>
+  </div>
+</div>
+<div class="cart-overlay" id="cartOverlay" tabindex="-1"></div>
+
+<script>
+// Render homepage carousels with a resilient data source.
+document.addEventListener('DOMContentLoaded', async () => {
+  const loadCatalog = async () => {
+    // Parse product objects from products.js so category-based carousels (phones/sale)
+    // can use the same source as products.html.
+    try {
+      const jsResponse = await fetch('products.js', { cache: 'no-store' });
+      if (jsResponse.ok) {
+        const jsText = await jsResponse.text();
+        const startToken = 'const products = [';
+        const start = jsText.indexOf(startToken);
+        if (start !== -1) {
+          let depth = 0;
+          let end = -1;
+          for (let i = start + startToken.length - 1; i < jsText.length; i += 1) {
+            const ch = jsText[i];
+            if (ch === '[') depth += 1;
+            if (ch === ']') {
+              depth -= 1;
+              if (depth === 0) {
+                end = i;
+                break;
+              }
+            }
+          }
+
+          if (end !== -1) {
+            const arrayLiteral = jsText.slice(start + 'const products = '.length, end + 1);
+            const parsedProducts = Function(`"use strict"; return (${arrayLiteral});`)();
+            if (Array.isArray(parsedProducts) && parsedProducts.length) {
+              return parsedProducts
+                .filter((p) => p && typeof p === 'object')
+                .map((p) => ({
+                  name: p.name || 'Product',
+                  price: Number(p.price) || 0,
+                  images: Array.isArray(p.images) && p.images.length ? p.images : ['products/fallback.png'],
+                  category: (p.category || '').toString()
+                }));
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('Could not parse products.js for homepage carousel.', error);
+    }
+
+    try {
+      const response = await fetch('products.json', { cache: 'no-store' });
+      if (!response.ok) return [];
+      const data = await response.json();
+      return Array.isArray(data)
+        ? data.map(item => ({
+            name: item && item.name ? item.name : 'Product',
+            price: Number(item && item.price) || 0,
+            images: [item && item.image ? item.image : 'products/fallback.png'],
+            category: (item && item.category ? item.category : '').toString()
+          }))
+        : [];
+    } catch (error) {
+      console.error('Could not load products for homepage carousel.', error);
+      return [];
+    }
+  };
+
+  const catalog = await loadCatalog();
+  if (!catalog.length) {
+    console.error('No products available to render on homepage.');
+    return;
+  }
+
+  // Guaranteed image set from the real products folder for the footwear marquee.
+  const footwearImageFiles = [
+    'WHITE AIR01.jpg',
+    'WHITE AIR02.jpg',
+    'luxe1.jpg',
+    'luxe2.jpg',
+    'Panda 1.jpg',
+    'Panda 2.jpg',
+    'Triple Black1.jpg',
+    'University Red1.jpg',
+    'Safari 1.jpg',
+    'jarritos1.jpg',
+    'syracuse1.jpg',
+    'royal1.jpg',
+    'cacao1.jpg',
+    'spacejam1.png',
+    'wolf1.png'
+  ];
+
+  const renderCardHTML = (product, fallbackName = 'Product') => {
+    const name = product && product.name ? product.name : fallbackName;
+    const price = Number(product && product.price) || 0;
+    const firstImage = product && Array.isArray(product.images) && product.images[0]
+      ? product.images[0]
+      : (product && typeof product.image === 'string' ? product.image : 'products/fallback.png');
+    const imgUrl = firstImage.startsWith('/') ? firstImage.slice(1) : firstImage;
+
+    return `
+      <article class="product-card" style="cursor:pointer;">
+        <img src="${imgUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='products/fallback.png';">
+        <h3>${name}</h3>
+        <p>R ${price.toFixed(2)}</p>
+      </article>
+    `;
+  };
+
+  const isPhoneProduct = (item) => /iphone|samsung|huawei|pixel|xr|11\s*pro|12\s*pro|13\s*pro|max/i.test((item && item.name) || '');
+  const isFootwearProduct = (item) => /nike|adidas|jordan|dunk|puma|vans|shox|air force|air max|slide|mule/i.test((item && item.name) || '');
+  const isSaleProduct = (item) => /sale|deal|discount/i.test((item && item.name) || '');
+
+  const byCategory = (categoryName) => {
+    const normalized = (categoryName || '').toLowerCase();
+    return catalog.filter((item) => ((item && item.category) || '').toString().toLowerCase() === normalized);
+  };
+
+  const footwearProducts = byCategory('shoes').length
+    ? byCategory('shoes')
+    : catalog.filter(isFootwearProduct);
+
+  const phoneProducts = byCategory('phones').length
+    ? byCategory('phones')
+    : catalog.filter(isPhoneProduct);
+
+  const saleProducts = byCategory('sale').length
+    ? byCategory('sale')
+    : catalog.filter(isSaleProduct);
+
+  // Populate each carousel with category-aware products.
+  const carouselIds = ['footwear', 'phones', 'sale'];
+
+  carouselIds.forEach(id => {
+    const carousel = document.querySelector(`[data-carousel="${id}"]`);
+    if (!carousel) return;
+
+    let productsToShow = [];
+
+    if (id === 'footwear') {
+      productsToShow = footwearProducts.slice(0, 15);
+      const fallbackFootwear = footwearImageFiles.map((fileName, index) => ({
+        image: `products/${fileName}`,
+        images: [`products/${fileName}`],
+        name: `Footwear ${index + 1}`,
+        price: 0
+      }));
+      if (!productsToShow.length) productsToShow = fallbackFootwear;
+
+      const footwearCards = productsToShow
+        .map(item => renderCardHTML(item, item.name || 'Footwear'))
+        .join('');
+
+      carousel.classList.add('is-marquee');
+      carousel.innerHTML = `<div class="marquee-track">${footwearCards}${footwearCards}</div>`;
+      return;
+    }
+
+    if (id === 'phones') {
+      productsToShow = phoneProducts.slice(0, 15);
+      if (!productsToShow.length) productsToShow = footwearProducts.slice(0, 15);
+    }
+
+    if (id === 'sale') {
+      productsToShow = saleProducts.slice(0, 15);
+      if (!productsToShow.length) productsToShow = catalog.slice(0, 15);
+    }
+
+    const cardsHTML = productsToShow
+      .map((item, index) => renderCardHTML(item, `Product ${index + 1}`))
+      .join('');
+
+    carousel.innerHTML = cardsHTML;
+  });
+
+  // Initialize carousel functionality
+  const carousels = document.querySelectorAll('.product-carousel');
+  const autoScrollInterval = 5000;
+  
+  carousels.forEach(carousel => {
+    if (carousel.classList.contains('is-marquee')) return;
+
+    const carouselId = carousel.dataset.carousel;
+    const cards = carousel.querySelectorAll('.product-card');
+    const wrapper = carousel.parentElement;
+    let currentIndex = 0;
+    let autoScrollTimer;
+    
+    if (cards.length === 0) return;
+    
+    const scrollToCard = (index) => {
+      currentIndex = (index + cards.length) % cards.length;
+      const cardWidth = cards[0].offsetWidth;
+      const gap = 16;
+      const scrollPos = currentIndex * (cardWidth + gap);
+      carousel.scrollLeft = scrollPos;
+    };
+    
+    const nextCard = () => {
+      scrollToCard(currentIndex + 1);
+    };
+    
+    const prevCard = () => {
+      scrollToCard(currentIndex - 1);
+    };
+    
+    const startAutoScroll = () => {
+      if (autoScrollTimer) clearInterval(autoScrollTimer);
+      autoScrollTimer = setInterval(nextCard, autoScrollInterval);
+    };
+    
+    const stopAutoScroll = () => {
+      if (autoScrollTimer) clearInterval(autoScrollTimer);
+    };
+    
+    // Attach nav button listeners
+    wrapper.querySelectorAll('.carousel-nav').forEach(btn => {
+      if (btn.dataset.carousel === carouselId) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          stopAutoScroll();
+          if (btn.classList.contains('next')) {
+            nextCard();
+          } else {
+            prevCard();
+          }
+          startAutoScroll();
+        });
+      }
+    });
+    
+    // Stop auto-scroll on mouse hover
+    carousel.addEventListener('mouseenter', stopAutoScroll);
+    carousel.addEventListener('mouseleave', startAutoScroll);
+    
+    // Start auto-scroll on load
+    setTimeout(startAutoScroll, 500);
+  });
+});
+</script>
+</body>
+</html>
+
 

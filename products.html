@@ -1,651 +1,652 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RAKOTEE Products | Sneakers, Phones, Accessories</title>
-  <meta name="description" content="Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more. Fast shipping and great prices!" />
-  <meta name="keywords" content="sneakers, shoes, Nike, Adidas, buy online, South Africa, RAKOTEE, fashion, apparel" />
-  <meta name="author" content="RAKOTEE Store" />
-  <link rel="canonical" href="https://rakotee.site/products.html" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Open Graph / Facebook -->
-  <meta property="og:title" content="RAKOTEE Products" />
-  <meta property="og:description" content="Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more." />
-  <meta property="og:image" content="https://rakotee.site/rakotee.png.png" />
-  <meta property="og:url" content="https://rakotee.site/products.html" />
-  <meta property="og:type" content="website" />
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="RAKOTEE Products" />
-  <meta name="twitter:description" content="Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more." />
-  <meta name="twitter:image" content="https://rakotee.site/rakotee.png.png" />
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org/",
-    "@type": "Store",
-    "name": "RAKOTEE Store",
-    "url": "https://rakotee.site/products.html",
-    "logo": "https://rakotee.site/rakotee.png.png",
-    "description": "Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more.",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "ZA"
-    }
-  }
-  </script>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="theme.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-</head>
-<body>
-
-  <!-- Navbar -->
-  <nav class="navbar products-navbar" role="navigation" aria-label="Main Navigation">
-    <a href="index.html" class="products-nav-brand" aria-label="Go to home page">
-      <img src="rakotee.png.png" alt="RAKOTEE Store Logo" class="products-logo-nav" width="160" height="44" loading="eager" decoding="async" fetchpriority="high"/>
-      <div class="products-nav-copy">
-        <strong>RAKOTEE</strong>
-        <span>Products</span>
-      </div>
-    </a>
-    <div class="products-nav-actions">
-      <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open Cart">
-        <i class="fas fa-shopping-cart"></i> <span id="cartCount" class="cart-count">0</span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Products Section -->
-  <section class="products" aria-labelledby="products-heading">
-    <div class="products-header-wrap">
-      <p class="products-overline">Catalog</p>
-      <h2 id="products-heading">Our Products</h2>
-      <p class="products-subline">Find your size, filter by style, and discover your next daily pair.</p>
-    </div>
-
-    <!-- Search and Sort Toolbar -->
-    <div class="products-toolbar">
-      <div class="toolbar-search-wrap">
-        <label for="searchInput">Search</label>
-        <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products">
-      </div>
-
-      <div class="toolbar-filter-grid">
-        <div class="toolbar-filter-item">
-          <label for="categoryFilter">Category</label>
-          <select id="categoryFilter" aria-label="Filter by category">
-            <option value="">All Categories</option>
-            <option value="Shoes">Shoes</option>
-            <option value="Phones">Phones</option>
-            <option value="Hubbly">Hubbly</option>
-            <option value="Accessories">Accessories</option>
-            <option value="Sale">Sale</option>
-          </select>
-        </div>
-
-        <div class="toolbar-filter-item">
-          <label for="colorFilter">Color</label>
-          <select id="colorFilter" aria-label="Filter by color">
-            <option value="">All Colors</option>
-            <option value="White">White</option>
-            <option value="BLACK">Black</option>
-            <option value="Red">Red</option>
-            <option value="Blue">Blue</option>
-            <option value="iPhone">iPhones</option>
-          </select>
-        </div>
-
-        <div class="toolbar-filter-item">
-          <label for="sizeFilter">Size</label>
-          <select id="sizeFilter" aria-label="Filter by size">
-            <option value="">All Sizes</option>
-            <option value="2UK">2UK</option>
-            <option value="3UK">3UK</option>
-            <option value="4UK">4UK</option>
-            <option value="5UK">5UK</option>
-            <option value="6UK">6UK</option>
-            <option value="7UK">7UK</option>
-            <option value="8UK">8UK</option>
-            <option value="9UK">9UK</option>
-            <option value="10UK">10UK</option>
-            <option value="11UK">11UK</option>
-            <option value="12UK">12UK</option>
-          </select>
-        </div>
-
-        <div class="toolbar-filter-item">
-          <label for="sortSelect">Sort</label>
-          <select id="sortSelect" aria-label="Sort products">
-            <option value="default">Sort By</option>
-            <option value="name">Name</option>
-            <option value="price">Price</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Product Grid -->
-    <div id="loadingSpinner" style="display:none;text-align:center;margin:2rem 0;">
-      <div class="spinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #333; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin:auto;"></div>
-      <p>Loading products...</p>
-    </div>
-    <div class="product-grid" id="productGrid"></div>
-
-    <section class="trust-strip" aria-label="Shopping trust highlights">
-      <article class="trust-item">
-        <h4>Secure Checkout</h4>
-        <p>Verified payment gateways and protected transactions.</p>
-      </article>
-      <article class="trust-item">
-        <h4>Fast Dispatch</h4>
-        <p>Orders are prepared quickly with tracking updates by email.</p>
-      </article>
-      <article class="trust-item">
-        <h4>Easy Returns</h4>
-        <p>Simple return process if your size or fit is not right.</p>
-      </article>
-      <article class="trust-item">
-        <h4>Support Team</h4>
-        <p>Direct help on WhatsApp and email for order questions.</p>
-      </article>
-    </section>
-  </section>
-
-  <!-- Cart Sidebar -->
-<div id="cartSidebar" class="cart-sidebar">
-  <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart">&times;</button>
-  <h2>Your Cart</h2>
-  <div id="cartItems"></div>
-  <div id="cart-summary">
-    <p><strong>Total:</strong> R <span id="cartTotal">0.00</span></p>
-    <button id="checkout-btn">Checkout</button>
-  </div>
-</div>
-<div class="cart-overlay" id="cartOverlay"></div>
-  <!-- Removed duplicate script include -->
-  <script src="cart.js"></script>
-  <script src="lazyload.js" defer></script>
-
-
- <!-- Fullscreen Modal -->
-<div id="productModal" class="modal fullscreen-modal">
-  <div class="modal-content">
-    <span class="close-modal" id="closeModalBtn">&times;</span>
-    <div class="modal-body">
-      <div class="modal-left">
-        <img id="modalImage" src="" alt="Product main image" />
-        <div id="modalThumbnails" class="thumbnails"></div>
-      </div>
-      <div class="modal-right">
-        <h3 id="modalName"></h3>
-        <p class="price">R <span id="modalPrice"></span></p>
-        <p id="modalDescription" class="product-description"></p>
-
-  <label for="sizeSelect" id="sizeLabel">Size:</label>
-        <select id="sizeSelect"></select>
-
-        <label for="colorSelect">Color:</label>
-        <select id="colorSelect"></select>
-
-        <label for="quantityInput">Quantity:</label>
-        <input type="number" id="quantityInput" min="1" value="1" />
-        <button id="addToCartBtn">Add to Cart</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-function updateCartCount() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-  document.querySelectorAll('.cart-count').forEach(el => {
-    el.innerText = count;
-  });
-}
-updateCartCount();
-
-// Cart Sidebar Open/Close Logic
-const cartIconBtn = document.getElementById('cartIconBtn');
-const cartSidebar = document.getElementById('cartSidebar');
-const closeCartBtn = document.getElementById('closeCartBtn');
-const cartOverlay = document.getElementById('cartOverlay');
-
-// Open cart sidebar
-cartIconBtn.addEventListener('click', () => {
-  renderCartSidebar();
-  cartSidebar.classList.add('open');
-  cartSidebar.style.display = 'block';
-  // show overlay and prevent background scroll while cart is open
-  if (typeof cartOverlay !== 'undefined' && cartOverlay) cartOverlay.classList.add('active');
-  document.body.style.overflow = 'hidden';
-});
-
-// Close cart sidebar
-closeCartBtn.addEventListener('click', () => {
-  cartSidebar.classList.remove('open');
-  cartSidebar.style.display = 'none';
-  if (typeof cartOverlay !== 'undefined' && cartOverlay) cartOverlay.classList.remove('active');
-  document.body.style.overflow = '';
-});
-
-// Optional: Hide sidebar on click outside (mobile UX)
-window.addEventListener('click', function(e) {
-  if (
-    cartSidebar.classList.contains('open') &&
-    !cartSidebar.contains(e.target) &&
-    e.target !== cartIconBtn
-  ) {
-    cartSidebar.classList.remove('open');
-    cartSidebar.style.display = 'none';
-    if (typeof cartOverlay !== 'undefined' && cartOverlay) cartOverlay.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-});
-
-// Render cart sidebar with live products
-function renderCartSidebar() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const cartItemsDiv = document.getElementById('cartItems');
-  const cartTotalSpan = document.getElementById('cartTotal');
-  if (!cartItemsDiv || !cartTotalSpan) return;
-
-  if (cart.length === 0) {
-    cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
-    cartTotalSpan.textContent = '0.00';
-    return;
-  }
-
-  let total = 0;
-  cartItemsDiv.innerHTML = '';
-  cart.forEach(item => {
-    total += (item.price * item.quantity);
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'cart-item';
-    itemDiv.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-        <img src="${item.image || 'https://placehold.co/50x50'}" alt="${item.name}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;">
-        <div>
-          <strong>${item.name}</strong><br>
-          <span>Size: ${item.size || '-'}</span><br>
-          <span>Color: ${item.color || '-'}</span><br>
-          <span>Qty: ${item.quantity}</span><br>
-          <span>R${(item.price * item.quantity).toFixed(2)}</span>
-        </div>
-      </div>
-    `;
-    cartItemsDiv.appendChild(itemDiv);
-  });
-  cartTotalSpan.textContent = total.toFixed(2);
-}
-
-// Call this after any cart update
-function updateCartCountAndSidebar() {
-  updateCartCount();
-  renderCartSidebar();
-}
-
-// Patch your addToCartBtn logic to call updateCartCountAndSidebar()
-// Example (adjust as needed for your codebase):
-// document.getElementById('addToCartBtn').onclick = function() { ...; updateCartCountAndSidebar(); }
-
-// Also, render cart sidebar on page load:
-renderCartSidebar();
-</script>
-
-  <!-- Page styling -->
-  <style>
-    body {
-      font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background:
-        radial-gradient(circle at 12% 16%, rgba(116, 140, 171, 0.2), transparent 36%),
-        radial-gradient(circle at 88% 4%, rgba(62, 92, 118, 0.22), transparent 38%),
-        var(--dark-navy);
-    }
-
-    .products-navbar {
-      position: sticky;
-      top: 0;
-      z-index: 1200;
-      background: linear-gradient(120deg, rgba(13, 19, 33, 0.95), rgba(29, 45, 68, 0.92));
-      border-bottom: 1px solid rgba(116, 140, 171, 0.35);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(8px);
-      padding: 0.85rem 1.2rem;
-    }
-
-    .products-nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      text-decoration: none;
-      transition: transform 0.25s ease;
-    }
-
-    .products-nav-brand:hover {
-      transform: translateY(-1px);
-    }
-
-    .products-nav-copy {
-      display: flex;
-      flex-direction: column;
-      line-height: 1;
-      color: var(--light-beige);
-    }
-
-    .products-nav-copy strong {
-      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
-      letter-spacing: 0.08em;
-      font-size: 1.32rem;
-      font-weight: 400;
-    }
-
-    .products-nav-copy span {
-      font-size: 0.74rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: rgba(240, 235, 216, 0.7);
-      margin-top: 0.1rem;
-    }
-
-    .products-navbar .products-logo-nav {
-      height: 42px;
-      width: 42px;
-      border-radius: 10px;
-      object-fit: cover;
-      border: 1px solid rgba(116, 140, 171, 0.55);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-      padding: 3px;
-      background: rgba(13, 19, 33, 0.8);
-    }
-
-    .products-nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-    }
-
-    .products-navbar .cart-icon-btn {
-      color: var(--light-beige);
-      background: rgba(13, 19, 33, 0.65);
-      border: 1px solid rgba(116, 140, 171, 0.48);
-      border-radius: 999px;
-      padding: 0.48rem 0.9rem;
-      font-size: 1.15rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 56px;
-      transition: transform 0.25s ease, background-color 0.25s ease;
-      margin-left: 0;
-    }
-
-    .products-navbar .cart-icon-btn:hover {
-      transform: translateY(-1px);
-      background: rgba(62, 92, 118, 0.55);
-    }
-
-    .products-navbar .cart-count {
-      top: -8px;
-      right: -8px;
-      background: var(--steel-blue);
-      color: var(--dark-navy);
-      border: 1px solid rgba(240, 235, 216, 0.5);
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-    }
-
-    .products-highlights {
-      width: min(1180px, calc(100% - 2rem));
-      margin: 2rem auto 1.5rem;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(180px, 1fr));
-      gap: 1rem;
-      position: relative;
-      z-index: 2;
-    }
-
-    .highlight-pill {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      background: linear-gradient(140deg, rgba(29, 45, 68, 0.95), rgba(13, 19, 33, 0.96));
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 14px;
-      padding: 1rem 1.1rem;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
-    }
-
-    .highlight-title {
-      color: var(--steel-blue);
-      font-weight: 800;
-      font-size: 0.88rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .highlight-copy {
-      color: rgba(255, 255, 255, 0.82);
-      font-size: 0.92rem;
-      line-height: 1.45;
-    }
-
-    .products {
-      width: min(1200px, calc(100% - 2rem));
-      margin: 0 auto;
-      padding: 1rem 0 2.5rem;
-    }
-
-    .products-header-wrap {
-      margin-bottom: 1.25rem;
-      text-align: left;
-    }
-
-    .products-overline {
-      margin: 0;
-      color: var(--steel-blue);
-      font-size: 0.84rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .products-subline {
-      margin: 0.4rem 0 0;
-      color: rgba(240, 235, 216, 0.78);
-      font-size: 0.98rem;
-    }
-
-    .products-toolbar {
-      background: linear-gradient(160deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.85));
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 18px;
-      padding: 1rem;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
-      margin-bottom: 1.5rem;
-    }
-
-    .toolbar-search-wrap,
-    .toolbar-filter-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      text-align: left;
-    }
-
-    .toolbar-search-wrap label,
-    .toolbar-filter-item label {
-      font-size: 0.78rem;
-      color: rgba(255, 255, 255, 0.8);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    .toolbar-search-wrap {
-      margin-bottom: 0.75rem;
-    }
-
-    .toolbar-search-wrap input,
-    .toolbar-filter-item select {
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(10, 15, 27, 0.95);
-      color: #ffffff;
-      padding: 0.75rem 0.85rem;
-      font-size: 0.95rem;
-      transition: border-color 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .toolbar-search-wrap input:focus,
-    .toolbar-filter-item select:focus {
-      outline: none;
-      border-color: rgba(116, 140, 171, 0.9);
-      box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.25);
-    }
-
-    .toolbar-filter-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(140px, 1fr));
-      gap: 0.75rem;
-    }
-
-    .product-card {
-      background: linear-gradient(165deg, #121b2d, #10192a);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      padding: 1rem;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      text-align: center;
-    }
-
-    .product-card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(116, 140, 171, 0.5);
-      box-shadow: 0 20px 36px rgba(0, 0, 0, 0.34);
-    }
-
-    .spinner {
-      border: 4px solid rgba(255, 255, 255, 0.18);
-      border-top: 4px solid var(--steel-blue);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: auto;
-    }
-
-    @media (max-width: 768px) {
-      .products-navbar {
-        padding: 0.75rem 0.85rem;
-      }
-
-      .products-navbar .products-logo-nav {
-        height: 38px;
-        width: 38px;
-      }
-
-      .products-nav-copy strong {
-        font-size: 1.2rem;
-      }
-
-      .products-navbar .cart-icon-btn {
-        min-width: 50px;
-        padding: 0.45rem 0.75rem;
-      }
-
-      .products-highlights {
-        grid-template-columns: 1fr;
-        margin-top: 1.2rem;
-      }
-
-      .toolbar-filter-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .cart-sidebar.open {
-        width: 100vw;
-      }
-    }
-
-    @media (max-width: 540px) {
-      .toolbar-filter-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-  </style>
-
-  <section class="products-highlights" aria-label="Store highlights">
-    <article class="highlight-pill">
-      <span class="highlight-title">Fast Delivery</span>
-      <span class="highlight-copy">Nationwide dispatch in 24-48 hours</span>
-    </article>
-    <article class="highlight-pill">
-      <span class="highlight-title">Curated Brands</span>
-      <span class="highlight-copy">Classic silhouettes and limited releases</span>
-    </article>
-    <article class="highlight-pill">
-      <span class="highlight-title">Secure Checkout</span>
-      <span class="highlight-copy">Trusted payments with instant confirmation</span>
-    </article>
-  </section>
-
-<!-- Footer -->
-<footer class="main-footer">
-  <div class="footer-content">
-    <div class="footer-column">
-      <h4>Info</h4>
-      <ul>
-        <li><a href="faq.html">FAQ</a></li>
-        <li><a href="returns.html">Returns</a></li>
-        <li><a href="terms.html">Terms & Conditions</a></li>
-        <li><a href="security.html">Security</a></li>
-        <li><a href="privacy.html">Privacy Policy</a></li>
-      </ul>
-    </div>
-
-    <div class="footer-column">
-      <h4>RAKOTEE</h4>
-      <ul>
-        <li><a href="about.html">About Us</a></li>
-      </ul>
-    </div>
-
-    <div class="footer-column">
-      <h4>Mailing List</h4>
-      <form onsubmit="alert('Thank you for subscribing!'); return false;">
-        <input type="email" placeholder="Enter your email" required />
-        <button type="submit">Join</button>
-      </form>
-    </div>
-  </div>
-
-  <div class="footer-payments">
-  <img src="images/payfast.svg" alt="PayFast payment option" style="height:32px;" />
-    <img src="images/paypal.png" alt="PayPal payment option" style="height:32px;" />
-  </div>
-
-  <div class="footer-socials">
-    <a href="#" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
-    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
-    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>
-  </div>
-
-  <p class="footer-note">&copy; 2025 RAKOTEE. All rights reserved. KEEP MOVIN.</p>
-</footer>
-
-<script src="products.js" defer></script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RAKOTEE Products | Sneakers, Phones, Accessories</title>
+  <meta name="description" content="Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more. Fast shipping and great prices!" />
+  <meta name="keywords" content="sneakers, shoes, Nike, Adidas, buy online, South Africa, RAKOTEE, fashion, apparel" />
+  <meta name="author" content="RAKOTEE Store" />
+  <link rel="canonical" href="https://rakotee.site/products.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="RAKOTEE Products" />
+  <meta property="og:description" content="Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more." />
+  <meta property="og:image" content="https://rakotee.site/rakotee.png.png" />
+  <meta property="og:url" content="https://rakotee.site/products.html" />
+  <meta property="og:type" content="website" />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RAKOTEE Products" />
+  <meta name="twitter:description" content="Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more." />
+  <meta name="twitter:image" content="https://rakotee.site/rakotee.png.png" />
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Store",
+    "name": "RAKOTEE Store",
+    "url": "https://rakotee.site/products.html",
+    "logo": "https://rakotee.site/rakotee.png.png",
+    "description": "Shop the latest sneakers and apparel at RAKOTEE. Discover Nike, Adidas, and more.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "ZA"
+    }
+  }
+  </script>
+  <link rel="stylesheet" href="style.min.css" />
+  <link rel="stylesheet" href="theme.min.css" />
+  
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar products-navbar" role="navigation" aria-label="Main Navigation">
+    <a href="index.html" class="products-nav-brand" aria-label="Go to home page">
+      <img src="rakotee.png.png" alt="RAKOTEE Store Logo" class="products-logo-nav" width="160" height="44" loading="eager" decoding="async" fetchpriority="high"/>
+      <div class="products-nav-copy">
+        <strong>RAKOTEE</strong>
+        <span>Products</span>
+      </div>
+    </a>
+    <div class="products-nav-actions">
+      <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open Cart">
+        <i class="fas fa-shopping-cart"></i> <span id="cartCount" class="cart-count">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Products Section -->
+  <section class="products" aria-labelledby="products-heading">
+    <div class="products-header-wrap">
+      <p class="products-overline">Catalog</p>
+      <h2 id="products-heading">Our Products</h2>
+      <p class="products-subline">Find your size, filter by style, and discover your next daily pair.</p>
+    </div>
+
+    <!-- Search and Sort Toolbar -->
+    <div class="products-toolbar">
+      <div class="toolbar-search-wrap">
+        <label for="searchInput">Search</label>
+        <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products">
+      </div>
+
+      <div class="toolbar-filter-grid">
+        <div class="toolbar-filter-item">
+          <label for="categoryFilter">Category</label>
+          <select id="categoryFilter" aria-label="Filter by category">
+            <option value="">All Categories</option>
+            <option value="Shoes">Shoes</option>
+            <option value="Phones">Phones</option>
+            <option value="Hubbly">Hubbly</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Sale">Sale</option>
+          </select>
+        </div>
+
+        <div class="toolbar-filter-item">
+          <label for="colorFilter">Color</label>
+          <select id="colorFilter" aria-label="Filter by color">
+            <option value="">All Colors</option>
+            <option value="White">White</option>
+            <option value="BLACK">Black</option>
+            <option value="Red">Red</option>
+            <option value="Blue">Blue</option>
+            <option value="iPhone">iPhones</option>
+          </select>
+        </div>
+
+        <div class="toolbar-filter-item">
+          <label for="sizeFilter">Size</label>
+          <select id="sizeFilter" aria-label="Filter by size">
+            <option value="">All Sizes</option>
+            <option value="2UK">2UK</option>
+            <option value="3UK">3UK</option>
+            <option value="4UK">4UK</option>
+            <option value="5UK">5UK</option>
+            <option value="6UK">6UK</option>
+            <option value="7UK">7UK</option>
+            <option value="8UK">8UK</option>
+            <option value="9UK">9UK</option>
+            <option value="10UK">10UK</option>
+            <option value="11UK">11UK</option>
+            <option value="12UK">12UK</option>
+          </select>
+        </div>
+
+        <div class="toolbar-filter-item">
+          <label for="sortSelect">Sort</label>
+          <select id="sortSelect" aria-label="Sort products">
+            <option value="default">Sort By</option>
+            <option value="name">Name</option>
+            <option value="price">Price</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="loadingSpinner" style="display:none;text-align:center;margin:2rem 0;">
+      <div class="spinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #333; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin:auto;"></div>
+      <p>Loading products...</p>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+
+    <section class="trust-strip" aria-label="Shopping trust highlights">
+      <article class="trust-item">
+        <h4>Secure Checkout</h4>
+        <p>Verified payment gateways and protected transactions.</p>
+      </article>
+      <article class="trust-item">
+        <h4>Fast Dispatch</h4>
+        <p>Orders are prepared quickly with tracking updates by email.</p>
+      </article>
+      <article class="trust-item">
+        <h4>Easy Returns</h4>
+        <p>Simple return process if your size or fit is not right.</p>
+      </article>
+      <article class="trust-item">
+        <h4>Support Team</h4>
+        <p>Direct help on WhatsApp and email for order questions.</p>
+      </article>
+    </section>
+  </section>
+
+  <!-- Cart Sidebar -->
+<div id="cartSidebar" class="cart-sidebar">
+  <button id="closeCartBtn" class="close-cart-btn" aria-label="Close Cart">&times;</button>
+  <h2>Your Cart</h2>
+  <div id="cartItems"></div>
+  <div id="cart-summary">
+    <p><strong>Total:</strong> R <span id="cartTotal">0.00</span></p>
+    <button id="checkout-btn">Checkout</button>
+  </div>
+</div>
+<div class="cart-overlay" id="cartOverlay"></div>
+  <!-- Removed duplicate script include -->
+  <script src="cart.js"></script>
+  <script src="lazyload.js" defer></script>
+
+
+ <!-- Fullscreen Modal -->
+<div id="productModal" class="modal fullscreen-modal">
+  <div class="modal-content">
+    <span class="close-modal" id="closeModalBtn">&times;</span>
+    <div class="modal-body">
+      <div class="modal-left">
+        <img id="modalImage" src="" alt="Product main image" />
+        <div id="modalThumbnails" class="thumbnails"></div>
+      </div>
+      <div class="modal-right">
+        <h3 id="modalName"></h3>
+        <p class="price">R <span id="modalPrice"></span></p>
+        <p id="modalDescription" class="product-description"></p>
+
+  <label for="sizeSelect" id="sizeLabel">Size:</label>
+        <select id="sizeSelect"></select>
+
+        <label for="colorSelect">Color:</label>
+        <select id="colorSelect"></select>
+
+        <label for="quantityInput">Quantity:</label>
+        <input type="number" id="quantityInput" min="1" value="1" />
+        <button id="addToCartBtn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+  document.querySelectorAll('.cart-count').forEach(el => {
+    el.innerText = count;
+  });
+}
+updateCartCount();
+
+// Cart Sidebar Open/Close Logic
+const cartIconBtn = document.getElementById('cartIconBtn');
+const cartSidebar = document.getElementById('cartSidebar');
+const closeCartBtn = document.getElementById('closeCartBtn');
+const cartOverlay = document.getElementById('cartOverlay');
+
+// Open cart sidebar
+cartIconBtn.addEventListener('click', () => {
+  renderCartSidebar();
+  cartSidebar.classList.add('open');
+  cartSidebar.style.display = 'block';
+  // show overlay and prevent background scroll while cart is open
+  if (typeof cartOverlay !== 'undefined' && cartOverlay) cartOverlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+});
+
+// Close cart sidebar
+closeCartBtn.addEventListener('click', () => {
+  cartSidebar.classList.remove('open');
+  cartSidebar.style.display = 'none';
+  if (typeof cartOverlay !== 'undefined' && cartOverlay) cartOverlay.classList.remove('active');
+  document.body.style.overflow = '';
+});
+
+// Optional: Hide sidebar on click outside (mobile UX)
+window.addEventListener('click', function(e) {
+  if (
+    cartSidebar.classList.contains('open') &&
+    !cartSidebar.contains(e.target) &&
+    e.target !== cartIconBtn
+  ) {
+    cartSidebar.classList.remove('open');
+    cartSidebar.style.display = 'none';
+    if (typeof cartOverlay !== 'undefined' && cartOverlay) cartOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+});
+
+// Render cart sidebar with live products
+function renderCartSidebar() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartItemsDiv = document.getElementById('cartItems');
+  const cartTotalSpan = document.getElementById('cartTotal');
+  if (!cartItemsDiv || !cartTotalSpan) return;
+
+  if (cart.length === 0) {
+    cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+    cartTotalSpan.textContent = '0.00';
+    return;
+  }
+
+  let total = 0;
+  cartItemsDiv.innerHTML = '';
+  cart.forEach(item => {
+    total += (item.price * item.quantity);
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'cart-item';
+    itemDiv.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <img src="${item.image || 'https://placehold.co/50x50'}" alt="${item.name}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;">
+        <div>
+          <strong>${item.name}</strong><br>
+          <span>Size: ${item.size || '-'}</span><br>
+          <span>Color: ${item.color || '-'}</span><br>
+          <span>Qty: ${item.quantity}</span><br>
+          <span>R${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+      </div>
+    `;
+    cartItemsDiv.appendChild(itemDiv);
+  });
+  cartTotalSpan.textContent = total.toFixed(2);
+}
+
+// Call this after any cart update
+function updateCartCountAndSidebar() {
+  updateCartCount();
+  renderCartSidebar();
+}
+
+// Patch your addToCartBtn logic to call updateCartCountAndSidebar()
+// Example (adjust as needed for your codebase):
+// document.getElementById('addToCartBtn').onclick = function() { ...; updateCartCountAndSidebar(); }
+
+// Also, render cart sidebar on page load:
+renderCartSidebar();
+</script>
+
+  <!-- Page styling -->
+  <style>
+    body {
+      font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at 12% 16%, rgba(116, 140, 171, 0.2), transparent 36%),
+        radial-gradient(circle at 88% 4%, rgba(62, 92, 118, 0.22), transparent 38%),
+        var(--dark-navy);
+    }
+
+    .products-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+      background: linear-gradient(120deg, rgba(13, 19, 33, 0.95), rgba(29, 45, 68, 0.92));
+      border-bottom: 1px solid rgba(116, 140, 171, 0.35);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(8px);
+      padding: 0.85rem 1.2rem;
+    }
+
+    .products-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      text-decoration: none;
+      transition: transform 0.25s ease;
+    }
+
+    .products-nav-brand:hover {
+      transform: translateY(-1px);
+    }
+
+    .products-nav-copy {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      color: var(--light-beige);
+    }
+
+    .products-nav-copy strong {
+      font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+      letter-spacing: 0.08em;
+      font-size: 1.32rem;
+      font-weight: 400;
+    }
+
+    .products-nav-copy span {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: rgba(240, 235, 216, 0.7);
+      margin-top: 0.1rem;
+    }
+
+    .products-navbar .products-logo-nav {
+      height: 42px;
+      width: 42px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid rgba(116, 140, 171, 0.55);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      padding: 3px;
+      background: rgba(13, 19, 33, 0.8);
+    }
+
+    .products-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .products-navbar .cart-icon-btn {
+      color: var(--light-beige);
+      background: rgba(13, 19, 33, 0.65);
+      border: 1px solid rgba(116, 140, 171, 0.48);
+      border-radius: 999px;
+      padding: 0.48rem 0.9rem;
+      font-size: 1.15rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 56px;
+      transition: transform 0.25s ease, background-color 0.25s ease;
+      margin-left: 0;
+    }
+
+    .products-navbar .cart-icon-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(62, 92, 118, 0.55);
+    }
+
+    .products-navbar .cart-count {
+      top: -8px;
+      right: -8px;
+      background: var(--steel-blue);
+      color: var(--dark-navy);
+      border: 1px solid rgba(240, 235, 216, 0.5);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .products-highlights {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 2rem auto 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      gap: 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .highlight-pill {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      background: linear-gradient(140deg, rgba(29, 45, 68, 0.95), rgba(13, 19, 33, 0.96));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    .highlight-title {
+      color: var(--steel-blue);
+      font-weight: 800;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .highlight-copy {
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .products {
+      width: min(1200px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1rem 0 2.5rem;
+    }
+
+    .products-header-wrap {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    .products-overline {
+      margin: 0;
+      color: var(--steel-blue);
+      font-size: 0.84rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .products-subline {
+      margin: 0.4rem 0 0;
+      color: rgba(240, 235, 216, 0.78);
+      font-size: 0.98rem;
+    }
+
+    .products-toolbar {
+      background: linear-gradient(160deg, rgba(13, 19, 33, 0.9), rgba(29, 45, 68, 0.85));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 1rem;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+      margin-bottom: 1.5rem;
+    }
+
+    .toolbar-search-wrap,
+    .toolbar-filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      text-align: left;
+    }
+
+    .toolbar-search-wrap label,
+    .toolbar-filter-item label {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.8);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .toolbar-search-wrap {
+      margin-bottom: 0.75rem;
+    }
+
+    .toolbar-search-wrap input,
+    .toolbar-filter-item select {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(10, 15, 27, 0.95);
+      color: #ffffff;
+      padding: 0.75rem 0.85rem;
+      font-size: 0.95rem;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .toolbar-search-wrap input:focus,
+    .toolbar-filter-item select:focus {
+      outline: none;
+      border-color: rgba(116, 140, 171, 0.9);
+      box-shadow: 0 0 0 3px rgba(116, 140, 171, 0.25);
+    }
+
+    .toolbar-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(140px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .product-card {
+      background: linear-gradient(165deg, #121b2d, #10192a);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      text-align: center;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(116, 140, 171, 0.5);
+      box-shadow: 0 20px 36px rgba(0, 0, 0, 0.34);
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.18);
+      border-top: 4px solid var(--steel-blue);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+
+    @media (max-width: 768px) {
+      .products-navbar {
+        padding: 0.75rem 0.85rem;
+      }
+
+      .products-navbar .products-logo-nav {
+        height: 38px;
+        width: 38px;
+      }
+
+      .products-nav-copy strong {
+        font-size: 1.2rem;
+      }
+
+      .products-navbar .cart-icon-btn {
+        min-width: 50px;
+        padding: 0.45rem 0.75rem;
+      }
+
+      .products-highlights {
+        grid-template-columns: 1fr;
+        margin-top: 1.2rem;
+      }
+
+      .toolbar-filter-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cart-sidebar.open {
+        width: 100vw;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .toolbar-filter-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+  </style>
+
+  <section class="products-highlights" aria-label="Store highlights">
+    <article class="highlight-pill">
+      <span class="highlight-title">Fast Delivery</span>
+      <span class="highlight-copy">Nationwide dispatch in 24-48 hours</span>
+    </article>
+    <article class="highlight-pill">
+      <span class="highlight-title">Curated Brands</span>
+      <span class="highlight-copy">Classic silhouettes and limited releases</span>
+    </article>
+    <article class="highlight-pill">
+      <span class="highlight-title">Secure Checkout</span>
+      <span class="highlight-copy">Trusted payments with instant confirmation</span>
+    </article>
+  </section>
+
+<!-- Footer -->
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-column">
+      <h4>Info</h4>
+      <ul>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="returns.html">Returns</a></li>
+        <li><a href="terms.html">Terms & Conditions</a></li>
+        <li><a href="security.html">Security</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>RAKOTEE</h4>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>Mailing List</h4>
+      <form onsubmit="alert('Thank you for subscribing!'); return false;">
+        <input type="email" placeholder="Enter your email" required />
+        <button type="submit">Join</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer-payments">
+  <img src="images/payfast.svg" alt="PayFast payment option" style="height:32px;" />
+    <img src="images/paypal.png" alt="PayPal payment option" style="height:32px;" />
+  </div>
+
+  <div class="footer-socials">
+    <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16"><path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg></a>
+    <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16"><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.75l-11 71.69h-57.75V501C413.31 482.38 504 379.78 504 256z"/></svg></a>
+    <a href="#" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16"><path fill="currentColor" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg></a>
+  </div>
+
+  <p class="footer-note">&copy; 2025 RAKOTEE. All rights reserved. KEEP MOVIN.</p>
+</footer>
+
+<script src="products.js" defer></script>
+</body>
+</html>
+
 
