@@ -1,0 +1,67 @@
+name: Security Audit
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+
+jobs:
+  audit-root:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Audit root dependencies (high+)
+        run: npm audit --omit=dev --audit-level=high
+
+  audit-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install backend dependencies
+        working-directory: rakotee-backend
+        run: npm ci
+
+      - name: Audit backend dependencies (high+)
+        working-directory: rakotee-backend
+        run: npm audit --omit=dev --audit-level=high
+
+  notify-on-failure:
+    if: failure()
+    needs: [audit-root, audit-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send webhook alert
+        env:
+          WEBHOOK_URL: ${{ secrets.HEALTH_ALERT_WEBHOOK_URL }}
+        run: |
+          if [ -z "$WEBHOOK_URL" ]; then
+            echo "HEALTH_ALERT_WEBHOOK_URL is not set; skipping alert send."
+            exit 0
+          fi
+          MSG="RAKOTEE security audit failed in workflow ${GITHUB_WORKFLOW} (run ${GITHUB_RUN_ID})."
+          STATUS=$(curl -sS -o /tmp/webhook_response.txt -w "%{http_code}" -X POST "$WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"${MSG}\",\"content\":\"${MSG}\"}")
+          if [ "$STATUS" -lt 200 ] || [ "$STATUS" -ge 300 ]; then
+            echo "Webhook delivery failed with status ${STATUS}"
+            cat /tmp/webhook_response.txt || true
+            exit 1
+          fi
+          echo "Webhook delivered with status ${STATUS}"
