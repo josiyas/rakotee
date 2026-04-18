@@ -1,92 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FAQ | RAKOTEE</title>
-  <link rel="stylesheet" href="style.min.css" />
-  <link rel="stylesheet" href="theme.min.css" />
-  
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-    }
-    .faq-container {
-      max-width: 800px;
-      margin: auto;
-    }
-    .faq-container h1 {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .faq-item {
-      border-bottom: 1px solid #ccc;
-      padding: 1rem 0;
-    }
-    .faq-question {
-      cursor: pointer;
-      font-weight: bold;
-      display: flex;
-      justify-content: space-between;
-    }
-    .faq-answer {
-      display: none;
-      padding-top: 0.5rem;
-      color: #444;
-    }
-  </style>
-</head>
-<body>
-
-<header class="main-header">
-  <nav class="nav-container">
-    <div class="logo"><a href="index.html">RAKOTEE</a></div>
-    <div style="display:flex;gap:1.5rem;align-items:center;">
-      <a href="products.html" style="color:#fff;text-decoration:none;font-weight:600;">Products</a>
-      <a href="login.html" style="color:#fff;text-decoration:none;font-weight:600;">Login</a>
-    </div>
-  </nav>
-</header>
-
-<div class="faq-container">
-  <h1>Frequently Asked Questions</h1>
-
-  <div class="faq-item">
-    <div class="faq-question">How long does delivery take? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16"><path fill="currentColor" d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"/></svg></div>
-    <div class="faq-answer">Delivery typically takes 3-5 business days within South Africa.</div>
-  </div>
-
-  <div class="faq-item">
-    <div class="faq-question">What payment methods do you accept? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16"><path fill="currentColor" d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"/></svg></div>
-    <div class="faq-answer">We accept PayPal, Visa, Zapper, and EFT.</div>
-  </div>
-
-  <div class="faq-item">
-    <div class="faq-question">How can I track my order? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16"><path fill="currentColor" d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"/></svg></div>
-    <div class="faq-answer">Once shipped, we'll send a tracking link via email or WhatsApp.</div>
-  </div>
-
-  <div class="faq-item">
-    <div class="faq-question">Do you deliver outside South Africa? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16"><path fill="currentColor" d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"/></svg></div>
-    <div class="faq-answer">Currently, we only deliver within South Africa.</div>
-  </div>
-</div>
-
-<script>
-  const questions = document.querySelectorAll('.faq-question');
-  questions.forEach(q => {
-    q.addEventListener('click', () => {
-      const answer = q.nextElementSibling;
-      answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
-      q.querySelector('i').classList.toggle('fa-chevron-up');
-      q.querySelector('i').classList.toggle('fa-chevron-down');
-    });
-  });
-</script>
-
-</body>
-</html>
-
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ | RAKOTEE</title>
+  <link rel="stylesheet" href="style.min.css" />
+  <link rel="stylesheet" href="theme.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+    .faq-container {
+      max-width: 800px;
+      margin: auto;
+    }
+    .faq-container h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .faq-item {
+      border-bottom: 1px solid #ccc;
+      padding: 1rem 0;
+    }
+    .faq-question {
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+    }
+    .faq-answer {
+      display: none;
+      padding-top: 0.5rem;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+<header class="main-header">
+  <nav class="nav-container">
+    <div class="logo"><a href="index.html">RAKOTEE</a></div>
+    <div style="display:flex;gap:1.5rem;align-items:center;">
+      <a href="products.html" style="color:#fff;text-decoration:none;font-weight:600;">Products</a>
+      <a href="login.html" style="color:#fff;text-decoration:none;font-weight:600;">Login</a>
+    </div>
+  </nav>
+</header>
+
+<div class="faq-container">
+  <h1>Frequently Asked Questions</h1>
+
+  <div class="faq-item">
+    <div class="faq-question">How long does delivery take? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-answer">Delivery typically takes 3-5 business days within South Africa.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">What payment methods do you accept? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-answer">We accept PayPal, Visa, Zapper, and EFT.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">How can I track my order? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-answer">Once shipped, we'll send a tracking link via email or WhatsApp.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">Do you deliver outside South Africa? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-answer">Currently, we only deliver within South Africa.</div>
+  </div>
+</div>
+
+<script>
+  const questions = document.querySelectorAll('.faq-question');
+  questions.forEach(q => {
+    q.addEventListener('click', () => {
+      const answer = q.nextElementSibling;
+      answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+      q.querySelector('i').classList.toggle('fa-chevron-up');
+      q.querySelector('i').classList.toggle('fa-chevron-down');
+    });
+  });
+</script>
+
+</body>
+</html>
+
+
 
