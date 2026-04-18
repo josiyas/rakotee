@@ -44,6 +44,12 @@ jobs:
             exit 0
           fi
           MSG="RAKOTEE health check failed for ${URL} in workflow ${GITHUB_WORKFLOW} (run ${GITHUB_RUN_ID})."
-          curl -X POST "$WEBHOOK_URL" \
+          STATUS=$(curl -sS -o /tmp/webhook_response.txt -w "%{http_code}" -X POST "$WEBHOOK_URL" \
             -H "Content-Type: application/json" \
-            -d "{\"text\":\"${MSG}\"}"
+            -d "{\"text\":\"${MSG}\",\"content\":\"${MSG}\"}")
+          if [ "$STATUS" -lt 200 ] || [ "$STATUS" -ge 300 ]; then
+            echo "Webhook delivery failed with status ${STATUS}"
+            cat /tmp/webhook_response.txt || true
+            exit 1
+          fi
+          echo "Webhook delivered with status ${STATUS}"
