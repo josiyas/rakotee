@@ -114,6 +114,37 @@ label {
   margin-bottom: 8px;
 }
 
+.top-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.top-actions button {
+  width: auto;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-nav .nav-btn {
+  width: auto;
+  margin-top: 0;
+  background: linear-gradient(135deg, rgba(178, 201, 255, 0.3), rgba(178, 201, 255, 0.16));
+  color: var(--text);
+  border: 1px solid rgba(178, 201, 255, 0.26);
+}
+
+.admin-nav .nav-btn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #042a28;
+  border-color: transparent;
+}
+
 .top-bar #logoutBtn {
   width: auto;
   background: linear-gradient(135deg, #f97316, #ef4444);
@@ -227,6 +258,11 @@ table td {
   .top-bar {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .top-actions {
+    width: 100%;
+    flex-wrap: wrap;
   }
 
   #advancedProducts iframe {

@@ -26,13 +26,23 @@
     <div id="adminDashboard" class="hidden">
       <div class="top-bar">
         <h2>Rakotee Admin Panel</h2>
-        <button id="logoutBtn">Logout</button>
+        <div class="top-actions">
+          <button id="refreshAdminBtn" type="button">Refresh Data</button>
+          <button id="logoutBtn">Logout</button>
+        </div>
       </div>
       <div id="adminBanner" style="display:none;padding:8px 12px;border-radius:8px;margin:12px 0;font-size:0.95rem"></div>
       <div id="systemStatus" style="display:none;padding:8px 12px;border-radius:8px;margin:8px 0 14px 0;font-size:0.9rem"></div>
 
+      <div class="admin-nav card" id="adminNav">
+        <button type="button" class="nav-btn" data-target="advanced">Advanced Editor</button>
+        <button type="button" class="nav-btn" data-target="upload">Add Product</button>
+        <button type="button" class="nav-btn" data-target="products">Product List</button>
+        <button type="button" class="nav-btn" data-target="orders">Orders</button>
+      </div>
+
       <!-- Order List -->
-      <div id="orderList" class="card">
+      <div id="orderList" class="card admin-section" data-section="orders">
         <h3>Orders</h3>
         <table id="ordersTable" style="width:100%;border-collapse:collapse;">
           <thead>
@@ -54,7 +64,7 @@
       </div>
 
       <!-- Upload Form -->
-      <form id="productForm" class="card">
+      <form id="productForm" class="card admin-section" data-section="upload">
         <h3>Upload New Product</h3>
         <input type="text" id="name" placeholder="Product Name" required />
         <input type="number" id="price" placeholder="Product Price" required step="0.01" />
@@ -86,13 +96,13 @@
       </form>
 
       <!-- Product List -->
-      <div id="productList" class="product-list card">
+      <div id="productList" class="product-list card admin-section" data-section="products">
         <h3>Existing Products</h3>
         <div id="productsContainer"></div>
       </div>
 
       <!-- Advanced Product Editor -->
-      <div id="advancedProducts" class="card">
+      <div id="advancedProducts" class="card admin-section" data-section="advanced">
         <h3>Advanced Product Editor</h3>
         <p>Use the full editor below to manage products across all sections (Shoes, Phones, Hubbly, Accessories, Sale).</p>
         <iframe
@@ -147,11 +157,28 @@
     const systemStatus = document.getElementById('systemStatus');
     const pinBtn = document.getElementById('pinBtn');
     const pinInput = document.getElementById('pinInput');
+    const refreshAdminBtn = document.getElementById('refreshAdminBtn');
+    const navButtons = Array.from(document.querySelectorAll('.admin-nav .nav-btn'));
+    const adminSections = Array.from(document.querySelectorAll('.admin-section'));
+
+    function showSection(target) {
+      adminSections.forEach((section) => {
+        section.classList.toggle('hidden', section.dataset.section !== target);
+      });
+      navButtons.forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.target === target);
+      });
+    }
+
+    navButtons.forEach((btn) => {
+      btn.addEventListener('click', () => showSection(btn.dataset.target));
+    });
 
     // UI helpers
     function showAdmin() {
       loginSection.classList.add('hidden');
       adminDashboard.classList.remove('hidden');
+      showSection('advanced');
     }
     function showLogin() {
       adminDashboard.classList.add('hidden');
@@ -308,6 +335,18 @@
       showLogin();
       setAdminBanner();
       setSystemStatus('Logged out.', 'neutral');
+    };
+
+    refreshAdminBtn.onclick = async () => {
+      setButtonBusy(refreshAdminBtn, true, 'Refreshing...', 'Refresh Data');
+      try {
+        await Promise.all([loadProducts(), loadOrders()]);
+        setSystemStatus('Products and orders refreshed.', 'ok');
+      } catch (err) {
+        setSystemStatus('Refresh failed. Check backend connectivity.', 'error');
+      } finally {
+        setButtonBusy(refreshAdminBtn, false, 'Refreshing...', 'Refresh Data');
+      }
     };
 
     // Upload product
