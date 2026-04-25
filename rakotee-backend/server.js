@@ -7,6 +7,7 @@ const applySecurity = require('./security');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cookie = require('cookie');
+const path = require('path');
 const { getMailConfigSummary } = require('./mailer');
 const Sentry = require('@sentry/node');
 
@@ -91,6 +92,9 @@ app.use(rateLimit({
 }));
 // Logging level
 app.use(morgan(process.env.LOG_LEVEL || 'dev'));
+
+// Serve uploaded product images saved by admin routes.
+app.use('/images', express.static(path.join(__dirname, '..', 'images')));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));

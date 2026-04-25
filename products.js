@@ -2521,6 +2521,15 @@ async function mergeLiveProductsFromApi() {
   const uniqueCandidates = [...new Set(candidates)];
   let didMerge = false;
 
+  function normalizeRemoteImagePath(raw, apiBase) {
+    const src = (raw || '').toString().trim();
+    if (!src) return 'products/fallback.png';
+    if (/^https?:\/\//i.test(src) || src.startsWith('data:')) return src;
+    if (src.startsWith('/images/')) return `${apiBase}${src}`;
+    if (src.startsWith('images/')) return `${apiBase}/${src}`;
+    return src;
+  }
+
   async function fetchWithTimeout(url, timeoutMs) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -2552,8 +2561,8 @@ async function mergeLiveProductsFromApi() {
           name: (item.name || '').toString(),
           price: Number(item.price) || 0,
           images: Array.isArray(item.images) && item.images.length
-            ? item.images
-            : (item.image ? [item.image] : ['products/fallback.png']),
+            ? item.images.map((img) => normalizeRemoteImagePath(img, base))
+            : (item.image ? [normalizeRemoteImagePath(item.image, base)] : ['products/fallback.png']),
           colors: Array.isArray(item.colors) && item.colors.length ? item.colors : ['Default'],
           sizes: Array.isArray(item.sizes) && item.sizes.length ? item.sizes : [],
           category: (item.category || '').toString(),
@@ -2739,6 +2748,13 @@ const closeModal = document.querySelector('.close-modal');
 
 let selectedProduct = null;
 
+function toDisplayImageSrc(imagePath) {
+  const src = (imagePath || '').toString().trim();
+  if (!src) return '/products/fallback.png';
+  if (/^https?:\/\//i.test(src) || src.startsWith('data:')) return src;
+  return src.startsWith('/') ? src : `/${src}`;
+}
+
 // Show loading spinner
 function showLoadingSpinner(show) {
   const spinner = document.getElementById('loadingSpinner');
@@ -2757,7 +2773,7 @@ function displayProducts(filteredProducts) {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.style.cursor = 'pointer';
-    const imageSrc = product.images[0].startsWith('/') ? product.images[0] : '/' + product.images[0];
+    const imageSrc = toDisplayImageSrc(product.images[0]);
     const loadingAttr = index < 4 ? 'eager' : 'lazy';
     const fetchPriority = index < 2 ? 'high' : 'auto';
     card.innerHTML = `
@@ -2777,7 +2793,7 @@ function displayProducts(filteredProducts) {
 function openModal(product) {
   selectedProduct = product;
 
-  modalImage.src = product.images[0].startsWith('/') ? product.images[0] : '/' + product.images[0];
+  modalImage.src = toDisplayImageSrc(product.images[0]);
   modalImage.loading = 'lazy';
   modalImage.onerror = function() {
     this.onerror = null;
@@ -2824,12 +2840,12 @@ function openModal(product) {
     modalThumbnails.innerHTML = '';
     imgList.forEach((img, idx) => {
       const thumb = document.createElement('img');
-      thumb.src = img.startsWith('/') ? img : '/' + img;
+      thumb.src = toDisplayImageSrc(img);
       thumb.loading = 'lazy';
       thumb.className = idx === 0 ? 'selected' : '';
       thumb.onerror = function() { this.onerror = null; this.src = '/products/fallback.png'; };
       thumb.addEventListener('click', () => {
-        modalImage.src = img.startsWith('/') ? img : '/' + img;
+        modalImage.src = toDisplayImageSrc(img);
         document.querySelectorAll('#modalThumbnails img').forEach(i => i.classList.remove('selected'));
         thumb.classList.add('selected');
       });
@@ -2837,7 +2853,7 @@ function openModal(product) {
     });
     // set main image to first
     if (imgList && imgList.length) {
-      modalImage.src = imgList[0].startsWith('/') ? imgList[0] : '/' + imgList[0];
+      modalImage.src = toDisplayImageSrc(imgList[0]);
     }
   }
 

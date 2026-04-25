@@ -112,6 +112,15 @@
       ? 'http://localhost:5000'
       : 'https://rakotee-back.onrender.com';
 
+    function resolveProductImageUrl(raw) {
+      const src = (raw || '').toString().trim();
+      if (!src) return '/products/fallback.png';
+      if (/^https?:\/\//i.test(src) || src.startsWith('data:')) return src;
+      if (src.startsWith('/images/')) return `${API_BASE}${src}`;
+      if (src.startsWith('images/')) return `${API_BASE}/${src}`;
+      return src.startsWith('/') ? src : `/${src}`;
+    }
+
     function getAdminToken() {
       return sessionStorage.getItem('rakotee_admin_token') || localStorage.getItem('rakotee_admin_token') || '';
     }
@@ -420,7 +429,7 @@
           productsArr.forEach(product => {
             const productCard = document.createElement("div");
             productCard.className = "product-card";
-            const primaryImage = (product.images && product.images.length) ? product.images[0] : (product.image || '');
+            const primaryImage = resolveProductImageUrl((product.images && product.images.length) ? product.images[0] : (product.image || ''));
             productCard.innerHTML = `
               <img src="${primaryImage}" alt="${product.name}" />
               <h4>${product.name}</h4>
@@ -450,7 +459,7 @@
           const productCard = document.createElement("div");
           productCard.className = "product-card";
           // for compatibility with existing product shape, show first image and other metadata
-          const primaryImage = (product.images && product.images.length) ? product.images[0] : (product.image || '');
+          const primaryImage = resolveProductImageUrl((product.images && product.images.length) ? product.images[0] : (product.image || ''));
           productCard.innerHTML = `
             <img src="${primaryImage}" alt="${product.name}" />
             <h4 contenteditable="true">${product.name}</h4>
