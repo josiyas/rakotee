@@ -4,6 +4,8 @@ const form = document.getElementById('productForm');
 const listEl = document.getElementById('customProductList');
 const storeListEl = document.getElementById('storeProductList');
 const clearAllBtn = document.getElementById('clearAllBtn');
+const exportHardcodeBtn = document.getElementById('exportHardcodeBtn');
+const hardcodeOutputEl = document.getElementById('hardcodeOutput');
 const editHint = document.getElementById('editHint');
 const saveBtn = document.getElementById('saveBtn');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
@@ -70,39 +72,7 @@ async function detectApiBase() {
 }
 
 async function syncProductToServer(product) {
-	if (!activeApiBase) return { ok: false, reason: 'no-server' };
-	const headers = {
-		'Content-Type': 'application/json',
-		...getAuthHeaders()
-	};
-	try {
-		const putRes = await fetch(`${activeApiBase}/api/products/${product.id}`, {
-			method: 'PUT',
-			credentials: 'include',
-			headers,
-			body: JSON.stringify(product)
-		});
-		if (putRes.ok) return { ok: true };
-
-		if (putRes.status === 404) {
-			const postRes = await fetch(`${activeApiBase}/api/products`, {
-				method: 'POST',
-				credentials: 'include',
-				headers,
-				body: JSON.stringify(product)
-			});
-			if (postRes.ok) return { ok: true };
-			return { ok: false, reason: `post-${postRes.status}` };
-		}
-
-		if (putRes.status === 401 || putRes.status === 403) {
-			return { ok: false, reason: 'auth' };
-		}
-
-		return { ok: false, reason: `put-${putRes.status}` };
-	} catch {
-		return { ok: false, reason: 'network' };
-	}
+	return { ok: false, reason: 'disabled' };
 }
 
 if (categorySelect && sizesInput) {
@@ -241,6 +211,34 @@ async function getStoreProducts() {
 function normalizeImagePath(path) {
 	const img = (path || 'products/fallback.png').toString().trim();
 	return img.startsWith('/') ? img.slice(1) : img;
+}
+
+function toJsString(str) {
+	return JSON.stringify((str || '').toString());
+}
+
+function toJsArray(arr) {
+	return `[${(arr || []).map((item) => toJsString(item)).join(', ')}]`;
+}
+
+function toHardcodeBlock(items) {
+	return (items || []).map((p) => {
+		const id = Number.isFinite(Number(p.id)) ? Number(p.id) : Date.now();
+		const name = toJsString(p.name || 'Product');
+		const price = Number.isFinite(Number(p.price)) ? Number(p.price).toFixed(2) : '0.00';
+		const images = toJsArray((p.images || []).map((img) => {
+			const raw = (img || '').toString().trim();
+			if (!raw) return 'products/fallback.png';
+			if (/^data:/i.test(raw) || /^https?:\/\//i.test(raw)) return raw;
+			return raw.startsWith('/') ? raw : `/${raw}`;
+		}));
+		const sizes = toJsArray(Array.isArray(p.sizes) && p.sizes.length ? p.sizes : getDefaultSizesForCategory(p.category));
+		const colors = toJsArray(Array.isArray(p.colors) && p.colors.length ? p.colors : ['Default']);
+		const category = toJsString((p.category || 'Shoes').toString());
+		const descItems = Array.isArray(p.description) && p.description.length ? p.description : [];
+		const description = `description: ${toJsArray(descItems)},`;
+		return `  {\n    id: ${id},\n    name: ${name},\n    category: ${category},\n    price: ${price},\n    images: ${images},\n    sizes: ${sizes},\n    colors: ${colors},\n    ${description}\n  }`;
+	}).join(',\n');
 }
 
 function cardTemplate(product, idx, canDelete) {
@@ -506,27 +504,11 @@ form.addEventListener('submit', async (event) => {
 	}
 
 	saveStoredProducts(products);
-	const syncResult = await syncProductToServer(payload);
 	resetFormMode();
 	renderList();
 	renderStoreList();
-	if (syncResult.ok) {
-		setSyncStatus('Synced with server + local backup', true);
-		alert('Product saved and synced to server.');
-		return;
-	}
-	if (syncResult.reason === 'auth') {
-		setSyncStatus('Saved locally (server auth required)', false);
-		alert('Saved locally. Server sync requires admin login.');
-		return;
-	}
-	if (syncResult.reason === 'put-500' || syncResult.reason === 'post-500') {
-		setSyncStatus('Saved locally (server DB error)', false);
-		alert('Saved locally. Server is reachable but database is not ready.');
-		return;
-	}
-	setSyncStatus('Saved locally (server not reachable)', false);
-	alert('Product saved locally. Server sync is currently unavailable.');
+	setSyncStatus('Saved locally (no server sync)', false);
+	alert('Product saved locally. Use Export Hardcode Block to publish in products.js.');
 });
 
 clearAllBtn.addEventListener('click', () => {
@@ -542,15 +524,28 @@ cancelEditBtn.addEventListener('click', () => {
 	resetFormMode();
 });
 
+if (exportHardcodeBtn) {
+	exportHardcodeBtn.addEventListener('click', async () => {
+		const items = getStoredProducts();
+		if (!items.length) {
+			alert('No custom products to export yet.');
+			return;
+		}
+		const block = toHardcodeBlock(items);
+		if (hardcodeOutputEl) hardcodeOutputEl.value = block;
+		try {
+			await navigator.clipboard.writeText(block);
+			setSyncStatus('Hardcode block copied. Paste into products.js', true);
+		} catch {
+			setSyncStatus('Hardcode block generated. Copy from textarea below.', true);
+		}
+	});
+}
+
 renderList();
 initSearch();
 renderStoreList();
 
 (async () => {
-	activeApiBase = await detectApiBase();
-	if (activeApiBase) {
-		setSyncStatus('Server sync available', true);
-	} else {
-		setSyncStatus('Local-only persistence', false);
-	}
+	setSyncStatus('Local-only persistence (no server sync)', false);
 })();
