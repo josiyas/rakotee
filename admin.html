@@ -116,6 +116,8 @@
       const src = (raw || '').toString().trim();
       if (!src) return '/products/fallback.png';
       if (/^https?:\/\//i.test(src) || src.startsWith('data:')) return src;
+      if (src.startsWith('/products/')) return `${API_BASE}/images${src}`;
+      if (src.startsWith('products/')) return `${API_BASE}/images/${src}`;
       if (src.startsWith('/images/')) return `${API_BASE}${src}`;
       if (src.startsWith('images/')) return `${API_BASE}/${src}`;
       return src.startsWith('/') ? src : `/${src}`;

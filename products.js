@@ -2525,6 +2525,8 @@ async function mergeLiveProductsFromApi() {
     const src = (raw || '').toString().trim();
     if (!src) return 'products/fallback.png';
     if (/^https?:\/\//i.test(src) || src.startsWith('data:')) return src;
+    if (src.startsWith('/products/')) return `${apiBase}/images${src}`;
+    if (src.startsWith('products/')) return `${apiBase}/images/${src}`;
     if (src.startsWith('/images/')) return `${apiBase}${src}`;
     if (src.startsWith('images/')) return `${apiBase}/${src}`;
     return src;
