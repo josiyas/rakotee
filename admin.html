@@ -478,30 +478,100 @@
           return;
         }
         const data = await res.json();
-        const products = (data.products || []).filter((p) => !Number.isFinite(Number(p && p.externalId)));
+        const dbProducts = data.products || [];
+
+        // Pull full static catalog from products.js so Product List shows every store item.
+        let staticProducts = [];
+        try {
+          const jsRes = await fetch('products.js', { cache: 'no-store' });
+          if (jsRes.ok) {
+            const jsText = await jsRes.text();
+            const startToken = 'const products = [';
+            const start = jsText.indexOf(startToken);
+            if (start !== -1) {
+              let depth = 0;
+              let end = -1;
+              for (let i = start + startToken.length - 1; i < jsText.length; i += 1) {
+                const ch = jsText[i];
+                if (ch === '[') depth += 1;
+                if (ch === ']') {
+                  depth -= 1;
+                  if (depth === 0) {
+                    end = i;
+                    break;
+                  }
+                }
+              }
+              if (end !== -1) {
+                const arrayLiteral = jsText.slice(start + 'const products = '.length, end + 1);
+                const parsed = Function(`"use strict"; return (${arrayLiteral});`)();
+                staticProducts = Array.isArray(parsed) ? parsed : [];
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Could not parse products.js for admin full catalog view.', e);
+        }
+
+        const staticNormalized = staticProducts
+          .filter((p) => p && typeof p === 'object')
+          .map((p) => ({
+            id: p.id,
+            externalId: Number.isFinite(Number(p.id)) ? Number(p.id) : undefined,
+            name: p.name || 'Product',
+            price: Number(p.price) || 0,
+            sizes: Array.isArray(p.sizes) ? p.sizes : [],
+            colors: Array.isArray(p.colors) ? p.colors : [],
+            category: p.category || '',
+            description: Array.isArray(p.description) ? p.description.join(' ') : (p.description || ''),
+            highlights: Array.isArray(p.highlights) ? p.highlights : [],
+            variants: p.variants,
+            images: Array.isArray(p.images) ? p.images : (p.image ? [p.image] : []),
+            __source: 'static'
+          }));
+
+        const merged = new Map();
+        const keyOf = (p) => {
+          const ext = Number(p && p.externalId);
+          if (Number.isFinite(ext)) return `ext:${ext}`;
+          if (p && p._id) return `db:${p._id}`;
+          return `name:${(p && p.name ? p.name : '').toString().toLowerCase()}`;
+        };
+
+        staticNormalized.forEach((p) => merged.set(keyOf(p), p));
+        dbProducts.forEach((p) => {
+          const key = keyOf(p);
+          const existing = merged.get(key) || {};
+          merged.set(key, { ...existing, ...p, __source: 'db' });
+        });
+
+        const products = Array.from(merged.values());
         if (!products.length) {
-          container.innerHTML = '<p>No admin-added products found yet.</p>';
-          setSystemStatus('No admin-added products found yet.', 'neutral');
+          container.innerHTML = '<p>No products found.</p>';
+          setSystemStatus('No products found.', 'neutral');
           return;
         }
         products.forEach(product => {
+          const editable = !!product._id;
           const productCard = document.createElement("div");
           productCard.className = "product-card";
           // for compatibility with existing product shape, show first image and other metadata
           const primaryImage = resolveProductImageUrl((product.images && product.images.length) ? product.images[0] : (product.image || ''));
           productCard.innerHTML = `
             <img src="${primaryImage}" alt="${product.name}" />
-            <h4 contenteditable="true">${product.name}</h4>
-            <p class="price" contenteditable="true">R ${product.price}</p>
-            <p class="sizes" contenteditable="true">${(product.sizes||[]).join(', ')}</p>
-            <p class="colors" contenteditable="true">${(product.colors||[]).join(', ')}</p>
-            <p class="category" contenteditable="true">${product.category || ''}</p>
-            <p class="description" contenteditable="true">${product.description || ''}</p>
-            <p class="highlights" contenteditable="true">${(product.highlights||[]).join('\n')}</p>
+            <h4 ${editable ? 'contenteditable="true"' : ''}>${product.name}</h4>
+            <p class="price" ${editable ? 'contenteditable="true"' : ''}>R ${product.price}</p>
+            <p class="sizes" ${editable ? 'contenteditable="true"' : ''}>${(product.sizes||[]).join(', ')}</p>
+            <p class="colors" ${editable ? 'contenteditable="true"' : ''}>${(product.colors||[]).join(', ')}</p>
+            <p class="category" ${editable ? 'contenteditable="true"' : ''}>${product.category || ''}</p>
+            <p class="description" ${editable ? 'contenteditable="true"' : ''}>${product.description || ''}</p>
+            <p class="highlights" ${editable ? 'contenteditable="true"' : ''}>${(product.highlights||[]).join('\n')}</p>
             <label>Variants (JSON)</label>
-            <textarea class="variants">${product.variants ? JSON.stringify(product.variants) : ''}</textarea>
-            <button data-id="${product._id}" class="updateBtn">Save</button>
-            <button data-id="${product._id}" class="deleteBtn">Delete</button>
+            <textarea class="variants" ${editable ? '' : 'readonly'}>${product.variants ? JSON.stringify(product.variants) : ''}</textarea>
+            ${editable
+              ? `<button data-id="${product._id}" class="updateBtn">Save</button>
+                 <button data-id="${product._id}" class="deleteBtn">Delete</button>`
+              : '<p style="margin-top:0.45rem;color:#b6c7e8;font-size:0.82rem;">Catalog item (static). Use Advanced Editor to create DB override.</p>'}
           `;
           container.appendChild(productCard);
         });
