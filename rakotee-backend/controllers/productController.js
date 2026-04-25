@@ -1,5 +1,25 @@
 const Product = require('../models/Product');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+
+function normalizeImageRefs(productLike) {
+  if (!productLike) return productLike;
+  const item = typeof productLike.toObject === 'function' ? productLike.toObject() : { ...productLike };
+  const mapOne = (raw) => {
+    const src = (raw || '').toString().trim();
+    if (!src) return src;
+    if (!src.startsWith('/products/') && !src.startsWith('products/')) return src;
+    const filename = path.basename(src);
+    const diskPath = path.join(__dirname, '..', '..', 'images', 'products', filename);
+    if (fs.existsSync(diskPath)) return `/images/products/${filename}`;
+    return src;
+  };
+
+  if (Array.isArray(item.images)) item.images = item.images.map(mapOne);
+  if (item.image) item.image = mapOne(item.image);
+  return item;
+}
 
 function hasAdminRole(user) {
   const role = (user && user.role) || '';
@@ -10,7 +30,7 @@ function hasAdminRole(user) {
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find({});
-    res.json(products);
+    res.json(products.map(normalizeImageRefs));
   } catch (err) {
     res.status(500).json({ message: 'Server error.' });
   }
@@ -21,7 +41,7 @@ exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found.' });
-    res.json(product);
+    res.json(normalizeImageRefs(product));
   } catch (err) {
     res.status(500).json({ message: 'Server error.' });
   }

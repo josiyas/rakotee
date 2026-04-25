@@ -71,6 +71,8 @@
         <!-- allow multiple images to match front-end product shape -->
         <label for="imageFiles">Images (first image will be primary). You can select multiple files.</label>
         <input type="file" id="imageFiles" accept="image/*" multiple />
+        <label for="imagePaths">Local image paths (optional, one per line). Example: products/new-drop-1.jpg</label>
+        <textarea id="imagePaths" placeholder="products/new-drop-1.jpg&#10;products/new-drop-2.jpg" rows="2"></textarea>
         <input type="text" id="sizes" placeholder="Sizes (comma separated) e.g. 6UK,7UK,8UK" />
         <input type="text" id="colors" placeholder="Colors (comma separated) e.g. White,Black" />
         <label for="category">Category</label>
@@ -126,8 +128,6 @@
       const src = (raw || '').toString().trim();
       if (!src) return '/products/fallback.png';
       if (/^https?:\/\//i.test(src) || src.startsWith('data:')) return src;
-      if (src.startsWith('/products/')) return `${API_BASE}/images${src}`;
-      if (src.startsWith('products/')) return `${API_BASE}/images/${src}`;
       if (src.startsWith('/images/')) return `${API_BASE}${src}`;
       if (src.startsWith('images/')) return `${API_BASE}/${src}`;
       return src.startsWith('/') ? src : `/${src}`;
@@ -363,11 +363,16 @@
       const colorsInput = document.getElementById("colors").value;
       const description = document.getElementById("description").value;
       const highlightsInput = document.getElementById("highlights").value;
+      const imagePathsInput = document.getElementById('imagePaths').value;
 
       // parse inputs to arrays
       const sizes = sizesInput.split(/,|\n/).map(s => s.trim()).filter(Boolean);
       const colors = colorsInput.split(/,|\n/).map(s => s.trim()).filter(Boolean);
       const highlights = highlightsInput.split(/\r?\n|,/).map(s => s.trim()).filter(Boolean);
+      const imagePaths = imagePathsInput
+        .split(/\r?\n|,/)
+        .map((s) => s.trim())
+        .filter(Boolean);
 
       try {
   const formData = new FormData();
@@ -384,8 +389,14 @@
   if (variantsInput && variantsInput.trim()) {
     formData.append('variants', variantsInput);
   }
-  // append image files (backend should accept multiple files named 'images')
-  files.forEach(f => formData.append('images', f));
+  // Prefer explicit local image paths when provided.
+  if (imagePaths.length) {
+    formData.append('images', JSON.stringify(imagePaths));
+    formData.append('image', imagePaths[0]);
+  } else {
+    // append image files (backend should accept multiple files named 'images')
+    files.forEach(f => formData.append('images', f));
+  }
         const legacyToken = getAdminToken();
         const res = await fetch(`${API_BASE}/api/admin/products`, {
           method: 'POST',
@@ -452,36 +463,13 @@
           headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
         });
 
-        // If unauthorized, fall back to public products endpoint and render read-only
+        // If unauthorized, force re-auth so actions never appear to work in read-only mode.
         if (res.status === 401 || res.status === 403) {
-          console.warn('Admin products unauthorized; fetching public products');
-          const pub = await fetch(`${API_BASE}/api/products`);
-          if (!pub.ok) {
-            container.innerHTML = '<p>Failed to load products.</p>';
-            return;
-          }
-          const productsArr = await pub.json();
-          if (!productsArr || !productsArr.length) {
-            container.innerHTML = '<p>No products found.</p>';
-            return;
-          }
-          // Render read-only cards (no update/delete)
-          setSystemStatus('Read-only mode: sign in to edit products.', 'warn');
-          productsArr.forEach(product => {
-            const productCard = document.createElement("div");
-            productCard.className = "product-card";
-            const primaryImage = resolveProductImageUrl((product.images && product.images.length) ? product.images[0] : (product.image || ''));
-            productCard.innerHTML = `
-              <img src="${primaryImage}" alt="${product.name}" />
-              <h4>${product.name}</h4>
-              <p class="price">R ${product.price}</p>
-              <p class="sizes">${(product.sizes||[]).join(', ')}</p>
-              <p class="colors">${(product.colors||[]).join(', ')}</p>
-              <p class="description">${product.description || ''}</p>
-              <p class="highlights">${(product.highlights||[]).join('\n')}</p>
-            `;
-            container.appendChild(productCard);
-          });
+          clearAdminToken();
+          showLogin();
+          setAdminBanner();
+          setSystemStatus('Session expired. Please login again.', 'warn');
+          container.innerHTML = '<p>Please login again to load products.</p>';
           return;
         }
 
@@ -490,10 +478,10 @@
           return;
         }
         const data = await res.json();
-        const products = data.products || [];
+        const products = (data.products || []).filter((p) => !Number.isFinite(Number(p && p.externalId)));
         if (!products.length) {
-          container.innerHTML = '<p>No products found.</p>';
-          setSystemStatus('No products found yet.', 'neutral');
+          container.innerHTML = '<p>No admin-added products found yet.</p>';
+          setSystemStatus('No admin-added products found yet.', 'neutral');
           return;
         }
         products.forEach(product => {
@@ -524,11 +512,15 @@
             try {
               setButtonBusy(btn, true, 'Deleting...', 'Delete');
               const legacyToken = getAdminToken();
-              await fetch(`${API_BASE}/api/admin/products/${btn.dataset.id}`, {
+              const delRes = await fetch(`${API_BASE}/api/admin/products/${btn.dataset.id}`, {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
               });
+              if (!delRes.ok) {
+                const text = await delRes.text();
+                throw new Error(text || 'Delete failed');
+              }
               setSystemStatus('Product deleted.', 'ok');
               loadProducts();
             } catch (err) {

@@ -131,6 +131,25 @@ function validateVariantsObject(variants) {
   return { ok: missing.length === 0, missing };
 }
 
+function normalizeImageRefs(productLike) {
+  if (!productLike) return productLike;
+  const item = typeof productLike.toObject === 'function' ? productLike.toObject() : { ...productLike };
+  const fs = require('fs');
+  const mapOne = (raw) => {
+    const src = (raw || '').toString().trim();
+    if (!src) return src;
+    if (!src.startsWith('/products/') && !src.startsWith('products/')) return src;
+    const filename = path.basename(src);
+    const diskPath = path.join(__dirname, '..', '..', 'images', 'products', filename);
+    if (fs.existsSync(diskPath)) return `/images/products/${filename}`;
+    return src;
+  };
+
+  if (Array.isArray(item.images)) item.images = item.images.map(mapOne);
+  if (item.image) item.image = mapOne(item.image);
+  return item;
+}
+
 // multer setup: store uploads in memory (caller may move to disk/ S3 in production)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -214,6 +233,7 @@ router.get('/products', requireAdmin, async (req, res) => {
       .skip((page - 1) * limit)
       .limit(limit)
       .sort({ createdAt: -1 });
+    products = products.map(normalizeImageRefs);
     const total = await Product.countDocuments(query);
     res.json({ products, page, totalPages: Math.ceil(total / limit), total });
   } catch (err) {
