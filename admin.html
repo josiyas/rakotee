@@ -349,6 +349,73 @@
       }
     };
 
+    const CUSTOM_PRODUCTS_KEY = 'rakotee_custom_products';
+    const PRODUCTS_MODE_KEY = 'rakotee_products_mode';
+
+    function readCustomProducts() {
+      try {
+        const raw = window.localStorage.getItem(CUSTOM_PRODUCTS_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function writeCustomProducts(items) {
+      window.localStorage.setItem(CUSTOM_PRODUCTS_KEY, JSON.stringify(items || []));
+      // Force storefront to use local products only in this browser/session.
+      window.localStorage.setItem(PRODUCTS_MODE_KEY, 'local-only');
+    }
+
+    function normalizeLocalImagePath(value) {
+      const src = (value || '').toString().trim();
+      if (!src) return '';
+      if (/^https?:\/\//i.test(src) || src.startsWith('data:')) return src;
+      return src.startsWith('/') ? src : `/${src}`;
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve((reader.result || '').toString());
+        reader.onerror = () => reject(new Error(`Failed to read file: ${file && file.name ? file.name : 'unknown'}`));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function parseStaticCatalogProducts() {
+      try {
+        const jsRes = await fetch('products.js', { cache: 'no-store' });
+        if (!jsRes.ok) return [];
+        const jsText = await jsRes.text();
+        const startToken = 'const products = [';
+        const start = jsText.indexOf(startToken);
+        if (start === -1) return [];
+
+        let depth = 0;
+        let end = -1;
+        for (let i = start + startToken.length - 1; i < jsText.length; i += 1) {
+          const ch = jsText[i];
+          if (ch === '[') depth += 1;
+          if (ch === ']') {
+            depth -= 1;
+            if (depth === 0) {
+              end = i;
+              break;
+            }
+          }
+        }
+        if (end === -1) return [];
+        const arrayLiteral = jsText.slice(start + 'const products = '.length, end + 1);
+        const parsed = Function(`"use strict"; return (${arrayLiteral});`)();
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
     // Upload product
     const form = document.getElementById("productForm");
     const status = document.getElementById("uploadStatus");
@@ -375,49 +442,45 @@
         .filter(Boolean);
 
       try {
-  const formData = new FormData();
-  formData.append('name', name);
-  formData.append('price', price);
-  formData.append('description', description);
-      const category = document.getElementById('category').value;
-      formData.append('category', category);
-  formData.append('sizes', JSON.stringify(sizes));
-  formData.append('colors', JSON.stringify(colors));
-  formData.append('highlights', JSON.stringify(highlights));
-  // optional explicit variants mapping
-  const variantsInput = document.getElementById('variants').value;
-  if (variantsInput && variantsInput.trim()) {
-    formData.append('variants', variantsInput);
-  }
-  // Prefer explicit local image paths when provided.
-  if (imagePaths.length) {
-    formData.append('images', JSON.stringify(imagePaths));
-    formData.append('image', imagePaths[0]);
-  } else {
-    // append image files (backend should accept multiple files named 'images')
-    files.forEach(f => formData.append('images', f));
-  }
-        const legacyToken = getAdminToken();
-        const res = await fetch(`${API_BASE}/api/admin/products`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {},
-          body: formData
-        });
-          const data = await res.json();
-        if (res.ok) {
-          status.textContent = "Product uploaded successfully.";
-          setSystemStatus('Product uploaded successfully.', 'ok');
-          form.reset();
-          loadProducts();
-        } else {
-          status.textContent = data.error || "Failed to upload product.";
-          setSystemStatus('Upload failed. Check input and permissions.', 'warn');
+        const category = document.getElementById('category').value;
+        const variantsInput = document.getElementById('variants').value;
+        let variants = undefined;
+        if (variantsInput && variantsInput.trim()) {
+          try { variants = JSON.parse(variantsInput); } catch { variants = variantsInput; }
         }
+
+        let images = [];
+        if (imagePaths.length) {
+          images = imagePaths.map(normalizeLocalImagePath).filter(Boolean);
+        } else if (files.length) {
+          images = (await Promise.all(files.map(fileToDataUrl))).filter(Boolean);
+        }
+
+        const customProducts = readCustomProducts();
+        const nowId = Date.now();
+        const customProduct = {
+          id: nowId,
+          name,
+          price: Number(price) || 0,
+          description: description ? [description] : [],
+          images,
+          image: images[0] || '',
+          sizes,
+          colors,
+          highlights,
+          variants,
+          category: category || ''
+        };
+        customProducts.push(customProduct);
+        writeCustomProducts(customProducts);
+        status.textContent = "Product saved locally.";
+        setSystemStatus('Product saved in local browser storage.', 'ok');
+        form.reset();
+        loadProducts();
       } catch (err) {
         console.error(err);
-        status.textContent = "Failed to upload product.";
-        setSystemStatus('Upload request failed. Backend may be offline.', 'error');
+        status.textContent = "Failed to save product locally.";
+        setSystemStatus('Local save failed. Check image/path inputs.', 'error');
       }
     };
 
@@ -457,61 +520,8 @@
       const container = document.getElementById("productsContainer");
       container.innerHTML = '<p>Loading products...</p>';
       try {
-        const legacyToken = getAdminToken();
-        const res = await fetch(`${API_BASE}/api/admin/products`, {
-          credentials: 'include',
-          headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
-        });
-
-        // If unauthorized, force re-auth so actions never appear to work in read-only mode.
-        if (res.status === 401 || res.status === 403) {
-          clearAdminToken();
-          showLogin();
-          setAdminBanner();
-          setSystemStatus('Session expired. Please login again.', 'warn');
-          container.innerHTML = '<p>Please login again to load products.</p>';
-          return;
-        }
-
-        if (!res.ok) {
-          container.innerHTML = '<p>Failed to load products.</p>';
-          return;
-        }
-        const data = await res.json();
-        const dbProducts = data.products || [];
-
-        // Pull full static catalog from products.js so Product List shows every store item.
-        let staticProducts = [];
-        try {
-          const jsRes = await fetch('products.js', { cache: 'no-store' });
-          if (jsRes.ok) {
-            const jsText = await jsRes.text();
-            const startToken = 'const products = [';
-            const start = jsText.indexOf(startToken);
-            if (start !== -1) {
-              let depth = 0;
-              let end = -1;
-              for (let i = start + startToken.length - 1; i < jsText.length; i += 1) {
-                const ch = jsText[i];
-                if (ch === '[') depth += 1;
-                if (ch === ']') {
-                  depth -= 1;
-                  if (depth === 0) {
-                    end = i;
-                    break;
-                  }
-                }
-              }
-              if (end !== -1) {
-                const arrayLiteral = jsText.slice(start + 'const products = '.length, end + 1);
-                const parsed = Function(`"use strict"; return (${arrayLiteral});`)();
-                staticProducts = Array.isArray(parsed) ? parsed : [];
-              }
-            }
-          }
-        } catch (e) {
-          console.warn('Could not parse products.js for admin full catalog view.', e);
-        }
+        const staticProducts = await parseStaticCatalogProducts();
+        const customProducts = readCustomProducts();
 
         const staticNormalized = staticProducts
           .filter((p) => p && typeof p === 'object')
@@ -539,10 +549,10 @@
         };
 
         staticNormalized.forEach((p) => merged.set(keyOf(p), p));
-        dbProducts.forEach((p) => {
+        customProducts.forEach((p) => {
           const key = keyOf(p);
           const existing = merged.get(key) || {};
-          merged.set(key, { ...existing, ...p, __source: 'db' });
+          merged.set(key, { ...existing, ...p, __source: 'custom' });
         });
 
         const products = Array.from(merged.values());
@@ -552,7 +562,7 @@
           return;
         }
         products.forEach(product => {
-          const editable = !!product._id;
+          const editable = product.__source === 'custom';
           const productCard = document.createElement("div");
           productCard.className = "product-card";
           // for compatibility with existing product shape, show first image and other metadata
@@ -569,9 +579,9 @@
             <label>Variants (JSON)</label>
             <textarea class="variants" ${editable ? '' : 'readonly'}>${product.variants ? JSON.stringify(product.variants) : ''}</textarea>
             ${editable
-              ? `<button data-id="${product._id}" class="updateBtn">Save</button>
-                 <button data-id="${product._id}" class="deleteBtn">Delete</button>`
-              : '<p style="margin-top:0.45rem;color:#b6c7e8;font-size:0.82rem;">Catalog item (static). Use Advanced Editor to create DB override.</p>'}
+              ? `<button data-id="${product.id}" class="updateBtn">Save</button>
+                <button data-id="${product.id}" class="deleteBtn">Delete</button>`
+              : ''}
           `;
           container.appendChild(productCard);
         });
@@ -581,17 +591,10 @@
           btn.onclick = async () => {
             try {
               setButtonBusy(btn, true, 'Deleting...', 'Delete');
-              const legacyToken = getAdminToken();
-              const delRes = await fetch(`${API_BASE}/api/admin/products/${btn.dataset.id}`, {
-                method: 'DELETE',
-                credentials: 'include',
-                headers: legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {}
-              });
-              if (!delRes.ok) {
-                const text = await delRes.text();
-                throw new Error(text || 'Delete failed');
-              }
-              setSystemStatus('Product deleted.', 'ok');
+              const id = Number(btn.dataset.id);
+              const customProducts = readCustomProducts().filter((p) => Number(p && p.id) !== id);
+              writeCustomProducts(customProducts);
+              setSystemStatus('Local product deleted.', 'ok');
               loadProducts();
             } catch (err) {
               console.error('Delete failed', err);
@@ -617,28 +620,32 @@
               const sizes = sizesStr.split(/,|\n/).map(s => s.trim()).filter(Boolean);
               const colors = colorsStr.split(/,|\n/).map(s => s.trim()).filter(Boolean);
               const highlights = highlightsStr.split(/\r?\n|,/).map(s => s.trim()).filter(Boolean);
-              const legacyToken = getAdminToken();
               const category = card.querySelector('.category').textContent.trim();
               let variants = undefined;
               if (variantsStr) {
                 try { variants = JSON.parse(variantsStr); } catch (e) { variants = variantsStr; }
               }
-              const body = { name: newName, price: newPrice, sizes, colors, description, highlights, category, variants };
-                const res = await fetch(`${API_BASE}/api/admin/products/${btn.dataset.id}`, {
-                  method: 'PUT',
-                  credentials: 'include',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    ...(legacyToken ? { 'Authorization': 'Bearer ' + legacyToken } : {})
-                  },
-                  body: JSON.stringify(body)
-                });
-              if (!res.ok) console.error('Update failed', await res.text());
-              if (res.ok) {
-                setSystemStatus('Product updated successfully.', 'ok');
-              } else {
-                setSystemStatus('Update failed. Check permissions/data.', 'warn');
+              const id = Number(btn.dataset.id);
+              const customProducts = readCustomProducts();
+              const idx = customProducts.findIndex((p) => Number(p && p.id) === id);
+              if (idx === -1) {
+                setSystemStatus('Update failed: local product not found.', 'warn');
+                return;
               }
+              const existing = customProducts[idx] || {};
+              customProducts[idx] = {
+                ...existing,
+                name: newName,
+                price: Number(newPrice) || 0,
+                sizes,
+                colors,
+                category,
+                description: description ? [description] : [],
+                highlights,
+                variants
+              };
+              writeCustomProducts(customProducts);
+              setSystemStatus('Local product updated successfully.', 'ok');
               loadProducts();
             } catch (err) {
               console.error('Update failed', err);

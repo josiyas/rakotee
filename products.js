@@ -2507,6 +2507,13 @@ const products = [
 async function mergeLiveProductsFromApi() {
   if (typeof window === 'undefined' || typeof fetch !== 'function') return;
 
+  try {
+    const mode = window.localStorage && window.localStorage.getItem('rakotee_products_mode');
+    if (mode === 'local-only') return false;
+  } catch (_) {
+    // ignore storage access issues and continue with default behavior
+  }
+
   const host = (window.location.hostname || '').toLowerCase();
   const isLocal = host === 'localhost' || host === '127.0.0.1';
   const officialApi = isLocal ? 'http://localhost:5000' : 'https://rakotee-back.onrender.com';
