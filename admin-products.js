@@ -15,6 +15,7 @@ const sizesInput = document.getElementById('sizes');
 const catTabs = document.getElementById('catTabs');
 const storeSearchInput = document.getElementById('storeSearch');
 const syncStatusEl = document.getElementById('syncStatus');
+const checkPublishBtn = document.getElementById('checkPublishBtn');
 
 const DEFAULT_SHOE_SIZES = ['2UK', '3UK', '4UK', '5UK', '6UK', '7UK', '8UK', '9UK', '10UK', '11UK', '12UK'];
 const DEFAULT_PHONE_SIZES = ['64GB', '128GB', '256GB', '512GB'];
@@ -92,6 +93,58 @@ async function syncProductToServer(product) {
 		if (res.status === 500) return { ok: false, reason: 'server-config' };
 		return { ok: false, reason: `publish-${res.status}` };
 	} catch {
+		return { ok: false, reason: 'network' };
+	}
+}
+
+async function checkPublishStatus(showAlert = true) {
+	if (!activeApiBase) activeApiBase = await detectApiBase();
+	if (!activeApiBase) {
+		setSyncStatus('Publish check failed: backend unreachable', false);
+		if (showAlert) alert('Could not reach backend. Check backend deploy first.');
+		return { ok: false, reason: 'no-server' };
+	}
+
+	const headers = {
+		...getAuthHeaders()
+	};
+
+	try {
+		const res = await fetch(`${activeApiBase}/api/admin/publish-products-code/status`, {
+			method: 'GET',
+			credentials: 'include',
+			headers
+		});
+
+		if (res.status === 401 || res.status === 403) {
+			setSyncStatus('Publish blocked: login as admin first', false);
+			if (showAlert) alert('Not authenticated for publish check. Login as admin and try again.');
+			return { ok: false, reason: 'auth' };
+		}
+
+		if (!res.ok) {
+			setSyncStatus(`Publish check failed (${res.status})`, false);
+			if (showAlert) alert(`Publish check failed with status ${res.status}.`);
+			return { ok: false, reason: `status-${res.status}` };
+		}
+
+		const info = await res.json();
+		if (info.ready) {
+			setSyncStatus(`Publish ready: ${info.repo} ${info.branch} ${info.file}`, true);
+			if (showAlert) alert('Publish status: READY. Admin saves will auto-commit to products.js.');
+			return { ok: true, ready: true };
+		}
+
+		const missing = Array.isArray(info.missing) ? info.missing.join(', ') : 'unknown';
+		setSyncStatus(`Publish not ready: missing ${missing}`, false);
+		if (showAlert) {
+			const extra = info.githubStatus ? ` GitHub status: ${info.githubStatus}.` : '';
+			alert(`Publish not ready. Missing or invalid config: ${missing}.${extra}`);
+		}
+		return { ok: true, ready: false };
+	} catch {
+		setSyncStatus('Publish check failed: network error', false);
+		if (showAlert) alert('Publish check failed due to network error.');
 		return { ok: false, reason: 'network' };
 	}
 }
@@ -579,6 +632,20 @@ if (exportHardcodeBtn) {
 	});
 }
 
+if (checkPublishBtn) {
+	checkPublishBtn.addEventListener('click', async () => {
+		checkPublishBtn.disabled = true;
+		const oldText = checkPublishBtn.textContent;
+		checkPublishBtn.textContent = 'Checking...';
+		try {
+			await checkPublishStatus(true);
+		} finally {
+			checkPublishBtn.disabled = false;
+			checkPublishBtn.textContent = oldText;
+		}
+	});
+}
+
 renderList();
 initSearch();
 renderStoreList();
@@ -586,7 +653,8 @@ renderStoreList();
 (async () => {
 	activeApiBase = await detectApiBase();
 	if (activeApiBase) {
-		setSyncStatus('Auto-publish enabled when backend is configured', true);
+		setSyncStatus('Backend reachable. Use Check Publish Status.', true);
+		await checkPublishStatus(false);
 	} else {
 		setSyncStatus('Local-only fallback (backend unreachable)', false);
 	}

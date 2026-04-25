@@ -389,6 +389,64 @@ router.post('/publish-products-code', requireAdmin, async (req, res) => {
   }
 });
 
+// Check whether code-publish prerequisites are in place for admin saves.
+router.get('/publish-products-code/status', requireAdmin, async (req, res) => {
+  try {
+    const ghToken = process.env.GITHUB_TOKEN || '';
+    const ghRepo = process.env.GITHUB_REPO || 'josiyas/rakotee';
+    const ghBranch = process.env.GITHUB_BRANCH || 'main';
+    const ghFilePath = process.env.GITHUB_PRODUCTS_FILE || 'products.js';
+
+    const missing = [];
+    if (!ghToken) missing.push('GITHUB_TOKEN');
+    if (!ghRepo) missing.push('GITHUB_REPO');
+    if (!ghBranch) missing.push('GITHUB_BRANCH');
+    if (!ghFilePath) missing.push('GITHUB_PRODUCTS_FILE');
+
+    const payload = {
+      ok: true,
+      ready: false,
+      auth: true,
+      repo: ghRepo,
+      branch: ghBranch,
+      file: ghFilePath,
+      missing,
+      githubReachable: false,
+      githubStatus: null
+    };
+
+    if (missing.length) {
+      return res.json(payload);
+    }
+
+    const encodedPath = ghFilePath.split('/').map(encodeURIComponent).join('/');
+    const url = `https://api.github.com/repos/${ghRepo}/contents/${encodedPath}?ref=${encodeURIComponent(ghBranch)}`;
+    const probe = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${ghToken}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'User-Agent': 'rakotee-admin-publisher'
+      }
+    });
+
+    payload.githubStatus = probe.status;
+    payload.githubReachable = probe.ok;
+    payload.ready = probe.ok;
+
+    if (!probe.ok) {
+      const text = await probe.text();
+      payload.error = 'GitHub probe failed';
+      payload.details = text.slice(0, 300);
+    }
+
+    return res.json(payload);
+  } catch (err) {
+    return res.status(500).json({ ok: false, ready: false, error: 'Publish status check failed', details: err.message });
+  }
+});
+
 // multer setup: store uploads in memory (caller may move to disk/ S3 in production)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
