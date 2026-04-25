@@ -72,7 +72,28 @@ async function detectApiBase() {
 }
 
 async function syncProductToServer(product) {
-	return { ok: false, reason: 'disabled' };
+	if (!activeApiBase) return { ok: false, reason: 'no-server' };
+	const headers = {
+		'Content-Type': 'application/json',
+		...getAuthHeaders()
+	};
+	try {
+		const res = await fetch(`${activeApiBase}/api/admin/publish-products-code`, {
+			method: 'POST',
+			credentials: 'include',
+			headers,
+			body: JSON.stringify({
+				products: [product],
+				commitMessage: `chore: publish product ${product.id} via admin`
+			})
+		});
+		if (res.ok) return { ok: true };
+		if (res.status === 401 || res.status === 403) return { ok: false, reason: 'auth' };
+		if (res.status === 500) return { ok: false, reason: 'server-config' };
+		return { ok: false, reason: `publish-${res.status}` };
+	} catch {
+		return { ok: false, reason: 'network' };
+	}
 }
 
 if (categorySelect && sizesInput) {
@@ -504,11 +525,27 @@ form.addEventListener('submit', async (event) => {
 	}
 
 	saveStoredProducts(products);
+	const syncResult = await syncProductToServer(payload);
 	resetFormMode();
 	renderList();
 	renderStoreList();
-	setSyncStatus('Saved locally (no server sync)', false);
-	alert('Product saved locally. Use Export Hardcode Block to publish in products.js.');
+	if (syncResult.ok) {
+		setSyncStatus('Saved locally + auto-published to products.js', true);
+		alert('Product saved and auto-published to code. GitHub Pages will update shortly.');
+		return;
+	}
+	if (syncResult.reason === 'auth') {
+		setSyncStatus('Saved locally (publish needs admin auth)', false);
+		alert('Saved locally. Auto-publish requires active admin login.');
+		return;
+	}
+	if (syncResult.reason === 'server-config') {
+		setSyncStatus('Saved locally (publish env vars missing)', false);
+		alert('Saved locally. Auto-publish is not configured on backend yet.');
+		return;
+	}
+	setSyncStatus('Saved locally (auto-publish unavailable)', false);
+	alert('Saved locally. Auto-publish is currently unavailable; use Export Hardcode Block as fallback.');
 });
 
 clearAllBtn.addEventListener('click', () => {
@@ -547,5 +584,10 @@ initSearch();
 renderStoreList();
 
 (async () => {
-	setSyncStatus('Local-only persistence (no server sync)', false);
+	activeApiBase = await detectApiBase();
+	if (activeApiBase) {
+		setSyncStatus('Auto-publish enabled when backend is configured', true);
+	} else {
+		setSyncStatus('Local-only fallback (backend unreachable)', false);
+	}
 })();

@@ -150,6 +150,245 @@ function normalizeImageRefs(productLike) {
   return item;
 }
 
+function findProductsArrayBounds(source) {
+  const startToken = 'const products = [';
+  const start = source.indexOf(startToken);
+  if (start === -1) throw new Error('Could not find products array start token in products.js');
+
+  const arrayStart = source.indexOf('[', start);
+  if (arrayStart === -1) throw new Error('Could not find opening [ for products array');
+
+  let depth = 0;
+  let inString = false;
+  let quote = '';
+  let escaped = false;
+
+  for (let i = arrayStart; i < source.length; i += 1) {
+    const ch = source[i];
+
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (ch === '\\') {
+        escaped = true;
+        continue;
+      }
+      if (ch === quote) {
+        inString = false;
+        quote = '';
+      }
+      continue;
+    }
+
+    if (ch === '"' || ch === '\'' || ch === '`') {
+      inString = true;
+      quote = ch;
+      continue;
+    }
+
+    if (ch === '[') depth += 1;
+    if (ch === ']') {
+      depth -= 1;
+      if (depth === 0) {
+        return { arrayStart, arrayEnd: i };
+      }
+    }
+  }
+
+  throw new Error('Could not find closing ] for products array');
+}
+
+function parseProductsFromJs(source) {
+  const { arrayStart, arrayEnd } = findProductsArrayBounds(source);
+  const arrayLiteral = source.slice(arrayStart, arrayEnd + 1);
+  let parsed;
+  try {
+    parsed = Function(`"use strict"; return (${arrayLiteral});`)();
+  } catch (err) {
+    throw new Error(`Failed to parse products.js array: ${err.message}`);
+  }
+  if (!Array.isArray(parsed)) throw new Error('Parsed products payload is not an array');
+  return { parsed, arrayStart, arrayEnd };
+}
+
+function toJsString(value) {
+  return JSON.stringify((value || '').toString());
+}
+
+function toJsArray(values) {
+  return `[${(values || []).map((v) => toJsString(v)).join(', ')}]`;
+}
+
+function normalizePublishProduct(input) {
+  const id = Number(input && input.id);
+  if (!Number.isFinite(id)) throw new Error('Each product must include a numeric id for code publishing');
+
+  const name = (input && input.name ? input.name : 'Product').toString();
+  const category = (input && input.category ? input.category : '').toString();
+  const price = Number(input && input.price);
+  const images = Array.isArray(input && input.images)
+    ? input.images.map((i) => (i || '').toString().trim()).filter(Boolean)
+    : [];
+  const sizes = Array.isArray(input && input.sizes)
+    ? input.sizes.map((s) => (s || '').toString().trim()).filter(Boolean)
+    : [];
+  const colors = Array.isArray(input && input.colors)
+    ? input.colors.map((c) => (c || '').toString().trim()).filter(Boolean)
+    : [];
+  const description = Array.isArray(input && input.description)
+    ? input.description.map((d) => (d || '').toString().trim()).filter(Boolean)
+    : ((input && input.description) ? [(input.description || '').toString().trim()] : []);
+
+  return {
+    id,
+    name,
+    category,
+    price: Number.isFinite(price) ? price : 0,
+    images,
+    sizes,
+    colors,
+    description
+  };
+}
+
+function serializeProductForJs(product) {
+  const lines = [
+    '  {',
+    `    id: ${Number(product.id)},`,
+    `    name: ${toJsString(product.name)},`
+  ];
+
+  if (product.category) {
+    lines.push(`    category: ${toJsString(product.category)},`);
+  }
+
+  lines.push(`    price: ${Number(product.price).toFixed(2)},`);
+  lines.push(`    images: ${toJsArray(product.images)},`);
+
+  if (product.sizes && product.sizes.length) {
+    lines.push(`    sizes: ${toJsArray(product.sizes)},`);
+  }
+  if (product.colors && product.colors.length) {
+    lines.push(`    colors: ${toJsArray(product.colors)},`);
+  }
+  if (product.description && product.description.length) {
+    lines.push(`    description: ${toJsArray(product.description)},`);
+  }
+
+  lines.push('  }');
+  return lines.join('\n');
+}
+
+function buildUpdatedProductsJs(source, updates) {
+  const { parsed, arrayStart, arrayEnd } = parseProductsFromJs(source);
+
+  const byId = new Map();
+  parsed.forEach((item) => {
+    const id = Number(item && item.id);
+    if (Number.isFinite(id)) {
+      byId.set(id, item);
+      return;
+    }
+    byId.set(`__anon__${byId.size}`, item);
+  });
+
+  updates.forEach((incoming) => {
+    const normalized = normalizePublishProduct(incoming);
+    const existing = byId.get(normalized.id) || {};
+    const merged = {
+      ...existing,
+      ...normalized,
+      description: normalized.description && normalized.description.length
+        ? normalized.description
+        : (Array.isArray(existing.description) ? existing.description : [])
+    };
+    byId.set(normalized.id, merged);
+  });
+
+  const list = Array.from(byId.values());
+  const arrayLiteral = `\n${list.map(serializeProductForJs).join(',\n\n')}\n`;
+  const next = `${source.slice(0, arrayStart)}[${arrayLiteral}]${source.slice(arrayEnd + 1)}`;
+  return next;
+}
+
+// Publish product updates directly to products.js in GitHub repo (code-first catalog).
+router.post('/publish-products-code', requireAdmin, async (req, res) => {
+  try {
+    const ghToken = process.env.GITHUB_TOKEN || '';
+    const ghRepo = process.env.GITHUB_REPO || 'josiyas/rakotee';
+    const ghBranch = process.env.GITHUB_BRANCH || 'main';
+    const ghFilePath = process.env.GITHUB_PRODUCTS_FILE || 'products.js';
+
+    if (!ghToken) {
+      return res.status(500).json({ error: 'Missing GITHUB_TOKEN on backend' });
+    }
+
+    const incoming = req.body && Array.isArray(req.body.products) ? req.body.products : [];
+    if (!incoming.length) {
+      return res.status(400).json({ error: 'products array is required' });
+    }
+
+    const encodedPath = ghFilePath.split('/').map(encodeURIComponent).join('/');
+    const url = `https://api.github.com/repos/${ghRepo}/contents/${encodedPath}?ref=${encodeURIComponent(ghBranch)}`;
+    const headers = {
+      Authorization: `Bearer ${ghToken}`,
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'User-Agent': 'rakotee-admin-publisher'
+    };
+
+    const currentRes = await fetch(url, { method: 'GET', headers });
+    if (!currentRes.ok) {
+      const text = await currentRes.text();
+      return res.status(502).json({ error: `Failed to fetch ${ghFilePath} from GitHub`, details: text });
+    }
+
+    const current = await currentRes.json();
+    const currentContent = Buffer.from((current.content || '').replace(/\n/g, ''), 'base64').toString('utf8');
+    const updatedContent = buildUpdatedProductsJs(currentContent, incoming);
+
+    if (updatedContent === currentContent) {
+      return res.json({ ok: true, changed: false, message: 'No code changes needed' });
+    }
+
+    const commitMessage = req.body && req.body.commitMessage
+      ? req.body.commitMessage.toString()
+      : `chore: publish ${incoming.length} product update(s) from admin`;
+
+    const putBody = {
+      message: commitMessage,
+      content: Buffer.from(updatedContent, 'utf8').toString('base64'),
+      sha: current.sha,
+      branch: ghBranch
+    };
+
+    const putRes = await fetch(`https://api.github.com/repos/${ghRepo}/contents/${encodedPath}`, {
+      method: 'PUT',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(putBody)
+    });
+
+    if (!putRes.ok) {
+      const text = await putRes.text();
+      return res.status(502).json({ error: `Failed to commit ${ghFilePath} update`, details: text });
+    }
+
+    const pushed = await putRes.json();
+    return res.json({
+      ok: true,
+      changed: true,
+      commit: pushed && pushed.commit ? { sha: pushed.commit.sha, url: pushed.commit.html_url } : null
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'Code publish failed', details: err.message });
+  }
+});
+
 // multer setup: store uploads in memory (caller may move to disk/ S3 in production)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
