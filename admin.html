@@ -149,6 +149,42 @@
       localStorage.removeItem('rakotee_admin_token');
     }
 
+    function getAdminAuthHeaders() {
+      const token = getAdminToken();
+      return token ? { Authorization: 'Bearer ' + token } : {};
+    }
+
+    async function publishProductToCode(product, commitMessage) {
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/publish-products-code`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAdminAuthHeaders()
+          },
+          body: JSON.stringify({
+            products: [product],
+            commitMessage
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json().catch(() => ({}));
+          return { ok: true, data };
+        }
+        if (res.status === 401 || res.status === 403) {
+          return { ok: false, reason: 'auth' };
+        }
+        if (res.status === 500) {
+          return { ok: false, reason: 'server-config' };
+        }
+        return { ok: false, reason: `publish-${res.status}` };
+      } catch (err) {
+        return { ok: false, reason: 'network', error: err && err.message ? err.message : '' };
+      }
+    }
+
     const loginSection = document.getElementById("loginSection");
     const adminDashboard = document.getElementById("adminDashboard");
     const loginBtn = document.getElementById("loginBtn");
@@ -473,8 +509,20 @@
         };
         customProducts.push(customProduct);
         writeCustomProducts(customProducts);
-        status.textContent = "Product saved locally.";
-        setSystemStatus('Product saved in local browser storage.', 'ok');
+        const publish = await publishProductToCode(customProduct, `chore: publish product ${customProduct.id} via admin`);
+        if (publish.ok) {
+          status.textContent = "Product saved and published.";
+          setSystemStatus('Product saved and published to live catalog. GitHub Pages will update shortly.', 'ok');
+        } else if (publish.reason === 'auth') {
+          status.textContent = "Product saved locally.";
+          setSystemStatus('Product saved locally only. Login is required for live publish.', 'warn');
+        } else if (publish.reason === 'server-config') {
+          status.textContent = "Product saved locally.";
+          setSystemStatus('Product saved locally only. Backend publish environment is not configured.', 'warn');
+        } else {
+          status.textContent = "Product saved locally.";
+          setSystemStatus('Product saved locally only. Live publish is currently unavailable.', 'warn');
+        }
         form.reset();
         loadProducts();
       } catch (err) {
@@ -645,7 +693,16 @@
                 variants
               };
               writeCustomProducts(customProducts);
-              setSystemStatus('Local product updated successfully.', 'ok');
+              const publish = await publishProductToCode(customProducts[idx], `chore: publish product ${id} update via admin`);
+              if (publish.ok) {
+                setSystemStatus('Product updated and published to live catalog.', 'ok');
+              } else if (publish.reason === 'auth') {
+                setSystemStatus('Product updated locally only. Login is required for live publish.', 'warn');
+              } else if (publish.reason === 'server-config') {
+                setSystemStatus('Product updated locally only. Backend publish environment is not configured.', 'warn');
+              } else {
+                setSystemStatus('Product updated locally only. Live publish is currently unavailable.', 'warn');
+              }
               loadProducts();
             } catch (err) {
               console.error('Update failed', err);
