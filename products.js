@@ -1692,6 +1692,16 @@ const products = [
     sizes: ["64GB", "128GB"],
     colors: ["Black", "Blue", "Red"],
     description: ["The iPhone XR remains a reliable daily smartphone with strong performance, a solid camera, and great value."],
+  },
+
+  {
+    id: 0,
+    name: "JUSTIN",
+    category: "Shoes",
+    price: 90.00,
+    images: ["product/mc"],
+    sizes: ["2UK", "3UK", "4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK", "11UK", "12UK"],
+    colors: ["summit white"],
   }
 ];
 
