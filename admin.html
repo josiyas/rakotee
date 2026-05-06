@@ -155,7 +155,39 @@
     }
 
     async function publishProductToCode(product, commitMessage) {
+      const upsertBody = {
+        externalId: Number(product.id),
+        id: Number(product.id),
+        name: product.name,
+        price: Number(product.price) || 0,
+        images: Array.isArray(product.images) ? product.images : [],
+        sizes: Array.isArray(product.sizes) ? product.sizes : [],
+        colors: Array.isArray(product.colors) ? product.colors : [],
+        category: product.category || 'Shoes',
+        description: Array.isArray(product.description) ? product.description : []
+      };
+
+      const upsertLiveFallback = async () => {
+        const fallback = await fetch(`${API_BASE}/api/admin/products/upsert`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAdminAuthHeaders()
+          },
+          body: JSON.stringify(upsertBody)
+        });
+        if (fallback.ok) return { ok: true, mode: 'api-fallback' };
+        if (fallback.status === 401 || fallback.status === 403) return { ok: false, reason: 'auth' };
+        return { ok: false, reason: `upsert-${fallback.status}` };
+      };
+
       try {
+        // 1) Ensure live visibility first.
+        const live = await upsertLiveFallback();
+        if (!live.ok && live.reason === 'auth') return live;
+
+        // 2) Best-effort hardcode publish for products.js.
         const res = await fetch(`${API_BASE}/api/admin/publish-products-code`, {
           method: 'POST',
           credentials: 'include',
@@ -173,37 +205,22 @@
           const data = await res.json().catch(() => ({}));
           return { ok: true, mode: 'code', data };
         }
+        if (live.ok) return { ok: true, mode: 'api-fallback' };
         if (res.status === 401 || res.status === 403) {
           return { ok: false, reason: 'auth' };
-        }
-        const fallback = await fetch(`${API_BASE}/api/admin/products/upsert`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            ...getAdminAuthHeaders()
-          },
-          body: JSON.stringify({
-            externalId: Number(product.id),
-            id: Number(product.id),
-            name: product.name,
-            price: Number(product.price) || 0,
-            images: Array.isArray(product.images) ? product.images : [],
-            sizes: Array.isArray(product.sizes) ? product.sizes : [],
-            colors: Array.isArray(product.colors) ? product.colors : [],
-            category: product.category || 'Shoes',
-            description: Array.isArray(product.description) ? product.description : []
-          })
-        });
-        if (fallback.ok) {
-          return { ok: true, mode: 'api-fallback' };
         }
         if (res.status === 500) {
           return { ok: false, reason: 'server-config' };
         }
         return { ok: false, reason: `publish-${res.status}` };
       } catch (err) {
-        return { ok: false, reason: 'network', error: err && err.message ? err.message : '' };
+        try {
+          const live = await upsertLiveFallback();
+          if (live.ok) return live;
+          return live;
+        } catch {
+          return { ok: false, reason: 'network', error: err && err.message ? err.message : '' };
+        }
       }
     }
 

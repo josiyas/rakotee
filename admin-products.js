@@ -78,7 +78,36 @@ async function syncProductToServer(product) {
 		'Content-Type': 'application/json',
 		...getAuthHeaders()
 	};
+
+	const upsertPayload = {
+		externalId: Number(product.id),
+		id: Number(product.id),
+		name: product.name,
+		price: Number(product.price) || 0,
+		images: Array.isArray(product.images) ? product.images : [],
+		sizes: Array.isArray(product.sizes) ? product.sizes : [],
+		colors: Array.isArray(product.colors) ? product.colors : [],
+		category: product.category || 'Shoes',
+		description: Array.isArray(product.description) ? product.description : []
+	};
+
+	async function upsertLiveFallback() {
+		const fallbackRes = await fetch(`${activeApiBase}/api/admin/products/upsert`, {
+			method: 'POST',
+			credentials: 'include',
+			headers,
+			body: JSON.stringify(upsertPayload)
+		});
+		if (fallbackRes.ok) return { ok: true, mode: 'api-fallback' };
+		if (fallbackRes.status === 401 || fallbackRes.status === 403) return { ok: false, reason: 'auth' };
+		return { ok: false, reason: `upsert-${fallbackRes.status}` };
+	}
 	try {
+		// 1) Always try live upsert first so product is visible globally even if code publish has issues.
+		const live = await upsertLiveFallback();
+		if (!live.ok && live.reason === 'auth') return live;
+
+		// 2) Best-effort hardcode publish for persistence in products.js.
 		const res = await fetch(`${activeApiBase}/api/admin/publish-products-code`, {
 			method: 'POST',
 			credentials: 'include',
@@ -92,34 +121,19 @@ async function syncProductToServer(product) {
 			const info = await res.json().catch(() => ({}));
 			return { ok: true, mode: 'code', changed: info && info.changed !== false, commit: info && info.commit ? info.commit : null };
 		}
+		// If code publish fails but live upsert already worked, keep success state.
+		if (live.ok) return { ok: true, mode: 'api-fallback' };
 		if (res.status === 401 || res.status === 403) return { ok: false, reason: 'auth' };
-
-		// Fallback: keep the storefront globally up-to-date via backend /api/products merge.
-		const fallbackRes = await fetch(`${activeApiBase}/api/admin/products/upsert`, {
-			method: 'POST',
-			credentials: 'include',
-			headers,
-			body: JSON.stringify({
-				externalId: Number(product.id),
-				id: Number(product.id),
-				name: product.name,
-				price: Number(product.price) || 0,
-				images: Array.isArray(product.images) ? product.images : [],
-				sizes: Array.isArray(product.sizes) ? product.sizes : [],
-				colors: Array.isArray(product.colors) ? product.colors : [],
-				category: product.category || 'Shoes',
-				description: Array.isArray(product.description) ? product.description : []
-			})
-		});
-
-		if (fallbackRes.ok) {
-			return { ok: true, mode: 'api-fallback' };
-		}
-
 		if (res.status === 500) return { ok: false, reason: 'server-config' };
 		return { ok: false, reason: `publish-${res.status}` };
 	} catch {
-		return { ok: false, reason: 'network' };
+		try {
+			const live = await upsertLiveFallback();
+			if (live.ok) return live;
+			return live;
+		} catch {
+			return { ok: false, reason: 'network' };
+		}
 	}
 }
 
