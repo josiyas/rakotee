@@ -171,10 +171,32 @@
 
         if (res.ok) {
           const data = await res.json().catch(() => ({}));
-          return { ok: true, data };
+          return { ok: true, mode: 'code', data };
         }
         if (res.status === 401 || res.status === 403) {
           return { ok: false, reason: 'auth' };
+        }
+        const fallback = await fetch(`${API_BASE}/api/admin/products/upsert`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAdminAuthHeaders()
+          },
+          body: JSON.stringify({
+            externalId: Number(product.id),
+            id: Number(product.id),
+            name: product.name,
+            price: Number(product.price) || 0,
+            images: Array.isArray(product.images) ? product.images : [],
+            sizes: Array.isArray(product.sizes) ? product.sizes : [],
+            colors: Array.isArray(product.colors) ? product.colors : [],
+            category: product.category || 'Shoes',
+            description: Array.isArray(product.description) ? product.description : []
+          })
+        });
+        if (fallback.ok) {
+          return { ok: true, mode: 'api-fallback' };
         }
         if (res.status === 500) {
           return { ok: false, reason: 'server-config' };
@@ -512,7 +534,11 @@
         const publish = await publishProductToCode(customProduct, `chore: publish product ${customProduct.id} via admin`);
         if (publish.ok) {
           status.textContent = "Product saved and published.";
-          setSystemStatus('Product saved and published to live catalog. GitHub Pages will update shortly.', 'ok');
+          if (publish.mode === 'code') {
+            setSystemStatus('Product saved and published to live catalog. GitHub Pages will update shortly.', 'ok');
+          } else {
+            setSystemStatus('Product saved and synced live via backend API fallback.', 'ok');
+          }
         } else if (publish.reason === 'auth') {
           status.textContent = "Product saved locally.";
           setSystemStatus('Product saved locally only. Login is required for live publish.', 'warn');
@@ -695,7 +721,12 @@
               writeCustomProducts(customProducts);
               const publish = await publishProductToCode(customProducts[idx], `chore: publish product ${id} update via admin`);
               if (publish.ok) {
-                setSystemStatus('Product updated and published to live catalog.', 'ok');
+                setSystemStatus(
+                  publish.mode === 'code'
+                    ? 'Product updated and published to live catalog.'
+                    : 'Product updated and synced live via backend API fallback.',
+                  'ok'
+                );
               } else if (publish.reason === 'auth') {
                 setSystemStatus('Product updated locally only. Login is required for live publish.', 'warn');
               } else if (publish.reason === 'server-config') {

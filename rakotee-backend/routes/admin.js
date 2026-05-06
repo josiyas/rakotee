@@ -150,6 +150,37 @@ function normalizeImageRefs(productLike) {
   return item;
 }
 
+function parseArrayField(input) {
+  if (Array.isArray(input)) return input;
+  if (typeof input === 'string') {
+    const raw = input.trim();
+    if (!raw) return [];
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (_) {
+      return raw.split(/,|\r?\n/).map((v) => v.trim()).filter(Boolean);
+    }
+  }
+  return [];
+}
+
+function parseMaybeJsonObject(input) {
+  if (!input) return undefined;
+  if (typeof input === 'object') return input;
+  if (typeof input === 'string') {
+    const raw = input.trim();
+    if (!raw) return undefined;
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : undefined;
+    } catch (_) {
+      return undefined;
+    }
+  }
+  return undefined;
+}
+
 function findProductsArrayBounds(source) {
   const startToken = 'const products = [';
   const start = source.indexOf(startToken);
@@ -444,6 +475,54 @@ router.get('/publish-products-code/status', requireAdmin, async (req, res) => {
     return res.json(payload);
   } catch (err) {
     return res.status(500).json({ ok: false, ready: false, error: 'Publish status check failed', details: err.message });
+  }
+});
+
+// JSON upsert fallback so products can still go live through /api/products when code publish is unavailable.
+router.post('/products/upsert', requireAdmin, async (req, res) => {
+  try {
+    const body = req.body || {};
+    const externalId = Number(body.externalId ?? body.id);
+    if (!Number.isFinite(externalId)) {
+      return res.status(400).json({ error: 'externalId or id (numeric) is required' });
+    }
+
+    const name = (body.name || '').toString().trim();
+    if (!name) return res.status(400).json({ error: 'name is required' });
+
+    const images = parseArrayField(body.images).map((v) => (v || '').toString().trim()).filter(Boolean);
+    const sizes = parseArrayField(body.sizes).map((v) => (v || '').toString().trim()).filter(Boolean);
+    const colors = parseArrayField(body.colors).map((v) => (v || '').toString().trim()).filter(Boolean);
+    const highlights = parseArrayField(body.highlights).map((v) => (v || '').toString().trim()).filter(Boolean);
+    const variants = parseMaybeJsonObject(body.variants);
+    const description = Array.isArray(body.description)
+      ? body.description.map((v) => (v || '').toString().trim()).filter(Boolean)
+      : ((body.description || '').toString().trim() ? [(body.description || '').toString().trim()] : []);
+
+    const update = {
+      externalId,
+      name,
+      price: Number(body.price) || 0,
+      category: (body.category || '').toString(),
+      description,
+      image: images[0] || (body.image || '').toString(),
+      images,
+      sizes,
+      colors,
+      highlights,
+      variants,
+      updatedAt: new Date()
+    };
+
+    const doc = await Product.findOneAndUpdate(
+      { externalId },
+      { $set: update, $setOnInsert: { createdAt: new Date() } },
+      { new: true, upsert: true, runValidators: true }
+    );
+
+    return res.json({ ok: true, product: normalizeImageRefs(doc) });
+  } catch (err) {
+    return res.status(400).json({ error: 'Failed to upsert product', details: err.message });
   }
 });
 
